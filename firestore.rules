@@ -1,0 +1,21 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global strategy catalog — read-only for signed-in users
+    match /strategies/{strategyId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // User profile (includes workProfile for pilot roles + reminder prefs)
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // Work Energy Check-ins — one document per date (YYYY-MM-DD)
+      match /workCheckIns/{checkInId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+}

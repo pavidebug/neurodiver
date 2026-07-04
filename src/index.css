@@ -1,0 +1,169 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-cream: #f8f6ee;
+  --color-cream-dark: #f0ece0;
+  --color-yellow: #ebdfad;
+  --color-yellow-soft: #f5efd9;
+  --color-orange: #c17f3a;
+  --color-orange-soft: #d9a56a;
+  --color-green: #2d5a3d;
+  --color-green-soft: #3d7350;
+  --color-green-muted: #e8f0eb;
+  --color-text: #2a2824;
+  --color-text-muted: #5c574f;
+  --color-border: #e5e0d4;
+  --color-surface: rgb(255 255 255 / 0.82);
+  --color-surface-solid: #ffffff;
+
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'DM Sans', var(--font-sans);
+
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text);
+    background-color: var(--color-cream);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  #root {
+    min-height: 100dvh;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-orange);
+    outline-offset: 3px;
+  }
+
+  html.dark {
+    --color-cream: #1a1916;
+    --color-cream-dark: #141210;
+    --color-yellow: #4a4435;
+    --color-yellow-soft: #3a3529;
+    --color-orange: #d4934a;
+    --color-orange-soft: #e0a865;
+    --color-green: #6aab7a;
+    --color-green-soft: #7fbf8f;
+    --color-green-muted: #243328;
+    --color-text: #f0ece4;
+    --color-text-muted: #b8b0a4;
+    --color-border: #3a3630;
+    --color-surface: rgb(36 34 30 / 0.88);
+    --color-surface-solid: #24221e;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  .page-enter {
+    animation: page-enter 0.35s ease-out both;
+  }
+
+  .fade-in {
+    animation: fade-in 0.4s ease-out both;
+  }
+
+  .slide-up {
+    animation: slide-up 0.4s ease-out both;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .sr-only:focus,
+  .focus\:not-sr-only:focus {
+    position: fixed;
+    width: auto;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+
+  @keyframes page-enter {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .popup-enter {
+    animation: popup-enter 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
+  }
+
+  @keyframes popup-enter {
+    from {
+      opacity: 0;
+      transform: scale(0.96) translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+}

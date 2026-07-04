@@ -1,0 +1,43 @@
+{
+  "name": "neurodiver",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview",
+    "validate:strategies": "node scripts/validate-strategies.mjs",
+    "seed:strategies": "node scripts/seed-strategies.mjs",
+    "seed:strategies:dry-run": "node scripts/seed-strategies.mjs --dry-run",
+    "deploy:rules": "firebase deploy --only firestore:rules",
+    "deploy:firestore": "firebase deploy --only firestore"
+  },
+  "dependencies": {
+    "@radix-ui/react-progress": "^1.1.10",
+    "@radix-ui/react-slot": "^1.3.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "firebase": "^12.15.0",
+    "framer-motion": "^12.42.2",
+    "lucide-react": "^1.22.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^7.18.1",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.2",
+    "@types/node": "^24.13.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "firebase-admin": "^13.10.0",
+    "firebase-tools": "^15.22.4",
+    "oxlint": "^1.69.0",
+    "tailwindcss": "^4.3.2",
+    "typescript": "~6.0.2",
+    "vite": "^8.1.0"
+  }
+}

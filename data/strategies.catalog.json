@@ -1,0 +1,3320 @@
+{
+  "$schema": "./strategies.schema.json",
+  "version": 1,
+  "catalogName": "NeuroDiver Strategy Navigator",
+  "updatedAt": "2026-07-04",
+  "strategies": 
+  [
+      {
+        "id": "ef-the-doorway-problem",
+        "title": "The Doorway Problem",
+        "category": "Executive Function",
+        "challenge": "Task initiation",
+        "situation": "I know exactly what I need to do. I'm just standing here, and I can't make myself start.",
+        "internalThoughts": "What is wrong with me? It's such a small thing.",
+        "gentleReminder": "Knowing what to do and being able to start doing it are two different skills. Your brain isn't refusing out of laziness. That gap is real, and it's common.",
+        "whatsHappening": "Starting a task takes a kind of mental ignition, something that switches your brain from thinking about it to doing it. For a lot of brains that switch doesn't fire reliably, especially for tasks with no built-in urgency or reward. This isn't about willpower.",
+        "tryThis": [
+          "Set a timer for two minutes and do only the very first physical motion.",
+          "Say the task out loud to yourself before starting.",
+          "Change your body position first, then start.",
+          "Ask someone to keep you company while you begin, even on a call.",
+          "Shrink the task down to a version so small it feels silly not to do."
+        ],
+        "whyThisHelps": "Each of these gives your brain a smaller, more concrete entry point than the full task, which lowers the effort needed to begin.",
+        "expectedOutcome": "Increase task initiation and reduce time spent stuck before starting.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Running Low",
+          "Steady"
+        ],
+        "tags": [
+          "task initiation",
+          "starting",
+          "procrastination",
+          "executive function"
+        ],
+        "relatedStrategies": [
+          "ef-two-minute-entry",
+          "ef-body-before-brain",
+          "ef-starting-strong-fading-fast"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with ADHD and executive function coaching approaches to task initiation.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-two-minute-entry",
+        "title": "Two-Minute Entry",
+        "category": "Executive Function",
+        "challenge": "Task initiation",
+        "situation": "The whole task feels huge, so I never even open the door to start it.",
+        "internalThoughts": "If I start, I have to finish it all. I don't have the energy for that.",
+        "gentleReminder": "It makes sense to avoid something that feels enormous. The size of the task in your head, not the actual first step, is often what's stopping you.",
+        "whatsHappening": "Big tasks can trigger overwhelm before you've even begun, because your brain tries to picture the whole thing at once. Shrinking the entry point changes what you're actually being asked to do.",
+        "tryThis": [
+          "Pick the smallest possible action connected to the task.",
+          "Commit to doing only that action, with permission to stop after.",
+          "If you keep going, treat it as a bonus, not the plan.",
+          "Repeat this small entry point next time you return to the task."
+        ],
+        "whyThisHelps": "It replaces an overwhelming task with a tiny, low-stakes one, which makes starting far less effortful.",
+        "expectedOutcome": "Lower activation energy and increase task initiation.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Running Low",
+          "Steady"
+        ],
+        "tags": [
+          "task initiation",
+          "procrastination",
+          "micro-tasking",
+          "overwhelm"
+        ],
+        "relatedStrategies": [
+          "ef-the-doorway-problem",
+          "ef-starting-strong-fading-fast"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Common technique in ADHD coaching, sometimes called micro-tasking.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-body-before-brain",
+        "title": "Body Before Brain",
+        "category": "Executive Function",
+        "challenge": "Task initiation",
+        "situation": "I've been sitting here for twenty minutes trying to think my way into starting.",
+        "internalThoughts": "If I just focus harder, I'll get moving.",
+        "gentleReminder": "Trying to think your way into motion doesn't always work, and that's not a failure of focus. Sometimes the body needs to move first.",
+        "whatsHappening": "For some brains, thinking about a task keeps you in planning mode indefinitely. Moving your body, even briefly, can interrupt that loop and shift you into doing mode.",
+        "tryThis": [
+          "Stand up and stretch for 30 seconds before returning to the task.",
+          "Walk to another room and back.",
+          "Do ten jumping jacks or a lap around your space.",
+          "Return to the task right after moving, before sitting back down to think again."
+        ],
+        "whyThisHelps": "Physical movement can shift your nervous system state, making it easier to transition out of an overthinking loop.",
+        "expectedOutcome": "Reduce time spent stuck before starting and increase task initiation.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Running Low",
+          "Steady"
+        ],
+        "tags": [
+          "task initiation",
+          "movement",
+          "stuck",
+          "freeze"
+        ],
+        "relatedStrategies": [
+          "ef-the-doorway-problem",
+          "sm-the-crash-after-the-zone"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported strategy in ADHD and autism communities.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-everything-feels-urgent",
+        "title": "Everything Feels Urgent",
+        "category": "Executive Function",
+        "challenge": "Prioritisation",
+        "situation": "I have twenty things to do and they all feel equally important. I don't know where to start.",
+        "internalThoughts": "I should be able to figure out what matters most. Why can't I just tell?",
+        "gentleReminder": "When everything feels urgent, that's not a sign you're bad at prioritising. Your brain isn't automatically ranking tasks the way some brains do, and that ranking has to be built on purpose.",
+        "whatsHappening": "Prioritising means holding several tasks in mind and weighing them against each other, which is demanding on its own. Without a clear structure, everything can end up feeling the same size.",
+        "tryThis": [
+          "Write every task down, even the small ones.",
+          "Sort into four groups: urgent and important, important but not urgent, urgent but not important, neither.",
+          "Circle only the urgent-and-important group.",
+          "Pick one task from that group to do next.",
+          "Let the rest wait without guilt."
+        ],
+        "whyThisHelps": "External sorting takes the ranking work off your brain and turns a vague pile into a visible, manageable structure.",
+        "expectedOutcome": "Reduce decision fatigue and increase clarity on what to do next.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "prioritisation",
+          "overwhelm",
+          "task list",
+          "decision fatigue"
+        ],
+        "relatedStrategies": [
+          "ef-the-one-thing-filter",
+          "ef-too-many-options-no-decision"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Based on the Eisenhower Matrix, a widely used prioritisation framework.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-the-one-thing-filter",
+        "title": "The One-Thing Filter",
+        "category": "Executive Function",
+        "challenge": "Prioritisation",
+        "situation": "My to-do list has so much on it that I freeze and end up doing nothing.",
+        "internalThoughts": "If I can't do it all, what's even the point of starting?",
+        "gentleReminder": "A long list can make everything feel like the only acceptable outcome. It's reasonable that facing all of it at once leads to freezing instead of moving.",
+        "whatsHappening": "When a task list feels infinite, your brain has nowhere to land. Narrowing the question to a single item gives it one answerable target instead of an open-ended one.",
+        "tryThis": [
+          "Look at your full list without trying to plan the whole day.",
+          "Ask yourself what would matter most if you only got one thing done today.",
+          "Write that one thing somewhere visible, separate from the rest of the list.",
+          "Do that one thing before looking at anything else."
+        ],
+        "whyThisHelps": "Reducing the decision to a single item removes the paralysis that comes from weighing everything at once.",
+        "expectedOutcome": "Increase task initiation and reduce decision fatigue.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Running Low",
+          "Steady"
+        ],
+        "tags": [
+          "prioritisation",
+          "focus",
+          "task list",
+          "simplifying"
+        ],
+        "relatedStrategies": [
+          "ef-everything-feels-urgent",
+          "ef-starting-strong-fading-fast"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Common technique in productivity and ADHD coaching circles.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-plans-that-fall-apart-by-noon",
+        "title": "Plans That Fall Apart by Noon",
+        "category": "Executive Function",
+        "challenge": "Planning",
+        "situation": "I planned my whole day this morning, and by noon none of it happened the way I expected.",
+        "internalThoughts": "Why do I even bother planning? I can't stick to anything.",
+        "gentleReminder": "A plan falling apart isn't proof that planning doesn't work for you. It's often a sign the plan itself was built too tightly, with no room for how the day actually unfolds.",
+        "whatsHappening": "Detailed, back-to-back plans assume everything will go exactly as expected. Real days rarely do, so a rigid plan can collapse entirely instead of just adjusting.",
+        "tryThis": [
+          "List your day in three sections: morning, afternoon, evening.",
+          "Put no more than one or two must-do items in each section.",
+          "Leave the rest of each section open for whatever fits.",
+          "If something shifts, move items between sections instead of starting over."
+        ],
+        "whyThisHelps": "A looser structure can bend without breaking, so one delay doesn't derail the whole day.",
+        "expectedOutcome": "Increase follow-through and reduce all-or-nothing planning collapse.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady"
+        ],
+        "tags": [
+          "planning",
+          "flexibility",
+          "schedule",
+          "time blindness"
+        ],
+        "relatedStrategies": [
+          "ef-loose-structure-not-a-rigid-schedule",
+          "ef-where-did-the-day-go"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with occupational therapy approaches to flexible daily structuring.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-loose-structure-not-a-rigid-schedule",
+        "title": "Loose Structure, Not a Rigid Schedule",
+        "category": "Executive Function",
+        "challenge": "Planning",
+        "situation": "Every planning system I try is either too strict to follow or too loose to actually help.",
+        "internalThoughts": "Maybe I just can't be a person who plans things.",
+        "gentleReminder": "Struggling with rigid planning tools doesn't mean you're incapable of planning. It might mean the tools weren't built with a brain like yours in mind.",
+        "whatsHappening": "Many planning systems assume steady, predictable energy. When energy and focus vary a lot day to day, a system with fixed time slots can feel impossible to keep up with.",
+        "tryThis": [
+          "Build a plan around order, not exact times.",
+          "Group tasks by energy level needed instead of by clock time.",
+          "Review the plan each morning and adjust based on how you're actually feeling.",
+          "Treat missed items as moved to tomorrow, not failed."
+        ],
+        "whyThisHelps": "Ordering by sequence and energy instead of fixed time gives you structure without demanding predictability your day may not have.",
+        "expectedOutcome": "Increase consistency and reduce planning-related shame.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady"
+        ],
+        "tags": [
+          "planning",
+          "flexible structure",
+          "energy-based planning"
+        ],
+        "relatedStrategies": [
+          "ef-plans-that-fall-apart-by-noon",
+          "eb-a-budget-for-your-battery"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with executive function coaching approaches favoring flexible structuring.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-where-did-the-day-go",
+        "title": "Where Did the Day Go",
+        "category": "Executive Function",
+        "challenge": "Time blindness",
+        "situation": "I sat down to do one thing, and somehow three hours are gone.",
+        "internalThoughts": "I wasted the whole day. What is wrong with my sense of time?",
+        "gentleReminder": "Losing track of time isn't carelessness. For a lot of brains, time doesn't register the way a clock does.",
+        "whatsHappening": "Some brains rely more on internal cues than external ones to track time, and those cues aren't always reliable, especially during focused or repetitive tasks.",
+        "tryThis": [
+          "Set a recurring alarm every 60 to 90 minutes to check in with the clock.",
+          "Keep a visible clock or timer in your line of sight while working.",
+          "Note your start time somewhere you'll see it.",
+          "When an alarm goes off, briefly ask if you need to shift what you're doing."
+        ],
+        "whyThisHelps": "External time markers do the job your internal sense of time isn't reliably doing.",
+        "expectedOutcome": "Increase time awareness and reduce time lost to hyperfocus or drift.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "time blindness",
+          "hyperfocus",
+          "awareness",
+          "alarms"
+        ],
+        "relatedStrategies": [
+          "ef-time-buffers-that-actually-work",
+          "sm-the-crash-after-the-zone"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with ADHD coaching approaches to externalizing time awareness.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-time-buffers-that-actually-work",
+        "title": "Time Buffers That Actually Work",
+        "category": "Executive Function",
+        "challenge": "Time blindness",
+        "situation": "I thought this would take an hour. It's been three, and I still have people waiting on me.",
+        "internalThoughts": "Why can I never estimate time correctly? I should know better by now.",
+        "gentleReminder": "Struggling to estimate how long things take isn't a character flaw. Knowing it happens every time doesn't automatically fix it, and that's not your fault.",
+        "whatsHappening": "Estimating task duration relies on picturing every step involved, including the small ones. Time blindness can make those estimates consistently short.",
+        "tryThis": [
+          "Make your best guess at how long a task will take.",
+          "Double that number before committing to it.",
+          "Build a 15 to 20 minute buffer into anything with a deadline attached.",
+          "Keep a note of real durations versus guesses to build a more accurate reference."
+        ],
+        "whyThisHelps": "Doubling your estimate compensates for a consistent pattern rather than relying on sudden accuracy.",
+        "expectedOutcome": "Reduce missed deadlines and lower stress around time-based commitments.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "time blindness",
+          "estimation",
+          "deadlines",
+          "buffers"
+        ],
+        "relatedStrategies": [
+          "ef-where-did-the-day-go",
+          "dl-missed-calls-missed-appointments"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported technique in ADHD communities and coaching practice.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-its-gone-the-second-i-walk-away",
+        "title": "It's Gone the Second I Walk Away",
+        "category": "Executive Function",
+        "challenge": "Working memory",
+        "situation": "The meeting felt productive, but the second I walked out, the details just evaporated.",
+        "internalThoughts": "Everyone else remembers this. Why can't I?",
+        "gentleReminder": "Forgetting details right after a conversation isn't a sign you weren't paying attention. Working memory and attention are different systems.",
+        "whatsHappening": "Working memory holds information temporarily, but it has limited space and doesn't reliably transfer everything into longer-term storage, especially spoken information.",
+        "tryThis": [
+          "Take brief notes during any meeting or important conversation.",
+          "Ask directly if someone could send a quick summary afterward.",
+          "Right after the conversation ends, jot the key points before doing anything else.",
+          "Keep one running document for notes instead of scattering them."
+        ],
+        "whyThisHelps": "Writing things down moves the information out of a limited, temporary system and into something permanent you can return to.",
+        "expectedOutcome": "Reduce missed action items and lower anxiety about forgetting.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "working memory",
+          "meetings",
+          "note-taking",
+          "forgetting"
+        ],
+        "relatedStrategies": [
+          "ef-externalize-everything",
+          "dl-building-a-reminder-net"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Consistent with cognitive research on working memory limitations.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-externalize-everything",
+        "title": "Externalize Everything",
+        "category": "Executive Function",
+        "challenge": "Working memory",
+        "situation": "I keep trying to remember things instead of writing them down, and I keep losing them.",
+        "internalThoughts": "A normal person would just remember this.",
+        "gentleReminder": "Relying on memory alone, and having it fail you repeatedly, isn't a personal shortcoming. Some brains need information outside their head to hold onto it reliably.",
+        "whatsHappening": "Your brain is well suited for thinking and problem-solving, but it isn't a reliable long-term filing system for every detail and reminder.",
+        "tryThis": [
+          "Pick one place, an app or a notebook, to be your single source of memory.",
+          "The moment something needs remembering, write it there immediately.",
+          "Check that one place at set times each day rather than trying to recall on demand.",
+          "Retire other scattered systems once the main one is working."
+        ],
+        "whyThisHelps": "A single, trusted external system takes the pressure off your memory entirely.",
+        "expectedOutcome": "Reduce forgotten tasks and details and lower daily cognitive strain.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady"
+        ],
+        "tags": [
+          "working memory",
+          "systems",
+          "external memory",
+          "organisation"
+        ],
+        "relatedStrategies": [
+          "ef-its-gone-the-second-i-walk-away",
+          "ef-one-home-for-everything"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Common recommendation in executive function coaching and occupational therapy.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-the-pile-system",
+        "title": "The Pile System",
+        "category": "Executive Function",
+        "challenge": "Organisation",
+        "situation": "Everyone tells me to put things away, but the second something is out of sight, I forget it exists.",
+        "internalThoughts": "I should be neater. Piles everywhere make me feel like a mess.",
+        "gentleReminder": "Needing to see things in order to remember them isn't messiness. It's a real difference in how memory works for you.",
+        "whatsHappening": "For some brains, out of sight really does mean out of mind. Visible, open storage works with that wiring instead of against it.",
+        "tryThis": [
+          "Choose a few open trays, baskets, or shelves for frequently used items.",
+          "Keep those items visible rather than filing them in closed storage.",
+          "Group by activity rather than by category.",
+          "Let go of the goal of a fully hidden, magazine-style tidy space."
+        ],
+        "whyThisHelps": "Visible storage matches how your memory actually works, reducing how many things get lost simply because they were put away.",
+        "expectedOutcome": "Reduce lost items and time spent searching.",
+        "estimatedTime": "20 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "organisation",
+          "visible storage",
+          "clutter"
+        ],
+        "relatedStrategies": [
+          "ef-one-home-for-everything",
+          "dl-basket-to-basket"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Common recommendation in occupational therapy and ADHD organizing approaches.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-one-home-for-everything",
+        "title": "One Home for Everything",
+        "category": "Executive Function",
+        "challenge": "Organisation",
+        "situation": "I spend ten minutes every morning looking for my keys, my wallet, or my phone.",
+        "internalThoughts": "This is such a small thing. Why can't I just remember where I put stuff?",
+        "gentleReminder": "Losing the same few items over and over isn't a small personal failing. It's a predictable result of not having a fixed place for things.",
+        "whatsHappening": "If an item's location changes depending on where you set it down, your brain has to search rather than simply know. A fixed spot turns a memory task into a habit.",
+        "tryThis": [
+          "Pick your three most commonly lost items.",
+          "Choose one specific, fixed spot for each.",
+          "Put the item there every single time, even when you're in a hurry.",
+          "If it slips for a few days, just return to the spot rather than a whole new system."
+        ],
+        "whyThisHelps": "A single fixed location removes the need to remember where something is, replacing it with a repeatable habit.",
+        "expectedOutcome": "Reduce time spent searching for items and reduce morning stress.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "organisation",
+          "habits",
+          "lost items",
+          "morning routine"
+        ],
+        "relatedStrategies": [
+          "ef-the-pile-system",
+          "ef-externalize-everything"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely used technique across ADHD organizing communities.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-too-many-options-no-decision",
+        "title": "Too Many Options, No Decision",
+        "category": "Executive Function",
+        "challenge": "Decision paralysis",
+        "situation": "There are ten ways I could do this, and I can't pick any of them, so I do nothing.",
+        "internalThoughts": "It's such a small decision. Why is this so hard for me?",
+        "gentleReminder": "Freezing in front of options isn't indecisiveness in the way it's often judged. When every option feels equally weighted, that's a real experience, not a lack of trying.",
+        "whatsHappening": "Decision-making relies on quickly filtering options by importance. When that filtering doesn't happen automatically, every option can feel equally loud.",
+        "tryThis": [
+          "Limit yourself to two options instead of considering all of them.",
+          "Set a short timer to make a small decision before it ends.",
+          "Ask whether either option would genuinely be bad. If not, either is fine.",
+          "For recurring small decisions, make a default rule in advance."
+        ],
+        "whyThisHelps": "Narrowing the field and setting a time limit reduces the number of things your brain has to weigh at once.",
+        "expectedOutcome": "Reduce decision fatigue and increase speed of small decisions.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Running Low",
+          "Steady"
+        ],
+        "tags": [
+          "decision paralysis",
+          "choices",
+          "indecision",
+          "decision fatigue"
+        ],
+        "relatedStrategies": [
+          "ef-good-enough-decisions",
+          "ef-everything-feels-urgent"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Consistent with behavioral science on choice overload and decision fatigue.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-good-enough-decisions",
+        "title": "Good Enough Decisions",
+        "category": "Executive Function",
+        "challenge": "Decision paralysis",
+        "situation": "I've been standing in front of this decision for way longer than it deserves.",
+        "internalThoughts": "What if I pick wrong? I need to get this right.",
+        "gentleReminder": "Wanting to get things right isn't the problem. Not every decision needs that level of weight, even though it can feel like it does.",
+        "whatsHappening": "Not all decisions carry the same stakes, but decision paralysis can make a low-stakes choice feel as heavy as a high-stakes one.",
+        "tryThis": [
+          "Ask whether this decision can be undone or changed later if needed.",
+          "If yes, give yourself permission to pick quickly and move on.",
+          "Reserve slow deliberation for decisions that are genuinely hard to reverse.",
+          "Notice and name out loud when you're overweighting a small choice."
+        ],
+        "whyThisHelps": "Sorting decisions by how reversible they are frees up energy for the ones that actually need careful thought.",
+        "expectedOutcome": "Reduce time spent on minor decisions and preserve energy for bigger ones.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "decision paralysis",
+          "decision fatigue",
+          "perfectionism"
+        ],
+        "relatedStrategies": [
+          "ef-too-many-options-no-decision",
+          "er-done-is-a-decision"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Consistent with behavioral science on decision fatigue and reversible decisions.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-stuck-between-tasks",
+        "title": "Stuck Between Tasks",
+        "category": "Executive Function",
+        "challenge": "Transitioning",
+        "situation": "I finished one thing, and now I'm just sitting here, unable to move to the next thing.",
+        "internalThoughts": "I just did something productive. Why can't I keep going?",
+        "gentleReminder": "Struggling to move between tasks isn't a contradiction of being capable. Starting and switching are different skills.",
+        "whatsHappening": "Each task can require its own mental gear-shift to enter. Even when you're capable, the gap between finishing one and starting another is its own hurdle.",
+        "tryThis": [
+          "Build a short, consistent in-between ritual, like a stretch or a few breaths.",
+          "Say the name of the next task out loud before starting it.",
+          "Physically move to a new spot if possible.",
+          "Give yourself permission for a brief gap between tasks."
+        ],
+        "whyThisHelps": "A small ritual gives your brain a clear, repeatable signal that one task has ended and another is beginning.",
+        "expectedOutcome": "Reduce time lost between tasks and increase follow-through across a task list.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "transitions",
+          "task switching",
+          "momentum"
+        ],
+        "relatedStrategies": [
+          "ef-the-bridge-ritual",
+          "ef-starting-strong-fading-fast"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with occupational therapy approaches to transition support.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-the-bridge-ritual",
+        "title": "The Bridge Ritual",
+        "category": "Executive Function",
+        "challenge": "Transitioning",
+        "situation": "Switching from one activity to a totally different one always throws me off, even when I want to switch.",
+        "internalThoughts": "This shouldn't be this hard. It's just moving on to the next thing.",
+        "gentleReminder": "Wanting to switch and being able to switch smoothly aren't the same thing. Transitions ask your brain to disengage and re-engage, and that takes real effort.",
+        "whatsHappening": "A sudden jump between very different activities can feel jarring. A small, repeatable bridge step in between gives your brain time to shift gears.",
+        "tryThis": [
+          "Choose one simple action to always do between activities.",
+          "Use the same bridge action every time so it becomes automatic.",
+          "Keep the bridge brief, under two minutes is enough.",
+          "Notice if certain transitions need a longer bridge than others."
+        ],
+        "whyThisHelps": "A consistent transitional habit gives your brain a predictable, low-effort step between contexts instead of an abrupt jump.",
+        "expectedOutcome": "Reduce transition-related stress and smooth the shift between activities.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "transitions",
+          "rituals",
+          "context switching"
+        ],
+        "relatedStrategies": [
+          "ef-stuck-between-tasks",
+          "ef-leaving-the-house-arriving-home"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with occupational therapy transition-support techniques.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-leaving-the-house-arriving-home",
+        "title": "Leaving the House, Arriving Home",
+        "category": "Executive Function",
+        "challenge": "Transitioning",
+        "situation": "Getting out the door takes forever, and coming home, I can't switch out of work mode for hours.",
+        "internalThoughts": "Other people just leave. Why does this take me so long?",
+        "gentleReminder": "Environment transitions aren't the same as task transitions. Leaving one context and entering another asks your brain to reset almost everything at once.",
+        "whatsHappening": "Moving between environments often means switching sensory settings, expected behavior, and mental focus all at once, which is a bigger shift than moving between two tasks.",
+        "tryThis": [
+          "Build a short threshold routine for leaving, the same order of steps each time.",
+          "Build a separate, brief arrival routine for coming home.",
+          "Avoid stacking a task immediately after arriving home, build in a buffer first.",
+          "Keep both routines short and consistent so they become automatic."
+        ],
+        "whyThisHelps": "Consistent entry and exit routines give your brain a predictable ramp between environments instead of an instant switch.",
+        "expectedOutcome": "Reduce time lost around leaving and arriving, and ease the mental shift between environments.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "transitions",
+          "routines",
+          "home",
+          "environment switching"
+        ],
+        "relatedStrategies": [
+          "ef-the-bridge-ritual",
+          "eb-a-budget-for-your-battery"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported approach in neurodivergent communities for managing environment transitions.",
+        "status": "Published"
+      },
+      {
+        "id": "ef-starting-strong-fading-fast",
+        "title": "Starting Strong, Fading Fast",
+        "category": "Executive Function",
+        "challenge": "Following through",
+        "situation": "I get really into something at the start, and then a few days later, it's like it never existed.",
+        "internalThoughts": "I always do this. I can't finish anything I start.",
+        "gentleReminder": "Losing momentum partway through doesn't mean you don't care or aren't capable. Initial motivation and sustained follow-through often run on different fuel.",
+        "whatsHappening": "Starting something new can bring a burst of energy that isn't designed to last. Without something else to sustain it, motivation naturally tapers off.",
+        "tryThis": [
+          "Decide on one small, visible way to track progress before starting.",
+          "Break the task into check-in points, not just a single finish line.",
+          "Schedule a brief return to the task a few days after starting.",
+          "If it's dropped, treat picking it back up as a restart, not a failure."
+        ],
+        "whyThisHelps": "Built-in check-ins give the task ongoing visibility instead of relying on the initial burst of motivation.",
+        "expectedOutcome": "Increase follow-through on multi-day tasks and reduce shame around abandoned projects.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "follow-through",
+          "motivation",
+          "momentum",
+          "unfinished projects"
+        ],
+        "relatedStrategies": [
+          "ef-the-one-thing-filter",
+          "ef-stuck-between-tasks"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with ADHD coaching approaches to sustaining motivation.",
+        "status": "Published"
+      },
+      {
+        "id": "er-one-comment-ruins-the-day",
+        "title": "One Comment Ruins the Day",
+        "category": "Emotional Regulation",
+        "challenge": "Rejection sensitivity",
+        "situation": "Someone made one offhand comment, and now I can't stop replaying it. It's ruined everything else today.",
+        "internalThoughts": "I'm too sensitive. It was such a small thing, why can't I just let it go?",
+        "gentleReminder": "A small comment triggering a big reaction isn't oversensitivity. For a lot of neurodivergent people, perceived criticism lands with real, physical intensity.",
+        "whatsHappening": "Rejection sensitivity means criticism, real or perceived, can hit harder and linger longer than it does for other people. The intensity is real even when the comment itself was minor.",
+        "tryThis": [
+          "Name what happened out loud or in writing.",
+          "Give the feeling a few minutes to be there without trying to talk yourself out of it.",
+          "Ask what the most likely explanation is, separate from the worst one.",
+          "Check in with the person directly if it feels right, rather than guessing.",
+          "Do one small, comforting thing for yourself regardless of the outcome."
+        ],
+        "whyThisHelps": "Naming the reaction first, before trying to fix or dismiss it, gives your nervous system time to come down before you try to reason clearly.",
+        "expectedOutcome": "Reduce emotional intensity and shorten recovery time after a triggering comment.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Running Low",
+          "Recovery Needed"
+        ],
+        "tags": [
+          "rejection sensitivity",
+          "criticism",
+          "emotional intensity"
+        ],
+        "relatedStrategies": [
+          "er-fact-vs-feeling",
+          "er-the-text-that-wasnt-answered"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Rejection sensitive dysphoria is widely described in ADHD clinical literature.",
+        "status": "Published"
+      },
+      {
+        "id": "er-fact-vs-feeling",
+        "title": "Fact vs. Feeling",
+        "category": "Emotional Regulation",
+        "challenge": "Rejection sensitivity",
+        "situation": "I made a joke and nobody laughed. Now I'm convinced everyone in that room secretly dislikes me.",
+        "internalThoughts": "This proves it. I always do too much, or say the wrong thing.",
+        "gentleReminder": "It's understandable that a single flat moment can feel like proof of something much bigger. That leap is a real pattern, not a character flaw.",
+        "whatsHappening": "In a moment of rejection sensitivity, feelings can arrive dressed up as facts. Separating the two isn't about dismissing the feeling, it's about noticing what's confirmed and what your brain filled in.",
+        "tryThis": [
+          "Write two short columns: Fact and Feeling.",
+          "Under Fact, list only what you actually observed.",
+          "Under Feeling, list the story you built on top of it.",
+          "Read the Fact column back to yourself on its own.",
+          "Let the feeling be true without treating the story as confirmed."
+        ],
+        "whyThisHelps": "Separating observation from interpretation makes space between what happened and the worst-case meaning your brain assigned to it.",
+        "expectedOutcome": "Reduce emotional intensity and increase clarity about what actually happened.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Running Low",
+          "Recovery Needed"
+        ],
+        "tags": [
+          "rejection sensitivity",
+          "cognitive reframing",
+          "self-talk"
+        ],
+        "relatedStrategies": [
+          "er-one-comment-ruins-the-day",
+          "er-replaying-the-same-moment"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Based on cognitive behavioural therapy techniques for separating thoughts from facts.",
+        "status": "Published"
+      },
+      {
+        "id": "er-the-text-that-wasnt-answered",
+        "title": "The Text That Wasn't Answered",
+        "category": "Emotional Regulation",
+        "challenge": "Rejection sensitivity",
+        "situation": "I sent a message hours ago and there's no reply. I've gone from fine to panicking that I did something wrong.",
+        "internalThoughts": "They're upset with me. I must have said something bad.",
+        "gentleReminder": "Silence is genuinely ambiguous, and it's reasonable that an ambiguous gap gets filled with worry. The panic is a real response, even if the fear underneath it may not match reality.",
+        "whatsHappening": "Without new information, the brain often fills silence with the most threatening explanation available. It's a fast, automatic guess, not a choice.",
+        "tryThis": [
+          "Notice the assumption forming as it happens.",
+          "List two or three other reasons someone might not have replied yet.",
+          "Set a mental check-back-in time before assuming anything further.",
+          "Do something engaging in the meantime rather than watching for the reply."
+        ],
+        "whyThisHelps": "Actively generating alternative explanations interrupts the automatic worst-case guess.",
+        "expectedOutcome": "Reduce anxiety while waiting for a response and shorten time spent spiraling.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Running Low",
+          "Recovery Needed"
+        ],
+        "tags": [
+          "rejection sensitivity",
+          "texting anxiety",
+          "waiting",
+          "uncertainty"
+        ],
+        "relatedStrategies": [
+          "er-one-comment-ruins-the-day",
+          "er-replaying-the-same-moment"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with CBT approaches to uncertainty and catastrophic thinking.",
+        "status": "Published"
+      },
+      {
+        "id": "er-never-good-enough-to-submit",
+        "title": "Never Good Enough to Submit",
+        "category": "Emotional Regulation",
+        "challenge": "Perfectionism",
+        "situation": "I keep tweaking this over and over. It's never quite right, and now it's overdue.",
+        "internalThoughts": "If I send it like this, people will think I didn't try hard enough.",
+        "gentleReminder": "Wanting your work to be good isn't the problem. Good enough and finished can feel like they're in conflict, and that tension is exhausting, not laziness.",
+        "whatsHappening": "Perfectionism can make done feel unsafe, as if finishing means you've stopped trying. That turns even small tasks into an open-ended loop.",
+        "tryThis": [
+          "Decide in advance what done looks like for this specific task.",
+          "When you reach that point, ask only if it's done and functional.",
+          "If yes, stop editing, even if it doesn't feel finished emotionally.",
+          "Treat the urge to keep tweaking as a signal to stop, not to continue."
+        ],
+        "whyThisHelps": "Deciding on done ahead of time gives you an external stopping point instead of relying on a feeling that may never fully arrive.",
+        "expectedOutcome": "Reduce time spent over-revising and increase task completion.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "perfectionism",
+          "procrastination",
+          "completion",
+          "deadlines"
+        ],
+        "relatedStrategies": [
+          "er-done-is-a-decision",
+          "ef-good-enough-decisions"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with CBT approaches to perfectionism and task completion.",
+        "status": "Published"
+      },
+      {
+        "id": "er-done-is-a-decision",
+        "title": "Done Is a Decision",
+        "category": "Emotional Regulation",
+        "challenge": "Perfectionism",
+        "situation": "I don't know how to tell when something is actually finished. It just feels like it could always be better.",
+        "internalThoughts": "There must be something more I should be doing.",
+        "gentleReminder": "If finished has never felt like a clear feeling for you, that's not a personal failing. Especially with perfectionism, done has to be chosen, not waited for.",
+        "whatsHappening": "Perfectionism often frames finishing as something you sense rather than decide. Waiting for that sense can mean waiting indefinitely.",
+        "tryThis": [
+          "Treat done as a decision you make, not a feeling you wait for.",
+          "Set a concrete marker in advance, like a time limit or checklist.",
+          "When you hit that marker, say to yourself that this is done.",
+          "Move on immediately, before second-guessing kicks in."
+        ],
+        "whyThisHelps": "Framing completion as a decision rather than a feeling removes the dependency on a sense of rightness that perfectionism rarely allows.",
+        "expectedOutcome": "Reduce time spent seeking a feeling of completion and increase confidence in finishing tasks.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "perfectionism",
+          "completion",
+          "decision-making"
+        ],
+        "relatedStrategies": [
+          "er-never-good-enough-to-submit",
+          "ef-good-enough-decisions"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with CBT and ACT approaches to perfectionism.",
+        "status": "Published"
+      },
+      {
+        "id": "er-the-spiral-after-a-mistake",
+        "title": "The Spiral After a Mistake",
+        "category": "Emotional Regulation",
+        "challenge": "Shame spirals",
+        "situation": "I made one mistake, and now my brain has turned it into proof that I'm bad at everything.",
+        "internalThoughts": "I always mess things up. Why do I even try?",
+        "gentleReminder": "One mistake turning into a full-blown spiral isn't an overreaction. It's a pattern many neurodivergent people know well, and it's a learned response, not proof of anything true.",
+        "whatsHappening": "A shame spiral takes one specific event and generalizes it into a statement about your whole identity. Once that generalization takes hold, it can feel true even though it's a much bigger claim.",
+        "tryThis": [
+          "Name the actual event in one plain sentence.",
+          "Notice if the thought has grown bigger than that sentence.",
+          "Gently bring it back to the specific, this one thing happened.",
+          "Do one small grounding action, like water or a short walk.",
+          "Decide on one concrete next step related only to the actual mistake."
+        ],
+        "whyThisHelps": "Bringing the thought back to its specific, factual size interrupts the spiral before it fully generalizes into a statement about your worth.",
+        "expectedOutcome": "Reduce shame intensity and shorten recovery time after a mistake.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Running Low",
+          "Recovery Needed"
+        ],
+        "tags": [
+          "shame",
+          "mistakes",
+          "self-criticism",
+          "spirals"
+        ],
+        "relatedStrategies": [
+          "er-interrupting-the-spiral",
+          "er-talking-to-yourself-like-a-friend"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Consistent with CBT techniques for cognitive distortion, specifically overgeneralization.",
+        "status": "Published"
+      },
+      {
+        "id": "er-interrupting-the-spiral",
+        "title": "Interrupting the Spiral",
+        "category": "Emotional Regulation",
+        "challenge": "Shame spirals",
+        "situation": "I can feel myself starting to spiral, and I know from experience it's about to get much worse.",
+        "internalThoughts": "There's no stopping this once it starts.",
+        "gentleReminder": "Recognizing a spiral as it starts is already a meaningful skill. Catching it early genuinely changes how far it can go, even if it doesn't feel like it in the moment.",
+        "whatsHappening": "Shame spirals tend to build momentum, each thought feeding the next. Catching it in the first few moments is a very different task than stopping it once it's running full speed.",
+        "tryThis": [
+          "As soon as you notice it starting, name it out loud if possible.",
+          "Change your physical environment immediately.",
+          "Use a short anchor phrase to ground yourself.",
+          "Let humor in if it feels available, without dismissing the feeling."
+        ],
+        "whyThisHelps": "Naming and physically interrupting the spiral early works with how momentum builds, catching it before it takes over.",
+        "expectedOutcome": "Reduce duration and intensity of shame spirals.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Running Low",
+          "Recovery Needed"
+        ],
+        "tags": [
+          "shame",
+          "spirals",
+          "self-compassion",
+          "interruption"
+        ],
+        "relatedStrategies": [
+          "er-the-spiral-after-a-mistake",
+          "er-talking-to-yourself-like-a-friend"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with CBT and mindfulness-based approaches to interrupting rumination early.",
+        "status": "Published"
+      },
+      {
+        "id": "er-resting-feels-like-failing",
+        "title": "Resting Feels Like Failing",
+        "category": "Emotional Regulation",
+        "challenge": "Burnout guilt",
+        "situation": "I'm so tired, but all I can think about is the laundry I'm not doing. I feel so lazy.",
+        "internalThoughts": "I don't deserve to rest until everything else is done.",
+        "gentleReminder": "Feeling guilty for resting when you're exhausted doesn't mean the guilt is accurate. Rest has often been framed as something to earn, and that framing isn't the truth about what rest is.",
+        "whatsHappening": "When rest is treated as a reward rather than a requirement, needing it can feel like evidence of failure instead of a normal signal from your body.",
+        "tryThis": [
+          "Notice the guilty thought without immediately obeying it.",
+          "Remind yourself that rest is fuel, not a reward.",
+          "Give yourself a fixed, short amount of rest time without a task attached.",
+          "Afterward, notice whether you have more capacity for what's next."
+        ],
+        "whyThisHelps": "Reframing rest as a functional requirement, rather than something to justify, reduces the guilt that keeps you pushing past your limits.",
+        "expectedOutcome": "Reduce burnout-related guilt and support genuine recovery.",
+        "estimatedTime": "20 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Recovery Needed"
+        ],
+        "tags": [
+          "burnout",
+          "guilt",
+          "rest",
+          "self-compassion"
+        ],
+        "relatedStrategies": [
+          "er-rest-is-not-a-reward",
+          "eb-recovery-isnt-wasted-time"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with occupational therapy and burnout literature on rest as a physiological need.",
+        "status": "Published"
+      },
+      {
+        "id": "er-rest-is-not-a-reward",
+        "title": "Rest Is Not a Reward",
+        "category": "Emotional Regulation",
+        "challenge": "Burnout guilt",
+        "situation": "I only let myself rest once everything on my list is finished. It never actually happens.",
+        "internalThoughts": "I haven't earned a break yet.",
+        "gentleReminder": "Treating rest as something to earn isn't a personal quirk, it's a belief a lot of people absorb. It makes sense that unlearning it takes more than knowing rest matters in theory.",
+        "whatsHappening": "If rest only happens after the list is empty, and the list is never empty, rest effectively never happens. Waiting for permission that never comes keeps the body running on a deficit.",
+        "tryThis": [
+          "Schedule rest before the list is done, not after.",
+          "Treat it as a fixed appointment with yourself, not a bonus.",
+          "Start small, even five or ten minutes counts as real rest.",
+          "Notice any urge to earn it first, and let the scheduled time happen anyway."
+        ],
+        "whyThisHelps": "Scheduling rest in advance removes it from the endless queue behind tasks, so it actually happens.",
+        "expectedOutcome": "Increase consistency of rest and reduce cumulative exhaustion.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Recovery Needed",
+          "Steady"
+        ],
+        "tags": [
+          "burnout",
+          "rest",
+          "scheduling",
+          "guilt"
+        ],
+        "relatedStrategies": [
+          "er-resting-feels-like-failing",
+          "eb-a-budget-for-your-battery"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with occupational therapy approaches to scheduled recovery.",
+        "status": "Published"
+      },
+      {
+        "id": "er-too-much-too-fast",
+        "title": "Too Much, Too Fast",
+        "category": "Emotional Regulation",
+        "challenge": "Emotional flooding",
+        "situation": "Feedback came in, and suddenly I feel like the world is ending. I can't stop the tears.",
+        "internalThoughts": "I'm overreacting. I need to calm down right now.",
+        "gentleReminder": "Emotions arriving all at once, faster than you can process them, isn't overreacting. Telling yourself to calm down immediately rarely works because the flood is already underway.",
+        "whatsHappening": "Sometimes emotion arrives faster than the thinking part of the brain can catch up with. It's not a failure of control, it's a system being asked to process more than it can handle at once.",
+        "tryThis": [
+          "Step away from the immediate situation if possible.",
+          "Let yourself feel the wave without trying to stop it.",
+          "Use a short grounding phrase to steady yourself.",
+          "Once the intensity drops, decide what needs a response."
+        ],
+        "whyThisHelps": "Allowing the wave to move through, rather than fighting it, tends to shorten its duration more than suppressing it does.",
+        "expectedOutcome": "Reduce emotional intensity and shorten recovery time.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Recovery Needed"
+        ],
+        "tags": [
+          "emotional intensity",
+          "overwhelm",
+          "crying",
+          "feedback"
+        ],
+        "relatedStrategies": [
+          "er-the-pause-before-the-reaction",
+          "er-calming-down-is-easier-with-someone-else"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Consistent with distress tolerance techniques from dialectical behaviour therapy.",
+        "status": "Published"
+      },
+      {
+        "id": "er-the-pause-before-the-reaction",
+        "title": "The Pause Before the Reaction",
+        "category": "Emotional Regulation",
+        "challenge": "Emotional flooding",
+        "situation": "Something happens, and I react before I've even had a chance to think about it. Afterward I wish I'd waited.",
+        "internalThoughts": "Why didn't I just stop and think first?",
+        "gentleReminder": "Reacting before you've had a chance to think isn't a lack of self-control. When emotion arrives fast, there isn't much of a gap unless one gets built in on purpose.",
+        "whatsHappening": "In the moment, a strong emotional response can move faster than a considered one. A small pause doesn't stop the feeling, but it creates space to choose a response.",
+        "tryThis": [
+          "Buy yourself time before responding where possible.",
+          "Take three slow breaths before speaking or typing a reply.",
+          "For written responses, draft it and wait ten minutes before sending.",
+          "For spoken moments, it's okay to simply pause and ask for a second."
+        ],
+        "whyThisHelps": "A brief, intentional pause creates room between the initial emotional spike and your response.",
+        "expectedOutcome": "Reduce reactive responses and increase sense of control in the moment.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "Recovery Needed"
+        ],
+        "tags": [
+          "emotional intensity",
+          "reactivity",
+          "pausing",
+          "self-regulation"
+        ],
+        "relatedStrategies": [
+          "er-too-much-too-fast",
+          "er-interrupting-the-spiral"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Consistent with DBT distress tolerance and impulse control techniques.",
+        "status": "Published"
+      },
+      {
+        "id": "er-replaying-the-same-moment",
+        "title": "Replaying the Same Moment",
+        "category": "Emotional Regulation",
+        "challenge": "Rumination",
+        "situation": "It's been three days, and I'm still replaying that one conversation in my head, over and over.",
+        "internalThoughts": "If I just think about it enough, maybe I'll figure out how to fix it.",
+        "gentleReminder": "Getting stuck replaying a moment isn't dwelling on purpose. Rumination is a genuine loop, and it can feel productive even when it isn't going anywhere new.",
+        "whatsHappening": "Rumination often masquerades as problem-solving, but it tends to circle the same ground without producing anything new.",
+        "tryThis": [
+          "Ask whether this thought has given you any new information recently.",
+          "If not, name it directly as a loop, not problem-solving.",
+          "Write the thought down once, fully, so it's captured outside your head.",
+          "Set it aside with a specific time to revisit it later if still needed.",
+          "Redirect attention to something engaging enough to hold your focus."
+        ],
+        "whyThisHelps": "Naming the loop and writing it down once gives your brain permission to stop repeating something it's already recorded.",
+        "expectedOutcome": "Reduce time spent ruminating and free up mental energy for other things.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Running Low",
+          "Recovery Needed"
+        ],
+        "tags": [
+          "rumination",
+          "overthinking",
+          "looping thoughts"
+        ],
+        "relatedStrategies": [
+          "er-closing-the-loop",
+          "er-fact-vs-feeling"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Consistent with CBT approaches distinguishing rumination from productive problem-solving.",
+        "status": "Published"
+      },
+      {
+        "id": "er-closing-the-loop",
+        "title": "Closing the Loop",
+        "category": "Emotional Regulation",
+        "challenge": "Rumination",
+        "situation": "I know I'm ruminating, but I don't know how to actually stop the thought from coming back.",
+        "internalThoughts": "I've tried to just let it go and it doesn't work.",
+        "gentleReminder": "Being told to just let it go rarely works for a genuine rumination loop. Loops like this often need somewhere concrete to land before they'll quiet down.",
+        "whatsHappening": "An open-ended worry can keep circling because there's no clear endpoint. Giving it a defined next step can act as a closing bracket the thought has been missing.",
+        "tryThis": [
+          "Ask if there's one small, concrete action connected to this thought.",
+          "If yes, do that action or schedule a specific time to do it.",
+          "If no action is possible, write a short closing statement setting it down for now.",
+          "Physically close the notebook or app as a small symbolic marker."
+        ],
+        "whyThisHelps": "Giving the loop a defined action or ending point provides the closure an open-ended thought is missing.",
+        "expectedOutcome": "Reduce frequency and duration of rumination loops.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Running Low",
+          "Recovery Needed"
+        ],
+        "tags": [
+          "rumination",
+          "closure",
+          "overthinking"
+        ],
+        "relatedStrategies": [
+          "er-replaying-the-same-moment",
+          "ef-the-one-thing-filter"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with CBT worry-scheduling and closure techniques.",
+        "status": "Published"
+      },
+      {
+        "id": "er-the-voice-thats-never-kind",
+        "title": "The Voice That's Never Kind",
+        "category": "Emotional Regulation",
+        "challenge": "Self-compassion",
+        "situation": "The way I talk to myself when I mess up, I would never speak to another person that way.",
+        "internalThoughts": "I deserve to be hard on myself. It's the only way I'll do better.",
+        "gentleReminder": "Believing harshness keeps you accountable is common, but it isn't the same as it being true. A lot of people carry an internal voice crueler than anything they'd say to someone they care about.",
+        "whatsHappening": "Harsh self-talk can feel like motivation, but it more often creates shame that makes it harder to try again, not easier.",
+        "tryThis": [
+          "Notice one specific harsh thought as it happens.",
+          "Ask if you would say this to someone you love in this exact situation.",
+          "If not, try rephrasing it the way you'd speak to that person.",
+          "Say the reworded version to yourself, even if it feels unfamiliar."
+        ],
+        "whyThisHelps": "Comparing your self-talk to how you'd speak to someone you care about exposes the double standard, making it easier to soften over time.",
+        "expectedOutcome": "Reduce harsh self-talk and support long-term self-compassion.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Recovery Needed",
+          "Steady"
+        ],
+        "tags": [
+          "self-compassion",
+          "self-talk",
+          "shame",
+          "inner critic"
+        ],
+        "relatedStrategies": [
+          "er-talking-to-yourself-like-a-friend",
+          "er-the-spiral-after-a-mistake"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Consistent with self-compassion research on self-kindness versus self-judgment.",
+        "status": "Published"
+      },
+      {
+        "id": "er-talking-to-yourself-like-a-friend",
+        "title": "Talking to Yourself Like a Friend",
+        "category": "Emotional Regulation",
+        "challenge": "Self-compassion",
+        "situation": "I know I should be kinder to myself, but I don't actually know how to do that in the moment.",
+        "internalThoughts": "Self-compassion feels fake, like I'm just making excuses for myself.",
+        "gentleReminder": "It's understandable that self-compassion can feel unfamiliar if you're used to a harsher inner voice. It isn't letting yourself off the hook, it's a more sustainable way of holding yourself accountable.",
+        "whatsHappening": "For people used to a critical inner voice, a compassionate one can feel unearned or awkward at first. That discomfort tends to fade with repetition.",
+        "tryThis": [
+          "Picture someone you care about going through exactly what you're going through.",
+          "Notice what you'd want to say to them.",
+          "Say that same thing to yourself, using your own name if it helps.",
+          "Practice this in small, low-stakes moments first."
+        ],
+        "whyThisHelps": "Borrowing the compassion you naturally extend to others gives you a starting template that's often easier to access than compassion aimed at yourself.",
+        "expectedOutcome": "Increase self-compassion over time and reduce harsh self-talk.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Recovery Needed",
+          "Steady"
+        ],
+        "tags": [
+          "self-compassion",
+          "self-talk",
+          "inner critic"
+        ],
+        "relatedStrategies": [
+          "er-the-voice-thats-never-kind",
+          "er-interrupting-the-spiral"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Consistent with self-compassion research, including work by Dr. Kristin Neff.",
+        "status": "Published"
+      },
+      {
+        "id": "er-calming-down-is-easier-with-someone-else",
+        "title": "Calming Down Is Easier With Someone Else",
+        "category": "Emotional Regulation",
+        "challenge": "Co-regulation",
+        "situation": "I've tried every solo calming technique, and sometimes none of them work. But five minutes near a calm person, and I feel better.",
+        "internalThoughts": "I should be able to calm myself down on my own. Needing someone else feels like a weakness.",
+        "gentleReminder": "Needing another person to help you regulate isn't a failure of independence. Nervous systems are built to respond to each other, and this is a real physiological process.",
+        "whatsHappening": "Co-regulation is the process of one nervous system settling in response to being near a calmer one, and it doesn't stop mattering in adulthood.",
+        "tryThis": [
+          "Identify one or two people whose presence tends to feel calming, not draining.",
+          "When solo strategies aren't working, reach out or sit near one of them.",
+          "If no one is available, try a calming voice recording or video call.",
+          "Treat this as a legitimate tool, not a backup for when you've failed at calming yourself."
+        ],
+        "whyThisHelps": "Being near a regulated nervous system can help settle your own, offering a real effect that solo techniques don't always provide.",
+        "expectedOutcome": "Reduce emotional intensity and broaden your available regulation tools.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Recovery Needed"
+        ],
+        "tags": [
+          "co-regulation",
+          "emotional regulation",
+          "connection",
+          "calming"
+        ],
+        "relatedStrategies": [
+          "er-too-much-too-fast",
+          "er-talking-to-yourself-like-a-friend"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Consistent with polyvagal theory and attachment research on co-regulation.",
+        "status": "Published"
+      },
+      {
+        "id": "sm-background-noise-becomes-unbearable",
+        "title": "Background Noise Becomes Unbearable",
+        "category": "Sensory Management",
+        "challenge": "Noise sensitivity",
+        "situation": "That hum from the AC, the office chatter, the traffic outside, it's like a physical weight on my brain. I can't focus on anything else.",
+        "internalThoughts": "Everyone else seems fine. Why does this bother me so much?",
+        "gentleReminder": "Sound affecting you this intensely isn't a matter of being fussy. For a lot of neurodivergent brains, background noise doesn't fade the way it does for others.",
+        "whatsHappening": "Some brains have a harder time filtering out constant, low-level sound, so it never becomes true background noise. It keeps competing for attention.",
+        "tryThis": [
+          "Use noise-cancelling headphones, even without anything playing.",
+          "Try brown noise, white noise, or lo-fi music to mask irregular sounds.",
+          "Choose seating away from the loudest source where possible.",
+          "Take short breaks in a quieter space when the option is available."
+        ],
+        "whyThisHelps": "Masking or blocking unpredictable background noise reduces how much of your attention gets pulled away without your permission.",
+        "expectedOutcome": "Reduce sensory distraction and support sustained focus.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "noise sensitivity",
+          "focus",
+          "sensory overload",
+          "headphones"
+        ],
+        "relatedStrategies": [
+          "sm-building-a-sound-buffer",
+          "sm-too-much-input-all-at-once"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported strategy across ADHD and autism communities.",
+        "status": "Published"
+      },
+      {
+        "id": "sm-building-a-sound-buffer",
+        "title": "Building a Sound Buffer",
+        "category": "Sensory Management",
+        "challenge": "Noise sensitivity",
+        "situation": "I know noise gets to me, but I only ever deal with it after it's already thrown off my whole day.",
+        "internalThoughts": "I should just be able to push through it like everyone else does.",
+        "gentleReminder": "Needing a plan for noise, rather than pushing through it, isn't a lesser way of coping. It's a practical response to a real, recurring sensitivity.",
+        "whatsHappening": "Noise sensitivity tends to be consistent, not random. Building a standing plan means you're not starting from scratch under stress.",
+        "tryThis": [
+          "Identify your two or three most common noisy environments.",
+          "Keep a small sound kit ready, like earplugs, headphones, or a playlist.",
+          "Scope out quieter alternatives in advance.",
+          "Give yourself permission to use the kit proactively, before you're already overwhelmed."
+        ],
+        "whyThisHelps": "Having a ready-made plan removes the extra step of problem-solving while you're already dealing with sensory strain.",
+        "expectedOutcome": "Reduce sensory overwhelm and increase sense of preparedness in noisy environments.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "noise sensitivity",
+          "preparation",
+          "sensory tools"
+        ],
+        "relatedStrategies": [
+          "sm-background-noise-becomes-unbearable",
+          "sm-the-exit-plan"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Common approach recommended in autism and sensory processing communities.",
+        "status": "Published"
+      },
+      {
+        "id": "sm-tags-seams-and-textures",
+        "title": "Tags, Seams, and Textures",
+        "category": "Sensory Management",
+        "challenge": "Clothing discomfort",
+        "situation": "This collar feels like it's choking me, and the tag is scratching my neck all day. I can't stop noticing it.",
+        "internalThoughts": "It's just a tag. Why can't I just ignore it like a normal person would?",
+        "gentleReminder": "Not being able to tune out a texture isn't over-fussiness. Clothing sensitivity is a genuine, physical experience that can drain real attention and energy all day.",
+        "whatsHappening": "Some nervous systems register texture or tightness far more intensely than others, and that sensation doesn't fade with time the way it might for someone less sensitive.",
+        "tryThis": [
+          "Cut out tags from clothing you already own, or buy tagless versions.",
+          "Notice which fabrics and cuts consistently feel okay, and buy more of those.",
+          "Consider seamless or inside-out-seam clothing for the most sensitive areas.",
+          "Don't keep uncomfortable clothing just because it looks fine or was expensive."
+        ],
+        "whyThisHelps": "Removing recurring physical irritants frees up attention that would otherwise be spent tolerating discomfort all day.",
+        "expectedOutcome": "Reduce daily sensory irritation and support sustained comfort and focus.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "clothing sensitivity",
+          "texture",
+          "sensory comfort"
+        ],
+        "relatedStrategies": [
+          "sm-a-uniform-that-works",
+          "ef-the-pile-system"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported strategy in autism and sensory processing communities.",
+        "status": "Published"
+      },
+      {
+        "id": "sm-a-uniform-that-works",
+        "title": "A Uniform That Works",
+        "category": "Sensory Management",
+        "challenge": "Clothing discomfort",
+        "situation": "Every morning I stand in front of my closet trying to find something that won't bother me all day, and it eats up so much time and energy.",
+        "internalThoughts": "This shouldn't take this long. It's just getting dressed.",
+        "gentleReminder": "Getting dressed sounds small, but when comfort and decision-making both feel effortful, it adds up to something genuinely draining.",
+        "whatsHappening": "Choosing an outfit involves both a sensory decision and a general decision. Doing both every day from scratch uses up energy before the day has started.",
+        "tryThis": [
+          "Find one or two brands or styles that consistently feel comfortable.",
+          "Buy multiples of those, in a few color variations if needed.",
+          "Remove tags and prep them before they go into rotation.",
+          "Let this become your default, without needing a special occasion to deviate."
+        ],
+        "whyThisHelps": "A small, trusted rotation removes both the sensory guesswork and the daily decision, standardizing comfort in advance.",
+        "expectedOutcome": "Reduce morning decision fatigue and eliminate daily sensory irritation from clothing.",
+        "estimatedTime": "20 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "clothing sensitivity",
+          "decision fatigue",
+          "morning routine"
+        ],
+        "relatedStrategies": [
+          "sm-tags-seams-and-textures",
+          "ef-one-home-for-everything"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported strategy in ADHD and autism communities for reducing decision load.",
+        "status": "Published"
+      },
+      {
+        "id": "sm-the-crash-after-the-zone",
+        "title": "The Crash After the Zone",
+        "category": "Sensory Management",
+        "challenge": "Hyperfocus crashes",
+        "situation": "I was in the zone for five hours and didn't move. Now I feel physically sick and completely empty.",
+        "internalThoughts": "I got so much done, so why do I feel this awful?",
+        "gentleReminder": "Feeling wrecked after a long stretch of hyperfocus doesn't cancel out what you accomplished. It can take a real physical toll that catches up with you afterward.",
+        "whatsHappening": "During hyperfocus, basic needs like food, water, and movement often get ignored entirely because attention is fully absorbed elsewhere.",
+        "tryThis": [
+          "Set a timer for around 50 minutes as a check-in point.",
+          "When it goes off, take a short, forced break away from the screen or task.",
+          "Use that break to drink water, eat something, and move your body.",
+          "If a crash has already happened, prioritize rest and hydration over pushing through it."
+        ],
+        "whyThisHelps": "Regular check-ins interrupt hyperfocus before it runs for hours unchecked, reducing how steep the eventual crash is.",
+        "expectedOutcome": "Reduce severity of post-hyperfocus crashes and support more sustainable focus sessions.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "High Energy",
+          "Steady"
+        ],
+        "tags": [
+          "hyperfocus",
+          "crash",
+          "burnout",
+          "breaks"
+        ],
+        "relatedStrategies": [
+          "sm-built-in-stopping-points",
+          "ef-where-did-the-day-go"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported pattern in ADHD communities.",
+        "status": "Published"
+      },
+      {
+        "id": "sm-built-in-stopping-points",
+        "title": "Built-In Stopping Points",
+        "category": "Sensory Management",
+        "challenge": "Hyperfocus crashes",
+        "situation": "I know hyperfocus is going to crash me later, but in the moment I can't seem to stop myself.",
+        "internalThoughts": "I'll just finish this one more part, and then I'll take a break.",
+        "gentleReminder": "It's a genuinely hard moment to interrupt yourself in. Wanting to keep going isn't a lack of self-control, it's how the state works.",
+        "whatsHappening": "Hyperfocus can override the usual signals that tell you to stop. Relying on willpower alone to stop tends not to work because the state resists interruption.",
+        "tryThis": [
+          "Set an external alarm before starting, not something you plan to remember.",
+          "Choose a sound or vibration that's hard to ignore.",
+          "When it goes off, physically stand up before deciding whether to continue.",
+          "If you do continue, reset the timer rather than letting it run indefinitely."
+        ],
+        "whyThisHelps": "An external interruption doesn't rely on the very attention system hyperfocus has already taken over.",
+        "expectedOutcome": "Reduce length and severity of hyperfocus sessions and prevent crashes before they build up.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "High Energy",
+          "Steady"
+        ],
+        "tags": [
+          "hyperfocus",
+          "alarms",
+          "breaks",
+          "self-regulation"
+        ],
+        "relatedStrategies": [
+          "sm-the-crash-after-the-zone",
+          "ef-where-did-the-day-go"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported technique in ADHD communities.",
+        "status": "Published"
+      },
+      {
+        "id": "sm-too-much-input-all-at-once",
+        "title": "Too Much Input, All at Once",
+        "category": "Sensory Management",
+        "challenge": "Sensory overload",
+        "situation": "Fifty types of cereal, buzzing lights, people everywhere. I feel like I'm going to burst into tears right here in the store.",
+        "internalThoughts": "It's just a grocery store. Why is this so hard for me?",
+        "gentleReminder": "Sensory overload from an ordinary place isn't an overreaction. Multiple sources of input arriving at once can genuinely overwhelm your system.",
+        "whatsHappening": "In an overload moment, sound, light, movement, and choice can all hit at once, without any of it fading into the background.",
+        "tryThis": [
+          "Step outside or into a quieter area immediately if possible.",
+          "Reduce input where you can, like closing your eyes or putting on headphones.",
+          "Focus on one sense at a time to ground yourself.",
+          "Leave the environment if that's an option, without needing to explain."
+        ],
+        "whyThisHelps": "Reducing sensory input, even partially, gives an overloaded system a chance to come back down instead of continuing to climb.",
+        "expectedOutcome": "Reduce intensity and duration of sensory overload.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Recovery Needed"
+        ],
+        "tags": [
+          "sensory overload",
+          "overwhelm",
+          "grounding"
+        ],
+        "relatedStrategies": [
+          "sm-the-exit-plan",
+          "sm-nothing-left-after-a-full-day"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with occupational therapy approaches to sensory overload and grounding techniques.",
+        "status": "Published"
+      },
+      {
+        "id": "sm-the-exit-plan",
+        "title": "The Exit Plan",
+        "category": "Sensory Management",
+        "challenge": "Sensory overload",
+        "situation": "I keep getting stuck in overwhelming situations with no way out, and by the time I realize how bad it's gotten, I'm already in crisis.",
+        "internalThoughts": "I should have left earlier. Now it's too late and I'm stuck.",
+        "gentleReminder": "Not noticing overload until it's severe isn't a failure to plan ahead. By the time overload is obvious, your capacity to make decisions is often already reduced.",
+        "whatsHappening": "Waiting until you're deep in overload to figure out how to leave puts the planning work at the exact moment you're least equipped to do it.",
+        "tryThis": [
+          "Before entering a potentially overwhelming space, locate the nearest exit or quiet area.",
+          "Decide in advance on a simple phrase to use if you need to leave.",
+          "If attending with someone else, tell them ahead of time you might need to step out.",
+          "Treat leaving early as a successful use of the plan, not a failure to cope."
+        ],
+        "whyThisHelps": "Deciding on an exit in advance means the plan already exists by the time you need it.",
+        "expectedOutcome": "Reduce severity of overload episodes and increase confidence entering unfamiliar environments.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "sensory overload",
+          "planning",
+          "boundaries",
+          "exit strategy"
+        ],
+        "relatedStrategies": [
+          "sm-too-much-input-all-at-once",
+          "sc-the-bandwidth-boundary"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with occupational therapy approaches to proactive sensory planning.",
+        "status": "Published"
+      },
+      {
+        "id": "sm-nothing-left-after-a-full-day",
+        "title": "Nothing Left After a Full Day",
+        "category": "Sensory Management",
+        "challenge": "Recovery",
+        "situation": "I get home and I have absolutely nothing left. Even talking feels like too much.",
+        "internalThoughts": "I didn't even do anything that hard today. Why am I this wiped out?",
+        "gentleReminder": "Feeling completely depleted after a day that didn't look objectively difficult isn't disproportionate. Sensory input adds up over hours, even without a single dramatic moment.",
+        "whatsHappening": "A day full of ordinary noise, light, texture, and social demands can quietly use up sensory capacity, even without a single standout event.",
+        "tryThis": [
+          "Build in low-input time as soon as you get home, before tackling anything else.",
+          "Dim lights, reduce noise, and minimize demands for at least twenty minutes.",
+          "Avoid decision-heavy or social tasks immediately after arriving.",
+          "Treat this recovery window as necessary, not optional, on high-input days."
+        ],
+        "whyThisHelps": "A dedicated low-input window gives your system time to come down from the day's accumulated sensory load.",
+        "expectedOutcome": "Support recovery and reduce next-day depletion.",
+        "estimatedTime": "20 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Recovery Needed"
+        ],
+        "tags": [
+          "sensory recovery",
+          "depletion",
+          "downtime"
+        ],
+        "relatedStrategies": [
+          "sm-quiet-time-isnt-optional",
+          "eb-recovery-isnt-wasted-time"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with occupational therapy approaches to sensory load and recovery.",
+        "status": "Published"
+      },
+      {
+        "id": "sm-quiet-time-isnt-optional",
+        "title": "Quiet Time Isn't Optional",
+        "category": "Sensory Management",
+        "challenge": "Recovery",
+        "situation": "I keep skipping my downtime because something else always feels more urgent, and then I'm running on empty by the end of the week.",
+        "internalThoughts": "I don't have time to just sit quietly. There's too much else to do.",
+        "gentleReminder": "It's understandable that quiet time gets pushed aside when it doesn't look productive. But treating it as optional tends to catch up with you.",
+        "whatsHappening": "Sensory recovery isn't a luxury add-on to a schedule, it's closer to sleep or food, something your system needs regularly to function well.",
+        "tryThis": [
+          "Schedule a short block of quiet time each day, even just ten minutes.",
+          "Protect it the way you'd protect any other appointment.",
+          "Use it for genuinely low-input activities, not scrolling or background noise.",
+          "Notice how skipping it a few days in a row tends to affect your capacity."
+        ],
+        "whyThisHelps": "Treating quiet time as a fixed requirement, rather than something to fit in later, protects it from being crowded out.",
+        "expectedOutcome": "Reduce cumulative sensory depletion and support sustainable daily functioning.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "Recovery Needed"
+        ],
+        "tags": [
+          "sensory recovery",
+          "scheduling",
+          "self-care",
+          "downtime"
+        ],
+        "relatedStrategies": [
+          "sm-nothing-left-after-a-full-day",
+          "eb-a-budget-for-your-battery"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with occupational therapy approaches treating sensory downtime as a physiological requirement.",
+        "status": "Published"
+      },
+      {
+        "id": "sm-not-noticing-until-its-urgent",
+        "title": "Not Noticing Until It's Urgent",
+        "category": "Sensory Management",
+        "challenge": "Interoception",
+        "situation": "I've been working for six hours. My head hurts and I haven't had any water, and I only just now noticed I really need the bathroom.",
+        "internalThoughts": "How did I not notice any of this sooner?",
+        "gentleReminder": "Missing your body's signals until they're urgent isn't carelessness. For a lot of neurodivergent people, internal signals can stay quiet until they're already at a breaking point.",
+        "whatsHappening": "Interoception is your brain's ability to notice internal body signals. For some people that sense jumps straight to urgent, with very little warning in between.",
+        "tryThis": [
+          "Use external cues instead of waiting to feel the signal, like a marked water bottle or a recurring alarm.",
+          "Build check-ins into transitions you already do, like after finishing a task.",
+          "Treat sudden discomfort as a possible signal you missed, and check the basics first.",
+          "Don't wait for the feeling to be strong before responding, respond to the check-in itself."
+        ],
+        "whyThisHelps": "External reminders do the noticing your internal signals aren't reliably doing, catching needs before they become urgent.",
+        "expectedOutcome": "Reduce missed basic needs and prevent discomfort from building to a crisis point.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "interoception",
+          "body signals",
+          "hunger",
+          "hydration"
+        ],
+        "relatedStrategies": [
+          "dl-food-and-water-on-autopilot",
+          "sm-the-crash-after-the-zone"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Interoception differences are documented in autism and ADHD research literature.",
+        "status": "Published"
+      },
+      {
+        "id": "sc-performing-all-day",
+        "title": "Performing All Day",
+        "category": "Social & Communication",
+        "challenge": "Masking",
+        "situation": "I didn't realize I was performing today until I got home and my jaw was aching.",
+        "internalThoughts": "I should be able to just be myself. Why does everything feel like an act?",
+        "gentleReminder": "Not noticing you're masking until it's already worn you out isn't a lack of self-awareness. Masking can become so automatic it operates almost invisibly.",
+        "whatsHappening": "Masking is the ongoing effort of adjusting how you speak, move, and react to appear more neurotypical. It takes real, continuous energy even when it feels automatic.",
+        "tryThis": [
+          "Set a few check-in points during the day to notice if you're masking.",
+          "When you notice it, release tension physically, like unclenching your jaw.",
+          "Identify one low-stakes environment where you can unmask a little.",
+          "At the end of the day, name one specific way you had to perform."
+        ],
+        "whyThisHelps": "Noticing masking as it happens, rather than only after the exhaustion sets in, gives you the chance to release some of the tension along the way.",
+        "expectedOutcome": "Increase awareness of masking and reduce cumulative physical tension.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "Recovery Needed"
+        ],
+        "tags": [
+          "masking",
+          "exhaustion",
+          "awareness",
+          "tension"
+        ],
+        "relatedStrategies": [
+          "sc-where-masking-costs-the-most",
+          "eb-exhausted-from-being-on-all-day"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Masking and its costs are increasingly documented in autism and ADHD research.",
+        "status": "Published"
+      },
+      {
+        "id": "sc-where-masking-costs-the-most",
+        "title": "Where Masking Costs the Most",
+        "category": "Social & Communication",
+        "challenge": "Masking",
+        "situation": "Some days I'm fine. Other days I come home completely wrecked, and I can't always tell why.",
+        "internalThoughts": "I don't understand why some days are so much worse than others.",
+        "gentleReminder": "Not being able to immediately explain why some days cost more doesn't mean there's no pattern, it usually means the pattern hasn't been mapped yet.",
+        "whatsHappening": "Masking isn't uniform, some environments demand far more of it than others. Without tracking it, the variation can feel random.",
+        "tryThis": [
+          "For a week, briefly note your energy level after specific interactions or environments.",
+          "Look for patterns, certain people or settings that consistently cost more.",
+          "Reduce time in the highest-cost situations where possible, or plan recovery right after them.",
+          "Use the pattern to plan ahead instead of being surprised by the exhaustion."
+        ],
+        "whyThisHelps": "Identifying which situations demand the most masking lets you plan recovery time around them instead of being caught off guard.",
+        "expectedOutcome": "Increase predictability of energy levels and support proactive recovery planning.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady"
+        ],
+        "tags": [
+          "masking",
+          "energy tracking",
+          "patterns",
+          "recovery"
+        ],
+        "relatedStrategies": [
+          "sc-performing-all-day",
+          "eb-a-budget-for-your-battery"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with occupational therapy approaches to energy tracking and pattern identification.",
+        "status": "Published"
+      },
+      {
+        "id": "sc-rehearsing-for-an-hour",
+        "title": "Rehearsing for an Hour",
+        "category": "Social & Communication",
+        "challenge": "Difficult conversations",
+        "situation": "I need to ask a simple question, but I've been rehearsing it in my head for an hour. My heart is racing.",
+        "internalThoughts": "This shouldn't be this hard. It's such a small thing to ask.",
+        "gentleReminder": "Spending a long time rehearsing something small doesn't mean the anxiety is disproportionate. The uncertainty of how it'll be received is often the real source of the difficulty.",
+        "whatsHappening": "Difficult conversations often carry uncertainty about how they'll be received, and that uncertainty can be harder to sit with than the conversation itself.",
+        "tryThis": [
+          "Write out a short, simple opener in advance, one sentence is enough.",
+          "Practice saying it once or twice, then stop rehearsing on purpose.",
+          "Remind yourself the goal is to start the conversation, not control how it goes.",
+          "If it helps, send the opener as a message instead of saying it out loud."
+        ],
+        "whyThisHelps": "A prepared, simple opener reduces the unknown at the hardest part, the very beginning, without needing to script the whole interaction.",
+        "expectedOutcome": "Reduce pre-conversation anxiety and increase likelihood of initiating difficult conversations.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "difficult conversations",
+          "anxiety",
+          "scripts",
+          "communication"
+        ],
+        "relatedStrategies": [
+          "sc-a-script-for-the-hard-ask",
+          "sc-ask-instead-of-guess"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with cognitive behavioural approaches to social anxiety and scripted exposure.",
+        "status": "Published"
+      },
+      {
+        "id": "sc-a-script-for-the-hard-ask",
+        "title": "A Script for the Hard Ask",
+        "category": "Social & Communication",
+        "challenge": "Difficult conversations",
+        "situation": "I need to ask for something I really need, but I keep putting it off because I don't know how to start.",
+        "internalThoughts": "What if they say no, or think less of me for asking?",
+        "gentleReminder": "Hesitating to ask for something you need isn't weakness. Not knowing how to phrase a request is a real barrier that has nothing to do with whether the request is reasonable.",
+        "whatsHappening": "Without a clear way to open a request, it's easy to avoid it entirely. Having a go-to phrase ready removes the guesswork from the hardest part, the first sentence.",
+        "tryThis": [
+          "Prepare one flexible opening line you can reuse across situations.",
+          "Follow it with a specific, direct ask, avoid over-explaining first.",
+          "Practice the phrase somewhere low-stakes first.",
+          "If speaking feels too hard, use the same script in a written message instead."
+        ],
+        "whyThisHelps": "A reusable script removes the need to improvise an opening under pressure, often the most anxiety-provoking part of a hard conversation.",
+        "expectedOutcome": "Increase likelihood of making necessary requests and reduce anxiety around asking.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "difficult conversations",
+          "scripts",
+          "requests",
+          "communication"
+        ],
+        "relatedStrategies": [
+          "sc-rehearsing-for-an-hour",
+          "sc-the-bandwidth-boundary"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with communication coaching and social anxiety intervention approaches.",
+        "status": "Published"
+      },
+      {
+        "id": "sc-reading-between-the-lines",
+        "title": "Reading Between the Lines",
+        "category": "Social & Communication",
+        "challenge": "Workplace communication",
+        "situation": "They said it's an interesting start, but now I'm worried they actually hated it and just didn't want to say so.",
+        "internalThoughts": "Why can't people just say what they mean?",
+        "gentleReminder": "Struggling to interpret indirect feedback isn't a communication failure. Indirect language is genuinely ambiguous, and needing clarity is a reasonable response.",
+        "whatsHappening": "A lot of feedback, especially professional feedback, is phrased indirectly to soften it. That softening can leave real ambiguity about what's being asked for.",
+        "tryThis": [
+          "Summarize what you heard back to the person to confirm.",
+          "Ask directly for what's specifically needed and by when.",
+          "Treat asking for clarification as professional, not a weakness.",
+          "If written communication feels easier, ask to follow up by email."
+        ],
+        "whyThisHelps": "Turning an ambiguous comment into a direct, confirmable question removes the guesswork and gives you something concrete to act on.",
+        "expectedOutcome": "Reduce miscommunication and increase confidence in interpreting feedback.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "communication",
+          "feedback",
+          "clarity",
+          "workplace"
+        ],
+        "relatedStrategies": [
+          "sc-ask-instead-of-guess",
+          "sc-a-script-for-the-hard-ask"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported strategy in neurodivergent professional communities.",
+        "status": "Published"
+      },
+      {
+        "id": "sc-ask-instead-of-guess",
+        "title": "Ask Instead of Guess",
+        "category": "Social & Communication",
+        "challenge": "Workplace communication",
+        "situation": "I keep trying to figure out what people actually mean instead of just asking, and I usually guess wrong.",
+        "internalThoughts": "I don't want to seem like I can't figure things out on my own.",
+        "gentleReminder": "Avoiding a direct question out of fear it makes you look less capable is understandable, but guessing wrong repeatedly tends to create more friction than a clear question would.",
+        "whatsHappening": "Indirect communication invites guessing, and guessing carries a real risk of being wrong in ways that are harder to recover from than a simple clarifying question.",
+        "tryThis": [
+          "When something is unclear, pause instead of guessing.",
+          "Ask a specific, closed question rather than an open-ended one.",
+          "Frame the question as thoroughness, wanting to get it right.",
+          "Notice, over time, that asking tends to be received better than the anxiety predicted."
+        ],
+        "whyThisHelps": "Direct, specific questions remove ambiguity at the source, reducing the number of costly wrong guesses.",
+        "expectedOutcome": "Reduce miscommunication and rework and increase clarity in collaborative tasks.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "communication",
+          "clarification",
+          "workplace",
+          "confidence"
+        ],
+        "relatedStrategies": [
+          "sc-reading-between-the-lines",
+          "ef-too-many-options-no-decision"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported strategy in neurodivergent professional communities.",
+        "status": "Published"
+      },
+      {
+        "id": "sc-misunderstood-again",
+        "title": "Misunderstood Again",
+        "category": "Social & Communication",
+        "challenge": "Relationships",
+        "situation": "They think I'm being distant or careless, but I'm really not. I just process things differently, and I don't know how to explain that.",
+        "internalThoughts": "Why does this keep happening? People keep reading me wrong.",
+        "gentleReminder": "A recurring pattern of being misread isn't proof something's wrong with how you communicate. It often means the gap between your experience and others' interpretation hasn't been made explicit yet.",
+        "whatsHappening": "Neurotypical and neurodivergent communication styles can differ in pacing, tone, and directness, leaving room for misinterpretation without extra context.",
+        "tryThis": [
+          "Consider naming the pattern directly when it comes up.",
+          "Pick one or two trusted people to have this conversation with first.",
+          "Offer a concrete example rather than a general explanation.",
+          "Let the explanation be ongoing, it doesn't have to be perfect in one conversation."
+        ],
+        "whyThisHelps": "Naming the gap directly gives people accurate information to interpret your behavior with, instead of leaving them to guess.",
+        "expectedOutcome": "Reduce recurring misunderstandings and support stronger relationships.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Medium",
+        "difficulty": "Advanced",
+        "bestWhen": [
+          "Steady"
+        ],
+        "tags": [
+          "relationships",
+          "misunderstanding",
+          "communication",
+          "disclosure"
+        ],
+        "relatedStrategies": [
+          "sc-explaining-how-your-brain-works",
+          "sc-performing-all-day"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Consistent with the double empathy problem, a concept from autism research on mutual understanding.",
+        "status": "Published"
+      },
+      {
+        "id": "sc-explaining-how-your-brain-works",
+        "title": "Explaining How Your Brain Works",
+        "category": "Social & Communication",
+        "challenge": "Relationships",
+        "situation": "I want people to understand me better, but I don't know how much to share, or how to bring it up without it feeling like a big announcement.",
+        "internalThoughts": "What if they treat me differently once they know?",
+        "gentleReminder": "Worrying about how disclosure might change a relationship is a reasonable concern. There's no single right way to share this, and it's okay for it to feel like a real decision.",
+        "whatsHappening": "Sharing how your brain works can reduce the guesswork in a relationship, but starting small, with low-stakes context, often feels more manageable than an all-or-nothing disclosure.",
+        "tryThis": [
+          "Choose one relationship where trust already feels solid to start with.",
+          "Share a small, specific piece of context rather than a full explanation at once.",
+          "Let the other person ask questions rather than covering everything up front.",
+          "Build on it over time, only sharing more if and when it feels right."
+        ],
+        "whyThisHelps": "Small, specific disclosures are easier to offer and receive than one large explanation, letting trust build gradually.",
+        "expectedOutcome": "Increase mutual understanding and reduce friction from unexplained differences.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Medium",
+        "difficulty": "Advanced",
+        "bestWhen": [
+          "Steady"
+        ],
+        "tags": [
+          "relationships",
+          "disclosure",
+          "communication",
+          "understanding"
+        ],
+        "relatedStrategies": [
+          "sc-misunderstood-again",
+          "sc-performing-all-day"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Consistent with peer-support guidance on disclosure in neurodivergent communities.",
+        "status": "Published"
+      },
+      {
+        "id": "sc-saying-yes-when-you-mean-no",
+        "title": "Saying Yes When You Mean No",
+        "category": "Social & Communication",
+        "challenge": "Boundaries",
+        "situation": "Someone asked me for a favor and I said yes immediately, even though I didn't have the capacity for it.",
+        "internalThoughts": "I didn't want to seem difficult or let them down.",
+        "gentleReminder": "Agreeing before you've had time to think isn't a character flaw. For a lot of people, saying yes is a fast, automatic response, especially under social pressure.",
+        "whatsHappening": "In the moment, agreeing can feel like the path of least resistance. Without a built-in pause, yes can become a reflex rather than a decision.",
+        "tryThis": [
+          "Build in a default response for requests, like saying you'll check and get back to them.",
+          "Use that pause to actually consider whether you have the capacity.",
+          "If the answer is no, keep the decline simple.",
+          "Notice that a delayed, honest answer tends to land better than a yes you can't follow through on."
+        ],
+        "whyThisHelps": "A built-in pause interrupts the automatic yes reflex, giving you space to check in with your actual capacity before responding.",
+        "expectedOutcome": "Reduce overcommitment and increase alignment between commitments and capacity.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "boundaries",
+          "people-pleasing",
+          "overcommitment",
+          "saying no"
+        ],
+        "relatedStrategies": [
+          "sc-the-bandwidth-boundary",
+          "eb-a-budget-for-your-battery"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with assertiveness training approaches used in CBT.",
+        "status": "Published"
+      },
+      {
+        "id": "sc-the-bandwidth-boundary",
+        "title": "The Bandwidth Boundary",
+        "category": "Social & Communication",
+        "challenge": "Boundaries",
+        "situation": "I keep saying yes to everything when I'm hyperfocused or excited, and then I'm drowning a week later.",
+        "internalThoughts": "Why do I keep doing this to myself?",
+        "gentleReminder": "Overcommitting during a burst of energy isn't poor judgment. Capacity can genuinely feel larger in the moment than it will actually be later.",
+        "whatsHappening": "Energy and enthusiasm in the moment don't always reflect what your capacity will look like once it settles. Without a boundary in place, it's easy to commit to more than you'll have room for.",
+        "tryThis": [
+          "When you notice you're near capacity, say it plainly, that you don't have bandwidth right now.",
+          "Practice this phrase in advance so it's ready when you need it.",
+          "Remind yourself that declining isn't a failure, it's information others can act on.",
+          "Before saying yes to something new, briefly check what's already on your plate."
+        ],
+        "whyThisHelps": "Naming your bandwidth directly, rather than quietly absorbing more, protects your capacity before it's already overextended.",
+        "expectedOutcome": "Reduce overload and increase sustainable commitment levels.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "Running Low"
+        ],
+        "tags": [
+          "boundaries",
+          "capacity",
+          "overcommitment",
+          "hyperfocus"
+        ],
+        "relatedStrategies": [
+          "sc-saying-yes-when-you-mean-no",
+          "eb-a-budget-for-your-battery"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported strategy in ADHD professional communities.",
+        "status": "Published"
+      },
+      {
+        "id": "sc-told-someone-too-much",
+        "title": "Told Someone Too Much",
+        "category": "Social & Communication",
+        "challenge": "Oversharing",
+        "situation": "I told someone something personal, thinking we were becoming friends, and later found out it had been repeated to other people.",
+        "internalThoughts": "I should have known better. I always overshare.",
+        "gentleReminder": "Oversharing as a way of trying to connect isn't a flaw to be ashamed of. For a lot of neurodivergent people, sharing openly is genuinely how closeness is built.",
+        "whatsHappening": "Masking and social effort can sometimes lead to oversharing as a fast way to build connection. Not everyone treats shared information with the same care.",
+        "tryThis": [
+          "Going forward, keep initial personal sharing minimal with newer acquaintances.",
+          "Notice the difference between friendliness and closeness.",
+          "Build real friendships with a slower pace of disclosure.",
+          "If something has already been shared and misused, remind yourself the misuse is on the other person."
+        ],
+        "whyThisHelps": "Pacing disclosure more gradually reduces the risk of sharing sensitive information with someone who hasn't earned that trust yet.",
+        "expectedOutcome": "Reduce future oversharing-related harm and support healthier trust pacing.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady"
+        ],
+        "tags": [
+          "oversharing",
+          "boundaries",
+          "trust",
+          "relationships"
+        ],
+        "relatedStrategies": [
+          "sc-work-self-personal-self",
+          "sc-misunderstood-again"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Consistent with peer-support guidance on masking-related oversharing.",
+        "status": "Published"
+      },
+      {
+        "id": "sc-work-self-personal-self",
+        "title": "Work Self, Personal Self",
+        "category": "Social & Communication",
+        "challenge": "Oversharing",
+        "situation": "I get along well with my colleagues, but I've realized I've been treating some of them like close friends, and it's created problems.",
+        "internalThoughts": "I thought we were closer than that.",
+        "gentleReminder": "Feeling genuine warmth toward people you work with regularly is natural. The line between friendly colleague and close friend can be genuinely hard to gauge.",
+        "whatsHappening": "Professional relationships often carry an unspoken expectation of distance, separate from how friendly the interactions feel.",
+        "tryThis": [
+          "Default to keeping personal sharing moderate at work, regardless of how friendly a colleague seems.",
+          "Notice the difference between enjoying someone's company and having a close, trusted friendship.",
+          "Build closer friendships outside of professional contexts where possible.",
+          "If unsure where a relationship stands, let the other person set the pace of disclosure."
+        ],
+        "whyThisHelps": "A deliberate mental separation between contexts reduces the risk of oversharing in a setting where it may not be reciprocated.",
+        "expectedOutcome": "Reduce workplace-related oversharing and support clearer relationship boundaries.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady"
+        ],
+        "tags": [
+          "oversharing",
+          "workplace",
+          "boundaries",
+          "relationships"
+        ],
+        "relatedStrategies": [
+          "sc-told-someone-too-much",
+          "sc-the-bandwidth-boundary"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Consistent with peer-support guidance on navigating workplace relationships.",
+        "status": "Published"
+      },
+      {
+        "id": "sc-eye-contact-feels-like-too-much",
+        "title": "Eye Contact Feels Like Too Much",
+        "category": "Social & Communication",
+        "challenge": "Eye contact",
+        "situation": "I'm trying to look at them so I don't seem rude, but it's so intense I can't actually focus on what they're saying.",
+        "internalThoughts": "Why can't I just do something so simple?",
+        "gentleReminder": "Sustained eye contact being genuinely uncomfortable isn't rudeness or a lack of effort. Eye contact takes up real cognitive resources for a lot of neurodivergent people.",
+        "whatsHappening": "Maintaining eye contact can compete directly with your ability to process what's being said. Some people focus better with slightly less direct eye contact.",
+        "tryThis": [
+          "Aim your gaze near the bridge of the person's nose or forehead instead of directly into their eyes.",
+          "Alternate between brief eye contact and looking slightly away.",
+          "If it feels appropriate, mention directly that you focus better without direct eye contact.",
+          "Notice that most people don't register the difference."
+        ],
+        "whyThisHelps": "A near-eye gaze reads as attentive to most people while requiring far less of the effort direct eye contact demands.",
+        "expectedOutcome": "Reduce cognitive load during conversations and support better listening and focus.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "eye contact",
+          "masking",
+          "conversation",
+          "sensory"
+        ],
+        "relatedStrategies": [
+          "sc-performing-all-day",
+          "sc-rehearsing-for-an-hour"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported strategy in autism communities.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-the-laundry-that-never-gets-folded",
+        "title": "The Laundry That Never Gets Folded",
+        "category": "Daily Living",
+        "challenge": "Laundry",
+        "situation": "The laundry is clean, but it's been sitting in the basket for a week. Now I'm digging through it every morning instead of using drawers.",
+        "internalThoughts": "This is so basic. Why can't I just finish the last step?",
+        "gentleReminder": "Getting stuck on the last step of a task isn't a sign of laziness. Many tasks have a hidden final stage that takes just as much energy as starting the whole task did.",
+        "whatsHappening": "Laundry has several distinct steps, and it's common to complete the earlier ones and stall on the last one, which is a new initiation point in disguise.",
+        "tryThis": [
+          "Skip folding entirely for everyday items, hang or bin them straight from the dryer.",
+          "Keep a designated clean basket you can pull directly from.",
+          "Fold while doing something else you enjoy, like watching something.",
+          "Let go of the idea that laundry has to be finished in the traditional sense."
+        ],
+        "whyThisHelps": "Removing or shortcutting the final step reduces the number of separate initiation points the whole task requires.",
+        "expectedOutcome": "Increase completion of laundry cycles and reduce clothes stuck mid-process.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "Running Low"
+        ],
+        "tags": [
+          "laundry",
+          "task initiation",
+          "household",
+          "systems"
+        ],
+        "relatedStrategies": [
+          "dl-basket-to-basket",
+          "ef-starting-strong-fading-fast"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported approach in ADHD organizing communities.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-basket-to-basket",
+        "title": "Basket to Basket",
+        "category": "Daily Living",
+        "challenge": "Laundry",
+        "situation": "Every laundry system I try has too many steps, and I abandon it within a week.",
+        "internalThoughts": "Maybe I'm just not a person who can keep a system going.",
+        "gentleReminder": "Abandoning a system with too many steps isn't a sign you can't keep systems going, it usually means the system had more steps than your energy could reliably sustain.",
+        "whatsHappening": "Multi-step systems create multiple points where the process can stall. Reducing the number of steps increases the odds the system actually gets used consistently.",
+        "tryThis": [
+          "Use two baskets, dirty and clean.",
+          "Wash directly from the dirty basket when it's full, no separate sorting step.",
+          "Once dry, items go straight into the clean basket, not into drawers.",
+          "Pull directly from the clean basket to get dressed, and treat that as complete."
+        ],
+        "whyThisHelps": "Cutting steps down to the minimum reduces the number of places a low-energy day can derail the whole process.",
+        "expectedOutcome": "Increase consistency of laundry routine and reduce abandoned systems.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "Running Low"
+        ],
+        "tags": [
+          "laundry",
+          "systems",
+          "simplifying",
+          "household"
+        ],
+        "relatedStrategies": [
+          "dl-the-laundry-that-never-gets-folded",
+          "ef-the-pile-system"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported approach in ADHD organizing communities.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-cant-start-until-its-a-disaster",
+        "title": "Can't Start Until It's a Disaster",
+        "category": "Daily Living",
+        "challenge": "Cleaning",
+        "situation": "I only start cleaning once the space is a full-blown mess. By then it feels like way too much to face.",
+        "internalThoughts": "I should have kept on top of this before it got this bad.",
+        "gentleReminder": "Waiting until things reach crisis point before cleaning isn't a discipline failure. A task without a clear, urgent trigger is genuinely hard to start.",
+        "whatsHappening": "Small amounts of clutter often don't register as urgent enough to prompt action, so cleaning keeps getting deferred until the mess becomes impossible to ignore.",
+        "tryThis": [
+          "Set a much lower bar for what needs cleaning, a single surface, not the whole room.",
+          "Use a short timer instead of waiting for a natural stopping point.",
+          "Tackle one small zone at a time rather than the whole space at once.",
+          "Stop when the timer ends, even if the space isn't fully clean."
+        ],
+        "whyThisHelps": "Lowering the threshold for worth cleaning and shrinking the task into small windows makes it possible to start before the mess overwhelms you.",
+        "expectedOutcome": "Reduce clutter buildup and increase frequency of small cleaning sessions.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "cleaning",
+          "task initiation",
+          "household",
+          "clutter"
+        ],
+        "relatedStrategies": [
+          "dl-the-five-minute-reset",
+          "ef-two-minute-entry"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported approach in ADHD cleaning and organizing communities.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-the-five-minute-reset",
+        "title": "The Five-Minute Reset",
+        "category": "Daily Living",
+        "challenge": "Cleaning",
+        "situation": "I know a full clean is too much for today, but I still want the space to feel a little better.",
+        "internalThoughts": "If I can't do it properly, what's the point?",
+        "gentleReminder": "Wanting a smaller version of a task, rather than skipping it entirely, is a reasonable middle ground. A partial reset genuinely counts.",
+        "whatsHappening": "Cleaning doesn't have to mean a full, deep clean to make a real difference to how a space feels.",
+        "tryThis": [
+          "Set a timer for five minutes.",
+          "Pick just one visible surface or area to tidy.",
+          "Stop when the timer ends, regardless of how much is left.",
+          "Notice the shift in how the space feels, even from a small change."
+        ],
+        "whyThisHelps": "A short, contained task avoids the overwhelm of a full clean while still producing a noticeable, positive change.",
+        "expectedOutcome": "Increase frequency of small maintenance tasks and reduce clutter buildup between full cleans.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Running Low",
+          "Steady"
+        ],
+        "tags": [
+          "cleaning",
+          "micro-tasking",
+          "household",
+          "low energy"
+        ],
+        "relatedStrategies": [
+          "dl-cant-start-until-its-a-disaster",
+          "ef-two-minute-entry"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported approach in ADHD organizing communities.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-too-tired-to-cook-too-broke-to-order",
+        "title": "Too Tired to Cook, Too Broke to Order",
+        "category": "Daily Living",
+        "challenge": "Cooking",
+        "situation": "I don't have the energy to cook, but ordering food again is going to blow my budget. I end up stuck between the two.",
+        "internalThoughts": "I should just be able to cook something simple. Why does this feel impossible?",
+        "gentleReminder": "Feeling stuck between too tired to cook and can't afford to order isn't a planning failure. Cooking requires a chain of steps that can all feel out of reach on low-energy days.",
+        "whatsHappening": "Cooking isn't one task, it's a sequence of decisions and actions, each requiring its own energy. On low-energy days even a simple recipe can feel like too many steps.",
+        "tryThis": [
+          "Keep a short list of zero-decision meals that need no real planning.",
+          "Stock ingredients for those meals specifically, so they're always available.",
+          "On low-energy days, default to that list without trying to decide something new.",
+          "Treat these meals as valid, complete meals, not a lesser option."
+        ],
+        "whyThisHelps": "Removing the decision-making step from meal prep on low-energy days makes eating something realistic instead of an either-or.",
+        "expectedOutcome": "Reduce reliance on ordering food and support consistent eating on low-energy days.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Running Low"
+        ],
+        "tags": [
+          "cooking",
+          "meals",
+          "low energy",
+          "decision fatigue"
+        ],
+        "relatedStrategies": [
+          "dl-low-effort-meals-that-still-feel-like-food",
+          "dl-forgetting-to-eat-until-youre-shaking"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported approach in ADHD and chronic illness communities around low-effort meal planning.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-low-effort-meals-that-still-feel-like-food",
+        "title": "Low-Effort Meals That Still Feel Like Food",
+        "category": "Daily Living",
+        "challenge": "Cooking",
+        "situation": "Every meal idea I have feels like it requires more steps than I have energy for right now.",
+        "internalThoughts": "A real meal should take more effort than this.",
+        "gentleReminder": "Believing a real meal has to involve multiple steps isn't a rule you have to follow. Food that's simple to make is still real food, and it counts.",
+        "whatsHappening": "The idea of what counts as a proper meal can add pressure that makes eating harder, especially on low-energy days.",
+        "tryThis": [
+          "Build a short rotating list of meals that need minimal steps.",
+          "Keep those ingredients stocked as a standing priority.",
+          "Let go of any rule that a meal has to be cooked or elaborate to count.",
+          "Add variety slowly over time, without pressure to cook properly every day."
+        ],
+        "whyThisHelps": "Expanding what qualifies as a real meal removes an unnecessary barrier between low energy and actually eating.",
+        "expectedOutcome": "Support consistent eating and reduce mealtime decision fatigue.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Running Low",
+          "Steady"
+        ],
+        "tags": [
+          "cooking",
+          "meals",
+          "low effort",
+          "decision fatigue"
+        ],
+        "relatedStrategies": [
+          "dl-too-tired-to-cook-too-broke-to-order",
+          "dl-forgetting-to-eat-until-youre-shaking"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported approach in disability and chronic illness communities.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-forgetting-to-eat-until-youre-shaking",
+        "title": "Forgetting to Eat Until You're Shaking",
+        "category": "Daily Living",
+        "challenge": "Eating",
+        "situation": "I've been working for six hours. My head hurts and I haven't had any water, and now I'm shaky and irritable.",
+        "internalThoughts": "How do I keep letting this happen?",
+        "gentleReminder": "Missing hunger cues during focused work isn't neglecting yourself on purpose. Focus can override the body's signals for hunger and thirst.",
+        "whatsHappening": "During periods of concentration, internal signals like hunger can go unnoticed for hours. Relying on your body to interrupt you tends not to work reliably.",
+        "tryThis": [
+          "Set a recurring alarm for meals and water, separate from other reminders.",
+          "Keep easy-to-eat snacks within reach of wherever you typically focus.",
+          "Use a marked water bottle so you can check your intake at a glance.",
+          "Treat the alarm as non-negotiable, even mid-task."
+        ],
+        "whyThisHelps": "External reminders take over the job your internal hunger signals aren't reliably doing during focused states.",
+        "expectedOutcome": "Reduce missed meals and prevent energy crashes from skipped eating.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "eating",
+          "hunger",
+          "hyperfocus",
+          "reminders"
+        ],
+        "relatedStrategies": [
+          "sm-not-noticing-until-its-urgent",
+          "dl-food-and-water-on-autopilot"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Consistent with interoception research in autism and ADHD.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-food-and-water-on-autopilot",
+        "title": "Food and Water on Autopilot",
+        "category": "Daily Living",
+        "challenge": "Eating",
+        "situation": "I know I should drink more water and eat regularly, but I never remember until it's already a problem.",
+        "internalThoughts": "This is such a basic thing. Everyone else just does it automatically.",
+        "gentleReminder": "Needing external systems for something as basic as eating or drinking water isn't a sign of failure. For some brains these signals simply don't arrive automatically.",
+        "whatsHappening": "Without a strong internal hunger or thirst signal, basic needs can slip through the cracks of a busy day entirely.",
+        "tryThis": [
+          "Use a clear water bottle marked with time-based lines to track intake at a glance.",
+          "Set consistent meal times, rather than waiting to feel hungry.",
+          "Keep a visible snack supply somewhere you'll notice it throughout the day.",
+          "Pair eating or drinking with an existing habit."
+        ],
+        "whyThisHelps": "Visual and scheduled cues externalize a signal your body isn't reliably providing.",
+        "expectedOutcome": "Increase consistency of eating and hydration and reduce related energy crashes.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "eating",
+          "hydration",
+          "interoception",
+          "reminders"
+        ],
+        "relatedStrategies": [
+          "dl-forgetting-to-eat-until-youre-shaking",
+          "sm-not-noticing-until-its-urgent"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported strategy in ADHD and autism communities.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-the-store-is-too-much",
+        "title": "The Store Is Too Much",
+        "category": "Daily Living",
+        "challenge": "Shopping",
+        "situation": "Fifty types of cereal, buzzing lights, people everywhere. I feel like I'm going to burst into tears before I even reach the checkout.",
+        "internalThoughts": "It's just grocery shopping. Why can't I handle something this ordinary?",
+        "gentleReminder": "Finding an ordinary errand overwhelming isn't a sign something's wrong with you. Grocery stores pack in a huge amount of sensory input and decision-making at once.",
+        "whatsHappening": "Shopping combines bright lighting, noise, crowds, and a high volume of small decisions all at the same time, which can add up fast even in a familiar store.",
+        "tryThis": [
+          "Shop during quieter hours, such as early morning or right before closing.",
+          "Use a written list to reduce in-store decision-making.",
+          "Wear headphones or sunglasses if lighting and sound are the biggest triggers.",
+          "Use delivery or pickup options when the sensory cost feels too high."
+        ],
+        "whyThisHelps": "Reducing sensory input and decision load, or avoiding the environment when possible, lowers the overall burden of a task that's more demanding than it appears.",
+        "expectedOutcome": "Reduce shopping-related overwhelm and support more consistent grocery access.",
+        "estimatedTime": "20 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "shopping",
+          "sensory overload",
+          "errands",
+          "planning"
+        ],
+        "relatedStrategies": [
+          "dl-shopping-on-your-terms",
+          "sm-too-much-input-all-at-once"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported strategy in autism and ADHD communities.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-shopping-on-your-terms",
+        "title": "Shopping On Your Terms",
+        "category": "Daily Living",
+        "challenge": "Shopping",
+        "situation": "I keep forcing myself to shop the normal way, even though I know it wears me out every single time.",
+        "internalThoughts": "I feel like I should just be able to do this like everyone else.",
+        "gentleReminder": "There's no single correct way to grocery shop, even though it can feel like there's an unspoken standard everyone else follows. Choosing what works for you is a reasonable adjustment.",
+        "whatsHappening": "Conventional in-person shopping isn't the only valid way to keep a household stocked. Alternative approaches can meet the same need with far less strain.",
+        "tryThis": [
+          "Consider a recurring delivery or pickup order for staple items.",
+          "Build a saved list you can reorder from with minimal new decisions each time.",
+          "Reserve in-person shopping for smaller, specific trips rather than the full weekly haul.",
+          "Let go of any idea that delivery is a lesser way to shop."
+        ],
+        "whyThisHelps": "Shifting to a method with a lower sensory and decision-making cost makes the task sustainable long-term.",
+        "expectedOutcome": "Reduce shopping-related exhaustion and increase consistency of household supplies.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "Running Low"
+        ],
+        "tags": [
+          "shopping",
+          "delivery",
+          "systems",
+          "sensory management"
+        ],
+        "relatedStrategies": [
+          "dl-the-store-is-too-much",
+          "dl-impulse-buys-you-regret"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported strategy in autism and ADHD communities.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-impulse-buys-you-regret",
+        "title": "Impulse Buys You Regret",
+        "category": "Daily Living",
+        "challenge": "Finances",
+        "situation": "Buying this felt like the best idea in the world. Now I'm looking at my bank account and feeling sick.",
+        "internalThoughts": "I'm so irresponsible with money.",
+        "gentleReminder": "Impulse spending isn't a character flaw or proof of irresponsibility. A strong in-the-moment urge can genuinely override longer-term thinking, and that's a pattern, not a personal failing.",
+        "whatsHappening": "In the moment a purchase can feel urgently rewarding, and that pull is often stronger than the more distant thought of a future bank balance.",
+        "tryThis": [
+          "Add items to a cart or wishlist, but don't complete the purchase right away.",
+          "Set a fixed waiting period, such as 24 hours, before allowing yourself to buy.",
+          "Revisit the item after the wait and decide with a calmer perspective.",
+          "If you still want it and it fits your budget, that's a fine outcome too."
+        ],
+        "whyThisHelps": "A built-in delay lets the initial dopamine-driven urge fade, giving your more considered judgment a real chance to weigh in.",
+        "expectedOutcome": "Reduce regretted purchases and support more intentional spending.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "finances",
+          "impulse spending",
+          "budgeting",
+          "dopamine"
+        ],
+        "relatedStrategies": [
+          "dl-a-system-that-doesnt-rely-on-willpower",
+          "eb-a-budget-for-your-battery"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Consistent with behavioral economics research on delay and impulse purchasing.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-a-system-that-doesnt-rely-on-willpower",
+        "title": "A System That Doesn't Rely on Willpower",
+        "category": "Daily Living",
+        "challenge": "Finances",
+        "situation": "I keep trying to be better with money through sheer willpower, and it keeps not working.",
+        "internalThoughts": "I just need more self-control.",
+        "gentleReminder": "Willpower alone rarely holds up against a genuinely strong impulse, and that's true for most people. Needing structural support isn't a lesser way of managing money.",
+        "whatsHappening": "Financial self-control that depends entirely on willpower has to hold up every time, with no room for a bad day. Building guardrails into the system removes some of that pressure.",
+        "tryThis": [
+          "Set up automatic transfers to savings so the decision only has to be made once.",
+          "Use separate accounts for spending versus essential bills.",
+          "Set spending alerts on your accounts or cards.",
+          "Remove saved payment details from apps that make impulse buying frictionless."
+        ],
+        "whyThisHelps": "Structural guardrails reduce how often willpower has to be the only thing standing between you and an impulsive decision.",
+        "expectedOutcome": "Increase financial stability and reduce reliance on willpower alone.",
+        "estimatedTime": "20 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "finances",
+          "budgeting",
+          "systems",
+          "guardrails"
+        ],
+        "relatedStrategies": [
+          "dl-impulse-buys-you-regret",
+          "dl-money-conversations-you-keep-avoiding"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Consistent with behavioral economics research on choice architecture and friction.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-money-conversations-you-keep-avoiding",
+        "title": "Money Conversations You Keep Avoiding",
+        "category": "Daily Living",
+        "challenge": "Finances",
+        "situation": "I know I need to talk to my partner about money, but I keep putting it off. Just thinking about the conversation makes my stomach drop.",
+        "internalThoughts": "What if this turns into a fight, or they think less of me?",
+        "gentleReminder": "Avoiding a money conversation isn't financial irresponsibility. Money talks carry a lot of emotional weight, and dreading a conversation that combines vulnerability and numbers is reasonable.",
+        "whatsHappening": "Financial conversations often mix practical details with sensitive emotional territory. Avoiding the conversation doesn't remove the issue, it just delays it.",
+        "tryThis": [
+          "Pick a specific, low-pressure time to raise it, rather than waiting for a perfect moment.",
+          "Prepare a simple opening line in advance.",
+          "Focus the first conversation on one specific topic, rather than trying to cover everything.",
+          "If speaking feels too hard, consider starting the conversation in writing."
+        ],
+        "whyThisHelps": "A prepared, narrow opening reduces the size of the conversation you're bracing for, making it easier to actually start.",
+        "expectedOutcome": "Reduce avoidance-related financial stress and support clearer financial communication.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Medium",
+        "difficulty": "Advanced",
+        "bestWhen": [
+          "Steady"
+        ],
+        "tags": [
+          "finances",
+          "relationships",
+          "difficult conversations",
+          "avoidance"
+        ],
+        "relatedStrategies": [
+          "sc-a-script-for-the-hard-ask",
+          "dl-a-system-that-doesnt-rely-on-willpower"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Consistent with financial therapy and couples communication approaches.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-missed-calls-missed-appointments",
+        "title": "Missed Calls, Missed Appointments",
+        "category": "Daily Living",
+        "challenge": "Appointments",
+        "situation": "I had an appointment today and completely missed it. I didn't even remember until it was already over.",
+        "internalThoughts": "How do I keep letting this happen? I feel like such a mess.",
+        "gentleReminder": "Missing appointments repeatedly, despite genuinely intending to go, isn't carelessness. Memory alone often isn't a reliable enough system for something time-sensitive.",
+        "whatsHappening": "Appointments rely on remembering a specific time on a specific day, often set weeks in advance, which is exactly the kind of detail memory can lose track of.",
+        "tryThis": [
+          "Enter every appointment into a calendar the moment it's scheduled.",
+          "Set at least two reminders, one the day before, one an hour before.",
+          "Keep appointments in one central calendar rather than scattered across multiple places.",
+          "If a reminder system has failed before, add redundancy rather than blaming yourself."
+        ],
+        "whyThisHelps": "Layered reminders reduce the dependence on any single moment of memory working correctly.",
+        "expectedOutcome": "Reduce missed appointments and reduce related stress and rescheduling.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "appointments",
+          "memory",
+          "reminders",
+          "scheduling"
+        ],
+        "relatedStrategies": [
+          "dl-building-a-reminder-net",
+          "ef-time-buffers-that-actually-work"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with executive function coaching approaches to external scheduling systems.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-building-a-reminder-net",
+        "title": "Building a Reminder Net",
+        "category": "Daily Living",
+        "challenge": "Appointments",
+        "situation": "I have reminders set, but I still miss things because they don't feel urgent enough when they pop up.",
+        "internalThoughts": "I have a system, so why doesn't it actually work?",
+        "gentleReminder": "A single reminder not being enough doesn't mean your system is broken beyond repair. One alert can easily get dismissed or lost in the moment.",
+        "whatsHappening": "A single reminder assumes you'll be in the right state of mind to fully register and act on it. Layering multiple reminders builds in redundancy.",
+        "tryThis": [
+          "Set reminders at multiple intervals, a few days before, the day before, and an hour before.",
+          "Use more than one format, like a calendar alert plus a phone reminder.",
+          "Where possible, ask a trusted person to be a backup reminder for high-stakes appointments.",
+          "Review your calendar at a consistent time each day as an additional layer."
+        ],
+        "whyThisHelps": "A layered system means missing one reminder doesn't mean missing the whole appointment.",
+        "expectedOutcome": "Reduce missed appointments and increase confidence in your scheduling system.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "appointments",
+          "reminders",
+          "redundancy",
+          "scheduling"
+        ],
+        "relatedStrategies": [
+          "dl-missed-calls-missed-appointments",
+          "ef-externalize-everything"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with executive function coaching approaches to redundant reminder systems.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-starting-a-task-no-ones-watching",
+        "title": "Starting a Task No One's Watching",
+        "category": "Daily Living",
+        "challenge": "Household initiation",
+        "situation": "This chore has been sitting on my list for weeks. No one's checking on it, so it just keeps getting pushed back.",
+        "internalThoughts": "If it actually mattered, I'd have done it by now.",
+        "gentleReminder": "A task being easy to indefinitely postpone doesn't mean it doesn't matter. Some tasks simply lack the external pressure that makes starting easier.",
+        "whatsHappening": "Tasks with a deadline or an audience tend to get done because there's an external trigger pushing you toward action. Tasks with no witness lack that trigger entirely.",
+        "tryThis": [
+          "Create an artificial deadline for the task, even if no one else will notice it.",
+          "Tell someone else you're planning to do it, to add a small amount of accountability.",
+          "Schedule it into your calendar like an appointment.",
+          "Pair it with something you're already doing that day."
+        ],
+        "whyThisHelps": "Manufacturing the external pressure that's naturally missing gives the task the kind of trigger it needs to actually get started.",
+        "expectedOutcome": "Increase completion of low-urgency household tasks.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "household",
+          "task initiation",
+          "accountability",
+          "chores"
+        ],
+        "relatedStrategies": [
+          "dl-the-first-five-minutes-of-a-chore",
+          "ef-the-doorway-problem"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported strategy in ADHD coaching and productivity communities.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-the-first-five-minutes-of-a-chore",
+        "title": "The First Five Minutes of a Chore",
+        "category": "Daily Living",
+        "challenge": "Household initiation",
+        "situation": "I know exactly what chore needs doing. I just can't seem to make myself start it.",
+        "internalThoughts": "It's not even that hard. Why can't I just do it?",
+        "gentleReminder": "A task not being objectively hard doesn't mean starting it will feel easy. Difficulty starting and difficulty of the task itself are two separate things.",
+        "whatsHappening": "The hardest part of most chores is the transition from not-doing to doing, not the chore itself once it's underway.",
+        "tryThis": [
+          "Commit only to the first five minutes, with explicit permission to stop after.",
+          "Set a timer so the commitment has a clear, visible end point.",
+          "Start with the smallest, most concrete first action.",
+          "Notice that continuing often feels easier once you're already moving."
+        ],
+        "whyThisHelps": "A small, time-limited commitment lowers the barrier enough to get past the hardest part, starting, without requiring commitment to the whole task upfront.",
+        "expectedOutcome": "Increase task initiation for household chores and reduce chronic avoidance.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Running Low",
+          "Steady"
+        ],
+        "tags": [
+          "household",
+          "task initiation",
+          "chores",
+          "momentum"
+        ],
+        "relatedStrategies": [
+          "dl-starting-a-task-no-ones-watching",
+          "ef-two-minute-entry"
+        ],
+        "evidenceLevel": "Community-informed",
+        "source": "Widely reported approach in ADHD coaching communities.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-awake-long-after-you-meant-to-sleep",
+        "title": "Awake Long After You Meant to Sleep",
+        "category": "Daily Living",
+        "challenge": "Sleep",
+        "situation": "I stayed up until 4am again, even though I meant to sleep hours earlier. Half the day is gone and I feel like a failure.",
+        "internalThoughts": "I should have more self-discipline about my bedtime.",
+        "gentleReminder": "A delayed sleep schedule isn't a discipline problem. For a lot of neurodivergent people, the body's internal clock genuinely runs later than a standard schedule expects.",
+        "whatsHappening": "Sleep timing is regulated partly by light exposure and internal rhythm, not purely by intention. Adjusting the cues your body uses tends to be more effective than willpower.",
+        "tryThis": [
+          "Wake up at a consistent time, even after a late night, rather than trying to catch up by sleeping in.",
+          "Get direct sunlight or bright light within the first 30 minutes of waking.",
+          "Dim lights and reduce screens in the hour before your target bedtime.",
+          "Make changes gradually, shifting bedtime by 15 minutes at a time."
+        ],
+        "whyThisHelps": "Using light to guide your internal clock works with your body's actual rhythm-setting mechanism, rather than relying on willpower to override it.",
+        "expectedOutcome": "Gradually shift sleep schedule earlier and improve sleep consistency.",
+        "estimatedTime": "20 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady"
+        ],
+        "tags": [
+          "sleep",
+          "circadian rhythm",
+          "light",
+          "schedule"
+        ],
+        "relatedStrategies": [
+          "dl-winding-down-without-a-timer",
+          "eb-recovery-isnt-wasted-time"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Consistent with sleep science research on light exposure and circadian rhythm regulation.",
+        "status": "Published"
+      },
+      {
+        "id": "dl-winding-down-without-a-timer",
+        "title": "Winding Down Without a Timer",
+        "category": "Daily Living",
+        "challenge": "Sleep",
+        "situation": "I keep trying to just go to bed earlier, but I never actually feel sleepy at the time I've decided I should.",
+        "internalThoughts": "If I could just make myself tired on cue, this would be so much easier.",
+        "gentleReminder": "Not feeling sleepy on command isn't something you can will into happening. Sleepiness responds to cues and routines building up over time, not to a decision made in the moment.",
+        "whatsHappening": "The body tends to rely on a consistent pattern of cues to signal sleep is coming, rather than responding instantly to a chosen bedtime.",
+        "tryThis": [
+          "Build a short, repeatable wind-down sequence, the same two or three steps each night.",
+          "Keep the sequence low-stimulation, dim lighting and quiet activity.",
+          "Start the sequence at a consistent time, rather than waiting until you already feel tired.",
+          "Give the routine time to work, consistency matters more than any single night."
+        ],
+        "whyThisHelps": "A repeated sequence of cues teaches your body to associate that pattern with approaching sleep, rather than relying on willpower in the moment.",
+        "expectedOutcome": "Improve ease of falling asleep and support more consistent sleep timing.",
+        "estimatedTime": "20 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "Recovery Needed"
+        ],
+        "tags": [
+          "sleep",
+          "wind-down",
+          "routine",
+          "cues"
+        ],
+        "relatedStrategies": [
+          "dl-awake-long-after-you-meant-to-sleep",
+          "sm-quiet-time-isnt-optional"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Consistent with sleep hygiene research on pre-sleep routines and conditioned cues.",
+        "status": "Published"
+      },
+      {
+        "id": "eb-running-on-empty-for-months",
+        "title": "Running on Empty for Months",
+        "category": "Energy & Burnout",
+        "challenge": "Neurodivergent burnout",
+        "situation": "I've felt exhausted for months now, and rest doesn't seem to fix it anymore. Even things I used to enjoy feel like too much.",
+        "internalThoughts": "I should be able to push through this like I always have. What's wrong with me?",
+        "gentleReminder": "Exhaustion that doesn't respond to a good night's sleep or a weekend off isn't a sign you're not trying hard enough. It's often a sign this has moved past ordinary tiredness.",
+        "whatsHappening": "Neurodivergent burnout is deep depletion that builds up over a long period, often from sustained effort to meet demands your brain wasn't designed to meet without support.",
+        "tryThis": [
+          "Notice if rest that used to help isn't helping anymore, that's useful information.",
+          "Reduce demands wherever genuinely possible, even temporarily.",
+          "Focus on the absolute basics first, sleep, food, water, before anything else.",
+          "Consider talking to a doctor or therapist familiar with neurodivergent burnout."
+        ],
+        "whyThisHelps": "Recognizing burnout as a distinct state, rather than ordinary tiredness, changes what kind of response actually helps.",
+        "expectedOutcome": "Begin genuine recovery and reduce the cycle of pushing through and crashing further.",
+        "estimatedTime": "20 min",
+        "energyRequired": "Low",
+        "difficulty": "Advanced",
+        "bestWhen": [
+          "Recovery Needed"
+        ],
+        "tags": [
+          "burnout",
+          "exhaustion",
+          "neurodivergent burnout",
+          "recovery"
+        ],
+        "relatedStrategies": [
+          "eb-this-isnt-laziness-its-burnout",
+          "eb-recovery-isnt-wasted-time"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Neurodivergent burnout is documented in emerging autism and ADHD research literature.",
+        "status": "Published"
+      },
+      {
+        "id": "eb-this-isnt-laziness-its-burnout",
+        "title": "This Isn't Laziness, It's Burnout",
+        "category": "Energy & Burnout",
+        "challenge": "Neurodivergent burnout",
+        "situation": "I can't get myself to do things I used to manage easily. People keep telling me to just push through, and I feel like I'm failing.",
+        "internalThoughts": "Maybe I really am just lazy.",
+        "gentleReminder": "A sudden drop in your ability to do things you used to manage isn't laziness, it's one of the clearest signs of burnout, and it deserves to be treated as a real, depleted state.",
+        "whatsHappening": "Burnout can genuinely reduce your capacity for things that used to be manageable, not because motivation has disappeared, but because the underlying resources have run out.",
+        "tryThis": [
+          "Notice the specific things that feel harder than they used to, without judgment.",
+          "Say the reframe out loud if it helps, that this isn't laziness, your capacity is lower right now.",
+          "Lower your expectations of yourself temporarily, rather than matching your previous baseline.",
+          "Share the reframe with people close to you if it feels safe to do so."
+        ],
+        "whyThisHelps": "Correctly naming burnout, instead of laziness, points you toward rest and reduced demand rather than more pushing.",
+        "expectedOutcome": "Reduce shame around reduced capacity and support appropriate recovery response.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Recovery Needed"
+        ],
+        "tags": [
+          "burnout",
+          "laziness",
+          "capacity",
+          "self-compassion"
+        ],
+        "relatedStrategies": [
+          "eb-running-on-empty-for-months",
+          "er-resting-feels-like-failing"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Consistent with emerging research distinguishing burnout-related capacity loss from motivational deficits.",
+        "status": "Published"
+      },
+      {
+        "id": "eb-exhausted-from-being-on-all-day",
+        "title": "Exhausted From Being \"On\" All Day",
+        "category": "Energy & Burnout",
+        "challenge": "Masking exhaustion",
+        "situation": "By the end of the day, I have nothing left, even though nothing dramatic happened. I just spent all day appearing normal.",
+        "internalThoughts": "I didn't even do anything that hard. Why am I this drained?",
+        "gentleReminder": "Feeling drained after a day that didn't look objectively hard isn't disproportionate. Appearing on or neurotypical for hours takes genuine, sustained effort.",
+        "whatsHappening": "Masking requires continuously monitoring and adjusting how you speak, move, and react, often without conscious awareness. That ongoing self-monitoring uses real energy.",
+        "tryThis": [
+          "Build in unmasked time as a regular, expected part of your day.",
+          "Notice which environments require the most performance, and reduce time in them where possible.",
+          "After a high-masking day, prioritize low-demand recovery over trying to be productive.",
+          "Let go of the expectation that a day without dramatic events should also be an easy day."
+        ],
+        "whyThisHelps": "Recognizing masking as real, ongoing work explains the exhaustion and points toward the kind of rest that actually addresses it.",
+        "expectedOutcome": "Reduce cumulative masking exhaustion and support more accurate energy expectations.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Recovery Needed"
+        ],
+        "tags": [
+          "masking",
+          "exhaustion",
+          "burnout",
+          "energy"
+        ],
+        "relatedStrategies": [
+          "eb-the-cost-of-performing-normal",
+          "sc-performing-all-day"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Masking-related exhaustion is documented in autism and ADHD research literature.",
+        "status": "Published"
+      },
+      {
+        "id": "eb-the-cost-of-performing-normal",
+        "title": "The Cost of Performing Normal",
+        "category": "Energy & Burnout",
+        "challenge": "Masking exhaustion",
+        "situation": "I've never really thought about what masking actually costs me. I just assumed everyone gets tired at the end of the day.",
+        "internalThoughts": "Maybe this is just what being tired feels like for everyone.",
+        "gentleReminder": "Not realizing how much masking is costing you isn't a lack of insight. Masking can become so automatic that its toll blends into the background of daily life.",
+        "whatsHappening": "Masking's cost often goes unrecognized because it's compared to a baseline that doesn't reflect how much effort is actually involved.",
+        "tryThis": [
+          "List a few specific things you do to mask, like suppressing a stim or forcing certain expressions.",
+          "For each one, notice roughly how much effort it takes, even if it's automatic.",
+          "Compare a masked day to a day where you had more room to be yourself.",
+          "Use this awareness to plan more deliberate recovery time after high-masking days."
+        ],
+        "whyThisHelps": "Making the specific costs of masking visible helps you plan realistic recovery instead of comparing your exhaustion to an inaccurate baseline.",
+        "expectedOutcome": "Increase awareness of masking's true cost and support more accurate energy planning.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady",
+          "Recovery Needed"
+        ],
+        "tags": [
+          "masking",
+          "exhaustion",
+          "awareness",
+          "energy"
+        ],
+        "relatedStrategies": [
+          "eb-exhausted-from-being-on-all-day",
+          "sc-where-masking-costs-the-most"
+        ],
+        "evidenceLevel": "Research-supported",
+        "source": "Consistent with autism and ADHD research on the cognitive and emotional cost of masking.",
+        "status": "Published"
+      },
+      {
+        "id": "eb-recovery-isnt-wasted-time",
+        "title": "Recovery Isn't Wasted Time",
+        "category": "Energy & Burnout",
+        "challenge": "Recovery",
+        "situation": "I spent the whole afternoon doing nothing productive, and now I feel guilty about it instead of rested.",
+        "internalThoughts": "That time could have been used for something useful.",
+        "gentleReminder": "Feeling guilty after resting doesn't mean the rest wasn't needed. Recovery is doing something, even when it doesn't produce a visible result.",
+        "whatsHappening": "Recovery time restores the capacity that gets used up by daily demands, including ones that aren't obvious from the outside, like masking or sensory strain.",
+        "tryThis": [
+          "Reframe recovery time as an investment in future capacity, not a gap in your day.",
+          "Notice how you feel and function differently after genuine rest versus pushing through.",
+          "Give yourself permission to rest before you're at the point of complete depletion.",
+          "If guilt shows up, name it directly, that the guilt doesn't mean the rest was wrong."
+        ],
+        "whyThisHelps": "Reframing rest as functional, rather than something to justify, reduces the guilt that keeps people pushing past their limits.",
+        "expectedOutcome": "Reduce recovery-related guilt and support more consistent, effective rest.",
+        "estimatedTime": "20 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Recovery Needed"
+        ],
+        "tags": [
+          "recovery",
+          "rest",
+          "burnout",
+          "guilt"
+        ],
+        "relatedStrategies": [
+          "eb-what-actual-rest-looks-like",
+          "er-rest-is-not-a-reward"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with occupational therapy and burnout literature on the functional role of rest.",
+        "status": "Published"
+      },
+      {
+        "id": "eb-what-actual-rest-looks-like",
+        "title": "What Actual Rest Looks Like",
+        "category": "Energy & Burnout",
+        "challenge": "Recovery",
+        "situation": "I spent hours scrolling on my phone, and I still feel just as drained as before. I don't understand why resting isn't working.",
+        "internalThoughts": "I gave myself a break, so why don't I feel any better?",
+        "gentleReminder": "Not feeling restored after what looked like downtime doesn't mean something's wrong with your ability to rest. Some activities that look like rest don't actually restore the depleted capacity.",
+        "whatsHappening": "Passive activities like scrolling can occupy time without genuinely reducing the sensory or cognitive load driving the exhaustion. Real recovery often needs lower input.",
+        "tryThis": [
+          "Notice how you feel after different kinds of downtime, like scrolling versus quiet time versus time outdoors.",
+          "Experiment with genuinely low-input rest, like sitting quietly or lying down without a screen.",
+          "Give a new form of rest a fair trial before deciding it doesn't work for you.",
+          "Let go of any assumption that rest has to involve entertainment to count."
+        ],
+        "whyThisHelps": "Identifying which activities genuinely lower your sensory and cognitive load, rather than just occupying time, helps you choose rest that actually restores capacity.",
+        "expectedOutcome": "Increase effectiveness of rest and reduce time spent on downtime that doesn't actually recover energy.",
+        "estimatedTime": "20 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Recovery Needed"
+        ],
+        "tags": [
+          "recovery",
+          "rest",
+          "burnout",
+          "sensory load"
+        ],
+        "relatedStrategies": [
+          "eb-recovery-isnt-wasted-time",
+          "sm-nothing-left-after-a-full-day"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with occupational therapy approaches distinguishing passive activity from genuine recovery.",
+        "status": "Published"
+      },
+      {
+        "id": "eb-spending-energy-you-dont-have",
+        "title": "Spending Energy You Don't Have",
+        "category": "Energy & Burnout",
+        "challenge": "Energy budgeting",
+        "situation": "I keep committing to things as if I have unlimited energy, and then I'm completely wiped out by things I didn't even plan for.",
+        "internalThoughts": "I should know my limits better by now.",
+        "gentleReminder": "Running on a deficit without noticing isn't a failure to know yourself. Energy levels for a lot of neurodivergent people can shift quickly and unpredictably.",
+        "whatsHappening": "Without a clear sense of how much capacity you're working with, it's easy to commit as though today's energy will match yesterday's.",
+        "tryThis": [
+          "Each morning, take thirty seconds to rate your energy on a simple scale.",
+          "Use that rating to inform what you commit to for the day.",
+          "Notice patterns over time, certain days or triggers that consistently lower your energy.",
+          "Build in a small buffer of unplanned time, rather than scheduling every available hour."
+        ],
+        "whyThisHelps": "Treating energy as something to check and track, rather than assume, gives you real information to plan around instead of guessing.",
+        "expectedOutcome": "Reduce overcommitment and increase alignment between plans and actual capacity.",
+        "estimatedTime": "2 min",
+        "energyRequired": "Low",
+        "difficulty": "Easy",
+        "bestWhen": [
+          "Steady",
+          "High Energy"
+        ],
+        "tags": [
+          "energy budgeting",
+          "planning",
+          "capacity",
+          "burnout prevention"
+        ],
+        "relatedStrategies": [
+          "eb-a-budget-for-your-battery",
+          "ef-loose-structure-not-a-rigid-schedule"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with occupational therapy energy conservation and pacing approaches.",
+        "status": "Published"
+      },
+      {
+        "id": "eb-a-budget-for-your-battery",
+        "title": "A Budget for Your Battery",
+        "category": "Energy & Burnout",
+        "challenge": "Energy budgeting",
+        "situation": "I plan my day around time, but time doesn't actually predict how I'll feel or what I'll be able to do.",
+        "internalThoughts": "I have the hours available, so why can't I get through my list?",
+        "gentleReminder": "Having enough hours in the day doesn't guarantee having enough energy to fill them. Time and energy are genuinely different resources.",
+        "whatsHappening": "A schedule built purely around clock time assumes a flat, consistent level of energy throughout the day, which doesn't reflect how energy actually fluctuates.",
+        "tryThis": [
+          "Label tasks by the energy level they require instead of scheduling by hour.",
+          "Match higher-energy tasks to the times of day you tend to have more capacity.",
+          "Save low-energy tasks for times you know tend to be more depleted.",
+          "Adjust the plan in real time based on your actual energy that day."
+        ],
+        "whyThisHelps": "Planning around energy, instead of time alone, accounts for the resource that actually determines what you can realistically get done.",
+        "expectedOutcome": "Increase realistic task completion and reduce end-of-day exhaustion from misaligned planning.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Medium",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady"
+        ],
+        "tags": [
+          "energy budgeting",
+          "planning",
+          "pacing",
+          "capacity"
+        ],
+        "relatedStrategies": [
+          "eb-spending-energy-you-dont-have",
+          "ef-loose-structure-not-a-rigid-schedule"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with occupational therapy energy conservation techniques.",
+        "status": "Published"
+      },
+      {
+        "id": "eb-all-or-nothing-days",
+        "title": "All-or-Nothing Days",
+        "category": "Energy & Burnout",
+        "challenge": "Pacing",
+        "situation": "On good days I do everything at once, and then I crash for days afterward. I can't seem to find a middle ground.",
+        "internalThoughts": "I should just take it easy on the good days too, but it feels impossible not to make the most of them.",
+        "gentleReminder": "The pull to do everything on a good day isn't overexcitement or poor judgment. A burst of energy can feel rare and urgent, making it genuinely hard to hold back.",
+        "whatsHappening": "Alternating between doing too much and too little often comes from treating high-energy days as an exception to make the most of, rather than part of a longer pattern.",
+        "tryThis": [
+          "On a good-energy day, set a deliberate cap on how much you'll take on.",
+          "Save some of that energy for the following day, rather than spending all of it at once.",
+          "Notice the urge to make the most of it, and treat it as a signal to pace, not push further.",
+          "Track how a paced good day affects the days that follow, compared to an all-out one."
+        ],
+        "whyThisHelps": "Deliberately capping output on high-energy days protects against the crash that often follows, supporting a steadier pattern over time.",
+        "expectedOutcome": "Reduce boom-and-bust energy cycles and increase overall consistency.",
+        "estimatedTime": "5 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "High Energy"
+        ],
+        "tags": [
+          "pacing",
+          "burnout prevention",
+          "energy cycles",
+          "boom and bust"
+        ],
+        "relatedStrategies": [
+          "eb-small-and-steady-beats-all-out",
+          "eb-a-budget-for-your-battery"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with occupational therapy pacing approaches used in chronic illness and energy-limiting conditions.",
+        "status": "Published"
+      },
+      {
+        "id": "eb-small-and-steady-beats-all-out",
+        "title": "Small and Steady Beats All-Out",
+        "category": "Energy & Burnout",
+        "challenge": "Pacing",
+        "situation": "I always go all-in on things, and I always end up burning out. I don't know how to do things differently.",
+        "internalThoughts": "If I don't go all-in, will I even get anything done?",
+        "gentleReminder": "Worrying that pacing yourself means getting less done is reasonable, but it's worth questioning, since an all-out approach that ends in burnout often produces less over time.",
+        "whatsHappening": "Going all-in can feel productive because the short-term output is high, but the resulting crash often erases those gains and then some.",
+        "tryThis": [
+          "Pick one recurring task or goal and deliberately choose a smaller, steadier version of it.",
+          "Track your output over a few weeks, comparing steady pacing to your usual all-or-nothing approach.",
+          "Resist the urge to escalate just because a steady pace feels underwhelming in the moment.",
+          "Remind yourself that avoiding a crash is itself a form of progress."
+        ],
+        "whyThisHelps": "A steady, sustainable pace avoids the crash that typically erases the gains made during an all-out burst, producing more reliable results over time.",
+        "expectedOutcome": "Increase long-term consistency and reduce burnout cycles.",
+        "estimatedTime": "10 min",
+        "energyRequired": "Low",
+        "difficulty": "Moderate",
+        "bestWhen": [
+          "Steady"
+        ],
+        "tags": [
+          "pacing",
+          "burnout prevention",
+          "sustainability",
+          "consistency"
+        ],
+        "relatedStrategies": [
+          "eb-all-or-nothing-days",
+          "eb-running-on-empty-for-months"
+        ],
+        "evidenceLevel": "Clinical practice",
+        "source": "Consistent with occupational therapy pacing approaches used in chronic illness and energy-limiting conditions.",
+        "status": "Published"
+      }
+    ]
+}

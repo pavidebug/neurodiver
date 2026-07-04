@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neurodiver.app/schemas/strategies.catalog.json",
+  "title": "NeuroDiver Strategy Catalog",
+  "description": "Master catalog for Strategy Navigator. Each entry becomes strategies/{id} in Firestore.",
+  "type": "object",
+  "required": ["version", "catalogName", "updatedAt", "strategies"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "type": "integer", "minimum": 1 },
+    "catalogName": { "type": "string", "minLength": 1 },
+    "updatedAt": { "type": "string", "format": "date" },
+    "strategies": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/strategy" }
+    }
+  },
+  "$defs": {
+    "strategyCategory": {
+      "type": "string",
+      "enum": [
+        "Executive Function",
+        "Emotional Regulation",
+        "Sensory Management",
+        "Social & Communication",
+        "Daily Living",
+        "Energy & Burnout"
+      ]
+    },
+    "bestWhenLabel": {
+      "type": "string",
+      "enum": ["Running Low", "Steady", "High Energy", "Recovery Needed"]
+    },
+    "strategyId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "strategy": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "category",
+        "challenge",
+        "situation",
+        "internalThoughts",
+        "gentleReminder",
+        "whatsHappening",
+        "tryThis",
+        "whyThisHelps",
+        "expectedOutcome",
+        "estimatedTime",
+        "energyRequired",
+        "difficulty",
+        "bestWhen",
+        "tags",
+        "relatedStrategies",
+        "evidenceLevel",
+        "source",
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/strategyId" },
+        "title": { "type": "string", "minLength": 3 },
+        "category": { "$ref": "#/$defs/strategyCategory" },
+        "challenge": { "type": "string", "minLength": 2 },
+        "situation": { "type": "string", "minLength": 10 },
+        "internalThoughts": { "type": "string", "minLength": 5 },
+        "gentleReminder": { "type": "string", "minLength": 10 },
+        "whatsHappening": { "type": "string", "minLength": 20 },
+        "tryThis": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 5 },
+          "minItems": 1
+        },
+        "whyThisHelps": { "type": "string", "minLength": 10 },
+        "expectedOutcome": { "type": "string", "minLength": 10 },
+        "estimatedTime": { "type": "string", "minLength": 2 },
+        "energyRequired": { "type": "string", "enum": ["Low", "Medium"] },
+        "difficulty": { "type": "string", "enum": ["Easy", "Moderate", "Advanced"] },
+        "bestWhen": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/bestWhenLabel" },
+          "minItems": 1
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 2 },
+          "minItems": 1
+        },
+        "relatedStrategies": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/strategyId" }
+        },
+        "evidenceLevel": {
+          "type": "string",
+          "enum": ["Clinical practice", "Community-informed", "Research-supported"]
+        },
+        "source": { "type": "string", "minLength": 5 },
+        "status": { "type": "string", "enum": ["Published", "Draft"] }
+      }
+    }
+  }
+}
