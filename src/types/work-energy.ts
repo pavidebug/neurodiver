@@ -1,4 +1,5 @@
 import type { Timestamp } from 'firebase/firestore'
+import type { BrainStatusType } from '@/lib/data'
 
 export type UserRole = 'employee' | 'employer_admin' | 'super_admin'
 
@@ -26,6 +27,19 @@ export type RefillOption =
   | 'clear-plan'
   | 'other'
 
+export type AccommodationOption =
+  | 'quiet-space'
+  | 'flexible-schedule'
+  | 'fewer-meetings'
+  | 'written-instructions'
+  | 'async-communication'
+  | 'regular-breaks'
+  | 'fewer-interruptions'
+  | 'clearer-expectations'
+  | 'predictable-routine'
+  | 'workload-adjustment'
+  | 'other'
+
 export type DrainingTimeOption =
   | 'morning'
   | 'midday'
@@ -40,6 +54,8 @@ export type AbleToAskNeedsOption =
   | 'no'
   | 'not-needed'
 
+export type WeeklyReportStatusLabel = 'Stable' | 'Watch closely' | 'Needs support'
+
 /** Stored at users/{userId}/workCheckIns/{date} */
 export interface WorkCheckInDocument {
   userId: string
@@ -50,15 +66,18 @@ export interface WorkCheckInDocument {
   energyTank: number
   maskingLoad: number
   supportFelt: number
-  biggestDrain: DrainOption
-  biggestDrainOther: string | null
-  biggestRefill: RefillOption
-  biggestRefillOther: string | null
+  drains: DrainOption[]
+  drainsOther: string | null
+  refills: RefillOption[]
+  refillsOther: string | null
   mostDrainingTime: DrainingTimeOption
   ableToAskNeeds: AbleToAskNeedsOption
-  accommodationWish: string | null
-  wouldUseAgain: number | null
-  notes: string | null
+  accommodationNeeds: AccommodationOption[]
+  accommodationNeedsOther: string | null
+  freeTextReflection: string | null
+  wouldUseAgain: number
+  brainStatus: BrainStatusType
+  isGuest: boolean
 }
 
 /** Payload submitted from the check-in form */
@@ -66,13 +85,16 @@ export interface WorkCheckInInput {
   energyTank: number
   maskingLoad: number
   supportFelt: number
-  biggestDrain: DrainOption
-  biggestDrainOther?: string
-  biggestRefill: RefillOption
-  biggestRefillOther?: string
+  drains: DrainOption[]
+  drainsOther?: string
+  refills: RefillOption[]
+  refillsOther?: string
   mostDrainingTime: DrainingTimeOption
   ableToAskNeeds: AbleToAskNeedsOption
-  accommodationWish?: string
+  accommodationNeeds: AccommodationOption[]
+  accommodationNeedsOther?: string
+  freeTextReflection?: string
+  wouldUseAgain: number
   organisationId?: string | null
 }
 
@@ -84,9 +106,11 @@ export interface WorkCheckIn extends WorkCheckInDocument {
 /** In-progress answers saved locally until submission */
 export type WorkCheckInDraftAnswers = Partial<WorkCheckInInput>
 
+export type ReminderPreference = 'email' | 'whatsapp' | 'both'
+
 /**
- * Pilot profile fields on users/{userId}.
- * Reminder fields are stored now for future scheduled email reminders.
+ * Pilot profile fields on users/{userId}.workProfile
+ * Contact fields are private — only readable by the signed-in user (Firestore rules).
  */
 export interface UserWorkProfile {
   organisationId: string | null
@@ -94,14 +118,28 @@ export interface UserWorkProfile {
   timezone: string
   reminderEnabled: boolean
   reminderTime: string
+  email: string | null
+  whatsappNumber: string | null
+  whatsappConsent: boolean
+  reminderPreference: ReminderPreference
+  /** Optional self-description or diagnosis context for reports */
+  selfDescription: string | null
+  /** Pilot users can view full weekly reports; future paid tier uses this flag */
+  pilotAccess: boolean
 }
 
 export const DEFAULT_USER_WORK_PROFILE: UserWorkProfile = {
   organisationId: null,
   role: 'employee',
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  reminderEnabled: false,
+  reminderEnabled: true,
   reminderTime: '17:00',
+  email: null,
+  whatsappNumber: null,
+  whatsappConsent: false,
+  reminderPreference: 'email',
+  selfDescription: null,
+  pilotAccess: true,
 }
 
 export interface OrganisationDocument {
@@ -132,12 +170,59 @@ export interface EmployerAggregateReportDocument {
   generatedAt: Timestamp
 }
 
-/** Reserved for Phase D — cached employee weekly reports */
+export interface WeeklyReportEnergyPoint {
+  date: string
+  energyTank: number | null
+  maskingLoad: number | null
+}
+
+export interface WeeklyReportRankedOption {
+  option: string
+  label: string
+  count: number
+}
+
+/** Cached employee weekly report at users/{userId}/weeklyReports/{weekId} */
 export interface WeeklyReportDocument {
   weekId: string
   weekStart: string
   weekEnd: string
+  weekNumber: number
   generatedAt: Timestamp
+  /** Fingerprint of source check-ins — used to skip unnecessary regeneration */
+  sourceFingerprint: string
+  checkInCount: number
+  profile: {
+    displayName: string | null
+    selfDescription: string | null
+    email: string | null
+    daysCompleted: number
+    statusLabel: WeeklyReportStatusLabel
+  }
+  averages: {
+    energyTank: number
+    maskingLoad: number
+    supportFelt: number
+    wouldUseAgain: number
+  }
+  energyCurve: WeeklyReportEnergyPoint[]
+  insights: {
+    summary: string
+    lowestEnergyDay: string | null
+    highestMaskingDay: string | null
+    bestRecoveryDay: string | null
+    relationshipNote: string
+  }
+  topDrains: WeeklyReportRankedOption[]
+  topRefills: WeeklyReportRankedOption[]
+  maskingSummary: string
+  accommodationSummary: string
+  recommendation: string
+  noteForWeek: string
+}
+
+export interface WeeklyReport extends WeeklyReportDocument {
+  id: string
 }
 
 /** Reserved for Phase D — cached employee monthly reports */
@@ -173,8 +258,12 @@ export interface WorkCheckInLabeledScaleQuestion extends WorkCheckInQuestionBase
 export interface WorkCheckInChoiceQuestion extends WorkCheckInQuestionBase {
   type: 'choice'
   options: WorkCheckInQuestionOption[]
-  /** When selected option is "other", collect free-text detail */
-  otherDetailField?: 'biggestDrainOther' | 'biggestRefillOther'
+}
+
+export interface WorkCheckInMultiChoiceQuestion extends WorkCheckInQuestionBase {
+  type: 'multi-choice'
+  options: WorkCheckInQuestionOption[]
+  otherDetailField?: 'drainsOther' | 'refillsOther' | 'accommodationNeedsOther'
   otherDetailPlaceholder?: string
 }
 
@@ -187,4 +276,7 @@ export interface WorkCheckInTextQuestion extends WorkCheckInQuestionBase {
 export type WorkCheckInQuestion =
   | WorkCheckInLabeledScaleQuestion
   | WorkCheckInChoiceQuestion
+  | WorkCheckInMultiChoiceQuestion
   | WorkCheckInTextQuestion
+
+export const WEEKLY_REPORT_MIN_CHECK_INS = 5

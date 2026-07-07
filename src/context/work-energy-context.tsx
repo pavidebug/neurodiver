@@ -40,7 +40,7 @@ interface WorkEnergyContextValue {
 const WorkEnergyContext = createContext<WorkEnergyContextValue | null>(null)
 
 export function WorkEnergyProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth()
+  const { user, isGuest } = useAuth()
   const [checkIns, setCheckIns] = useState<WorkCheckIn[]>([])
   const [profile, setProfile] = useState<UserWorkProfile>(DEFAULT_USER_WORK_PROFILE)
   const [loading, setLoading] = useState(true)
@@ -125,7 +125,7 @@ export function WorkEnergyProvider({ children }: { children: ReactNode }) {
         const result = await submitWorkCheckIn(
           user.uid,
           { ...input, organisationId },
-          today,
+          { date: today, isGuest },
         )
         setCheckIns((current) => {
           const withoutToday = current.filter((entry) => entry.date !== today)
@@ -142,7 +142,7 @@ export function WorkEnergyProvider({ children }: { children: ReactNode }) {
         setSubmitting(false)
       }
     },
-    [user, profile.organisationId, today],
+    [user, profile.organisationId, today, isGuest],
   )
 
   const value = useMemo<WorkEnergyContextValue>(

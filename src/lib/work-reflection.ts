@@ -1,11 +1,13 @@
 import {
-  getDrainLabel,
+  formatAccommodationLabels,
+  formatDrainLabels,
+  formatRefillLabels,
   getDrainingTimeLabel,
   getEaseLabel,
   getEnergySummary,
   getEnergyTankLabel,
-  getRefillLabel,
   getSupportLabel,
+  getWouldUseAgainLabel,
 } from '@/lib/work-check-in-labels'
 import type { WorkCheckIn } from '@/types/work-energy'
 
@@ -32,7 +34,7 @@ export function buildWorkReflection(checkIn: WorkCheckIn): WorkReflectionContent
         value: getEnergyTankLabel(checkIn.energyTank),
       },
       {
-        label: 'Easy to be yourself',
+        label: 'Masking effort',
         value: getEaseLabel(checkIn.maskingLoad),
       },
       {
@@ -40,16 +42,27 @@ export function buildWorkReflection(checkIn: WorkCheckIn): WorkReflectionContent
         value: getSupportLabel(checkIn.supportFelt),
       },
       {
-        label: 'Biggest drain',
-        value: getDrainLabel(checkIn.biggestDrain, checkIn.biggestDrainOther),
+        label: 'Energy drains',
+        value: formatDrainLabels(checkIn.drains, checkIn.drainsOther),
       },
       {
-        label: 'Biggest refill',
-        value: getRefillLabel(checkIn.biggestRefill, checkIn.biggestRefillOther),
+        label: 'What helped recharge',
+        value: formatRefillLabels(checkIn.refills, checkIn.refillsOther),
       },
       {
         label: 'Hardest part of the day',
         value: getDrainingTimeLabel(checkIn.mostDrainingTime),
+      },
+      {
+        label: 'Support that would help',
+        value: formatAccommodationLabels(
+          checkIn.accommodationNeeds,
+          checkIn.accommodationNeedsOther,
+        ),
+      },
+      {
+        label: 'Would check in again',
+        value: getWouldUseAgainLabel(checkIn.wouldUseAgain),
       },
     ],
   }
@@ -67,19 +80,19 @@ function buildInsight(checkIn: WorkCheckIn): string {
     return 'Support seemed to make today a little easier.'
   }
 
-  if (checkIn.biggestDrain === 'too-many-meetings') {
+  if (checkIn.drains.includes('too-many-meetings')) {
     return 'Meetings appeared to take a lot of your energy today.'
   }
 
-  if (checkIn.biggestRefill === 'quiet-time') {
+  if (checkIn.refills.includes('quiet-time')) {
     return 'Quiet time seemed to help you recharge.'
   }
 
-  if (checkIn.biggestDrain === 'too-many-interruptions') {
+  if (checkIn.drains.includes('too-many-interruptions')) {
     return 'Interruptions may have made it harder to settle into your work today.'
   }
 
-  if (checkIn.biggestRefill === 'breaks') {
+  if (checkIn.refills.includes('breaks')) {
     return 'Taking breaks seemed to give you a little room to breathe today.'
   }
 
@@ -95,7 +108,7 @@ function buildInsight(checkIn: WorkCheckIn): string {
 }
 
 function buildExperiment(checkIn: WorkCheckIn): string {
-  if (checkIn.biggestDrain === 'too-many-meetings') {
+  if (checkIn.drains.includes('too-many-meetings')) {
     return 'Tomorrow, try protecting one quiet break after your busiest meeting.'
   }
 
@@ -113,11 +126,11 @@ function buildExperiment(checkIn: WorkCheckIn): string {
     return 'See if asking for help a little earlier changes your afternoon.'
   }
 
-  if (checkIn.biggestDrain === 'too-many-interruptions') {
+  if (checkIn.drains.includes('too-many-interruptions')) {
     return 'Tomorrow, notice whether one protected focus block changes how the day feels.'
   }
 
-  if (checkIn.biggestRefill === 'movement') {
+  if (checkIn.refills.includes('movement')) {
     return 'Try a short walk or stretch tomorrow and notice if your afternoon feels different.'
   }
 

@@ -44,7 +44,7 @@ export function DailyWorkReflectionPage() {
 
   return (
     <WorkReflectionLayout
-      energySummary={reflection.energySummary}
+      checkIn={checkIn}
       reflection={reflection}
       onContinue={handleContinue}
     />

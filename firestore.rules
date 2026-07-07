@@ -16,6 +16,112 @@ service cloud.firestore {
       match /workCheckIns/{checkInId} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
       }
+
+      // Cached weekly insight reports
+      match /weeklyReports/{weekId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // Share stats — shareCount incremented when user shares invites
+      match /stats/{statId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow create: if request.auth != null
+          && request.auth.uid == userId
+          && request.auth.token.firebase.sign_in_provider != 'anonymous'
+          && request.resource.data.shareCount is int
+          && request.resource.data.shareCount == 1;
+        allow update: if request.auth != null
+          && request.auth.uid == userId
+          && request.auth.token.firebase.sign_in_provider != 'anonymous'
+          && request.resource.data.shareCount is int
+          && request.resource.data.shareCount == resource.data.shareCount + 1;
+        allow delete: if false;
+      }
+    }
+
+    // Strategy search analytics — users can create their own search events
+    match /searchAnalytics/{eventId} {
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.searchTerm is string
+        && request.resource.data.resultsFound is int;
+      allow read, update, delete: if false;
+    }
+
+    // User-submitted strategy requests when search finds no match
+    match /strategyRequests/{requestId} {
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.description is string
+        && request.resource.data.status == 'Open';
+      allow read, update, delete: if false;
+    }
+
+    // Free-text describe-it submissions and follow-up preferences
+    match /freeTextRequests/{requestId} {
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.description is string
+        && request.resource.data.status == 'Pending';
+      allow update: if request.auth != null
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.notifyWhenAvailable is bool;
+      allow read, delete: if false;
+    }
+
+    // Body Doubling pilot — manually seeded sessions
+    match /focusSessions/{sessionId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    match /sessionBookings/{bookingId} {
+      allow read: if request.auth != null
+        && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.sessionId is string
+        && (request.resource.data.intention is string || request.resource.data.intention == null)
+        && request.resource.data.attendanceStatus == 'booked'
+        && (request.resource.data.contactEmail is string || request.resource.data.contactEmail == null)
+        && (request.resource.data.reminderEnabled is bool || request.resource.data.reminderEnabled == null);
+      allow update: if request.auth != null
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.attendanceStatus == 'attended'
+        && resource.data.attendanceStatus == 'booked';
+      allow delete: if false;
+    }
+
+    match /sessionFeedback/{feedbackId} {
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.sessionId is string
+        && request.resource.data.bookingId is string
+        && request.resource.data.sessionHelpful in ['yes', 'somewhat', 'not-today']
+        && request.resource.data.completedPlan in ['yes', 'mostly', 'not-today']
+        && request.resource.data.wouldJoinAgain is int
+        && request.resource.data.wouldJoinAgain >= 1
+        && request.resource.data.wouldJoinAgain <= 5
+        && (request.resource.data.notes is string || request.resource.data.notes == null);
+      allow read, update, delete: if false;
+    }
+
+    // Email delivery audit log — written by Cloud Functions only
+    match /sessionEmailLog/{logId} {
+      allow read, write: if false;
+    }
+
+    // Invite share analytics — logged-in (non-guest) users only
+    match /shareEvents/{eventId} {
+      allow create: if request.auth != null
+        && request.auth.token.firebase.sign_in_provider != 'anonymous'
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.shareType in ['copy', 'whatsapp', 'web_share']
+        && request.resource.data.templateId in ['soft_invite', 'body_doubling', 'check_in', 'general']
+        && request.resource.data.sourceScreen == 'profile'
+        && request.resource.data.isGuest == false
+        && request.resource.data.createdAt == request.time;
+      allow read, update, delete: if false;
     }
   }
 }

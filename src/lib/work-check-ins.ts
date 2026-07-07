@@ -13,9 +13,15 @@ import {
   type Unsubscribe,
 } from 'firebase/firestore'
 import { WORK_CHECK_IN_QUESTIONS } from '@/data/work-check-in-questions'
+import type { BrainStatusType } from '@/lib/data'
 import { getTodayString } from '@/lib/dates'
 import { db } from '@/lib/firebase'
+import { getBrainStatusFromWorkCheckIn } from '@/lib/strategy-analytics'
 import type {
+  AccommodationOption,
+  DrainOption,
+  RefillOption,
+  ReminderPreference,
   UserWorkProfile,
   WorkCheckIn,
   WorkCheckInDocument,
@@ -49,7 +55,145 @@ function getWorkCheckInsCollection(userId: string) {
   return collection(db, 'users', userId, 'workCheckIns')
 }
 
+function isDrainOption(value: unknown): value is DrainOption {
+  return typeof value === 'string'
+}
+
+function isRefillOption(value: unknown): value is RefillOption {
+  return typeof value === 'string'
+}
+
+function isAccommodationOption(value: unknown): value is AccommodationOption {
+  return typeof value === 'string'
+}
+
+function normalizeStringArray<T extends string>(
+  value: unknown,
+  guard: (entry: unknown) => entry is T,
+): T[] {
+  if (!Array.isArray(value)) return []
+  return value.filter(guard)
+}
+
+/** Map legacy single-select fields to arrays for older documents. */
+function normalizeDrains(data: Record<string, unknown>): {
+  drains: DrainOption[]
+  drainsOther: string | null
+} {
+  const drains = normalizeStringArray(data.drains, isDrainOption)
+  if (drains.length > 0) {
+    return {
+      drains,
+      drainsOther:
+        typeof data.drainsOther === 'string' ? data.drainsOther : null,
+    }
+  }
+
+  if (typeof data.biggestDrain === 'string') {
+    return {
+      drains: [data.biggestDrain as DrainOption],
+      drainsOther:
+        typeof data.biggestDrainOther === 'string'
+          ? data.biggestDrainOther
+          : null,
+    }
+  }
+
+  return { drains: [], drainsOther: null }
+}
+
+function normalizeRefills(data: Record<string, unknown>): {
+  refills: RefillOption[]
+  refillsOther: string | null
+} {
+  const refills = normalizeStringArray(data.refills, isRefillOption)
+  if (refills.length > 0) {
+    return {
+      refills,
+      refillsOther:
+        typeof data.refillsOther === 'string' ? data.refillsOther : null,
+    }
+  }
+
+  if (typeof data.biggestRefill === 'string') {
+    return {
+      refills: [data.biggestRefill as RefillOption],
+      refillsOther:
+        typeof data.biggestRefillOther === 'string'
+          ? data.biggestRefillOther
+          : null,
+    }
+  }
+
+  return { refills: [], refillsOther: null }
+}
+
+function normalizeAccommodationNeeds(data: Record<string, unknown>): {
+  accommodationNeeds: AccommodationOption[]
+  accommodationNeedsOther: string | null
+} {
+  const accommodationNeeds = normalizeStringArray(
+    data.accommodationNeeds,
+    isAccommodationOption,
+  )
+  if (accommodationNeeds.length > 0) {
+    return {
+      accommodationNeeds,
+      accommodationNeedsOther:
+        typeof data.accommodationNeedsOther === 'string'
+          ? data.accommodationNeedsOther
+          : null,
+    }
+  }
+
+  return { accommodationNeeds: [], accommodationNeedsOther: null }
+}
+
 function mapWorkCheckIn(id: string, data: Record<string, unknown>): WorkCheckIn {
+  const { drains, drainsOther } = normalizeDrains(data)
+  const { refills, refillsOther } = normalizeRefills(data)
+  const { accommodationNeeds, accommodationNeedsOther } =
+    normalizeAccommodationNeeds(data)
+
+  const energyTank = Number(data.energyTank ?? 0)
+  const maskingLoad = Number(data.maskingLoad ?? 0)
+  const supportFelt = Number(data.supportFelt ?? 0)
+
+  const legacyBrainStatus = data.brainStatus as BrainStatusType | undefined
+  const brainStatus: BrainStatusType =
+    legacyBrainStatus ??
+    getBrainStatusFromWorkCheckIn({
+      id,
+      userId: String(data.userId ?? ''),
+      organisationId:
+        typeof data.organisationId === 'string' ? data.organisationId : null,
+      date: String(data.date ?? id),
+      checkInTime: String(data.checkInTime ?? ''),
+      createdAt: data.createdAt as Timestamp,
+      energyTank,
+      maskingLoad,
+      supportFelt,
+      drains,
+      drainsOther,
+      refills,
+      refillsOther,
+      mostDrainingTime: data.mostDrainingTime as WorkCheckIn['mostDrainingTime'],
+      ableToAskNeeds: data.ableToAskNeeds as WorkCheckIn['ableToAskNeeds'],
+      accommodationNeeds,
+      accommodationNeedsOther,
+      freeTextReflection:
+        typeof data.freeTextReflection === 'string'
+          ? data.freeTextReflection
+          : typeof data.accommodationWish === 'string'
+            ? data.accommodationWish
+            : null,
+      wouldUseAgain:
+        typeof data.wouldUseAgain === 'number' ? data.wouldUseAgain : 3,
+      brainStatus: legacyBrainStatus ?? 'steady',
+      isGuest: data.isGuest === true,
+    }) ??
+    'steady'
+
   return {
     id,
     userId: String(data.userId ?? ''),
@@ -58,22 +202,27 @@ function mapWorkCheckIn(id: string, data: Record<string, unknown>): WorkCheckIn 
     date: String(data.date ?? id),
     checkInTime: String(data.checkInTime ?? ''),
     createdAt: data.createdAt as Timestamp,
-    energyTank: Number(data.energyTank ?? 0),
-    maskingLoad: Number(data.maskingLoad ?? 0),
-    supportFelt: Number(data.supportFelt ?? 0),
-    biggestDrain: data.biggestDrain as WorkCheckIn['biggestDrain'],
-    biggestDrainOther:
-      typeof data.biggestDrainOther === 'string' ? data.biggestDrainOther : null,
-    biggestRefill: data.biggestRefill as WorkCheckIn['biggestRefill'],
-    biggestRefillOther:
-      typeof data.biggestRefillOther === 'string' ? data.biggestRefillOther : null,
+    energyTank,
+    maskingLoad,
+    supportFelt,
+    drains,
+    drainsOther,
+    refills,
+    refillsOther,
     mostDrainingTime: data.mostDrainingTime as WorkCheckIn['mostDrainingTime'],
     ableToAskNeeds: data.ableToAskNeeds as WorkCheckIn['ableToAskNeeds'],
-    accommodationWish:
-      typeof data.accommodationWish === 'string' ? data.accommodationWish : null,
+    accommodationNeeds,
+    accommodationNeedsOther,
+    freeTextReflection:
+      typeof data.freeTextReflection === 'string'
+        ? data.freeTextReflection
+        : typeof data.accommodationWish === 'string'
+          ? data.accommodationWish
+          : null,
     wouldUseAgain:
-      typeof data.wouldUseAgain === 'number' ? data.wouldUseAgain : null,
-    notes: typeof data.notes === 'string' ? data.notes : null,
+      typeof data.wouldUseAgain === 'number' ? data.wouldUseAgain : 3,
+    brainStatus,
+    isGuest: data.isGuest === true,
   }
 }
 
@@ -92,7 +241,21 @@ export function mapUserWorkProfile(data: unknown): UserWorkProfile {
     reminderEnabled:
       profile.reminderEnabled ?? DEFAULT_USER_WORK_PROFILE.reminderEnabled,
     reminderTime: profile.reminderTime ?? DEFAULT_USER_WORK_PROFILE.reminderTime,
+    email: typeof profile.email === 'string' ? profile.email : null,
+    whatsappNumber:
+      typeof profile.whatsappNumber === 'string' ? profile.whatsappNumber : null,
+    whatsappConsent: profile.whatsappConsent === true,
+    reminderPreference: isReminderPreference(profile.reminderPreference)
+      ? profile.reminderPreference
+      : DEFAULT_USER_WORK_PROFILE.reminderPreference,
+    selfDescription:
+      typeof profile.selfDescription === 'string' ? profile.selfDescription : null,
+    pilotAccess: profile.pilotAccess !== false,
   }
+}
+
+function isReminderPreference(value: unknown): value is ReminderPreference {
+  return value === 'email' || value === 'whatsapp' || value === 'both'
 }
 
 function isScaleValid(value: unknown): value is number {
@@ -103,15 +266,24 @@ function isWorkCheckInComplete(input: WorkCheckInInput): boolean {
   if (!isScaleValid(input.energyTank)) return false
   if (!isScaleValid(input.maskingLoad)) return false
   if (!isScaleValid(input.supportFelt)) return false
-  if (!input.biggestDrain || !input.biggestRefill) return false
+  if (!isScaleValid(input.wouldUseAgain)) return false
+  if (input.drains.length === 0 || input.refills.length === 0) return false
+  if (input.accommodationNeeds.length === 0) return false
   if (!input.mostDrainingTime || !input.ableToAskNeeds) return false
-  if (input.biggestDrain === 'other' && !input.biggestDrainOther?.trim()) return false
-  if (input.biggestRefill === 'other' && !input.biggestRefillOther?.trim()) return false
+  if (input.drains.includes('other') && !input.drainsOther?.trim()) return false
+  if (input.refills.includes('other') && !input.refillsOther?.trim()) return false
+  if (
+    input.accommodationNeeds.includes('other') &&
+    !input.accommodationNeedsOther?.trim()
+  ) {
+    return false
+  }
 
   return WORK_CHECK_IN_QUESTIONS.every((question) => {
     if (!question.required) return true
 
     const value = input[question.id as keyof WorkCheckInInput]
+    if (Array.isArray(value)) return value.length > 0
     return value !== undefined && value !== null && value !== ''
   })
 }
@@ -180,11 +352,125 @@ export function subscribeToUserWorkProfile(
   )
 }
 
+export interface UserContactProfileUpdate {
+  email: string
+  whatsappNumber: string | null
+  whatsappConsent: boolean
+  reminderPreference: ReminderPreference
+  reminderEnabled: boolean
+  timezone: string
+  selfDescription?: string | null
+}
+
+export async function updateUserContactProfile(
+  userId: string,
+  update: UserContactProfileUpdate,
+  existingProfile: UserWorkProfile = DEFAULT_USER_WORK_PROFILE,
+): Promise<void> {
+  const nextProfile: UserWorkProfile = {
+    ...existingProfile,
+    email: update.email.trim(),
+    whatsappNumber: update.whatsappNumber?.trim() || null,
+    whatsappConsent: update.whatsappConsent,
+    reminderPreference: update.reminderPreference,
+    reminderEnabled: update.reminderEnabled,
+    timezone: update.timezone.trim() || existingProfile.timezone,
+    selfDescription:
+      update.selfDescription !== undefined
+        ? update.selfDescription?.trim() || null
+        : existingProfile.selfDescription,
+  }
+
+  await setDoc(
+    getUserRef(userId),
+    {
+      workProfile: nextProfile,
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true },
+  )
+}
+
+function buildCheckInDocument(
+  userId: string,
+  input: WorkCheckInInput,
+  date: string,
+  now: string,
+  isGuest: boolean,
+): Omit<WorkCheckInDocument, 'createdAt'> & {
+  createdAt: ReturnType<typeof serverTimestamp>
+} {
+  const energyTank = input.energyTank
+  const maskingLoad = input.maskingLoad
+  const supportFelt = input.supportFelt
+
+  const brainStatus =
+    getBrainStatusFromWorkCheckIn({
+      id: date,
+      userId,
+      organisationId: input.organisationId ?? null,
+      date,
+      checkInTime: now,
+      createdAt: Timestamp.now(),
+      energyTank,
+      maskingLoad,
+      supportFelt,
+      drains: input.drains,
+      drainsOther:
+        input.drains.includes('other') ? input.drainsOther?.trim() || null : null,
+      refills: input.refills,
+      refillsOther:
+        input.refills.includes('other') ? input.refillsOther?.trim() || null : null,
+      mostDrainingTime: input.mostDrainingTime,
+      ableToAskNeeds: input.ableToAskNeeds,
+      accommodationNeeds: input.accommodationNeeds,
+      accommodationNeedsOther: input.accommodationNeeds.includes('other')
+        ? input.accommodationNeedsOther?.trim() || null
+        : null,
+      freeTextReflection: input.freeTextReflection?.trim() || null,
+      wouldUseAgain: input.wouldUseAgain,
+      brainStatus: 'steady',
+      isGuest,
+    }) ?? 'steady'
+
+  return {
+    userId,
+    organisationId: input.organisationId ?? null,
+    date,
+    checkInTime: now,
+    createdAt: serverTimestamp(),
+    energyTank,
+    maskingLoad,
+    supportFelt,
+    drains: input.drains,
+    drainsOther: input.drains.includes('other')
+      ? input.drainsOther?.trim() || null
+      : null,
+    refills: input.refills,
+    refillsOther: input.refills.includes('other')
+      ? input.refillsOther?.trim() || null
+      : null,
+    mostDrainingTime: input.mostDrainingTime,
+    ableToAskNeeds: input.ableToAskNeeds,
+    accommodationNeeds: input.accommodationNeeds,
+    accommodationNeedsOther: input.accommodationNeeds.includes('other')
+      ? input.accommodationNeedsOther?.trim() || null
+      : null,
+    freeTextReflection: input.freeTextReflection?.trim() || null,
+    wouldUseAgain: input.wouldUseAgain,
+    brainStatus,
+    isGuest,
+  }
+}
+
 export async function submitWorkCheckIn(
   userId: string,
   input: WorkCheckInInput,
-  date = getTodayString(),
+  options: { date?: string; isGuest?: boolean } = {},
 ): Promise<WorkCheckIn> {
+  const date = options.date ?? getTodayString()
+  const isGuest = options.isGuest ?? false
+
   if (!isWorkCheckInComplete(input)) {
     throw new IncompleteWorkCheckInError()
   }
@@ -192,36 +478,9 @@ export async function submitWorkCheckIn(
   const checkInRef = getWorkCheckInRef(userId, date)
   const now = new Date().toISOString()
 
-  // Ensure parent user doc exists for subcollection writes
   await setDoc(getUserRef(userId), { updatedAt: serverTimestamp() }, { merge: true })
 
-  const payload: Omit<WorkCheckInDocument, 'createdAt'> & {
-    createdAt: ReturnType<typeof serverTimestamp>
-  } = {
-    userId,
-    organisationId: input.organisationId ?? null,
-    date,
-    checkInTime: now,
-    createdAt: serverTimestamp(),
-    energyTank: input.energyTank,
-    maskingLoad: input.maskingLoad,
-    supportFelt: input.supportFelt,
-    biggestDrain: input.biggestDrain,
-    biggestDrainOther:
-      input.biggestDrain === 'other'
-        ? input.biggestDrainOther?.trim() || null
-        : null,
-    biggestRefill: input.biggestRefill,
-    biggestRefillOther:
-      input.biggestRefill === 'other'
-        ? input.biggestRefillOther?.trim() || null
-        : null,
-    mostDrainingTime: input.mostDrainingTime,
-    ableToAskNeeds: input.ableToAskNeeds,
-    accommodationWish: input.accommodationWish?.trim() || null,
-    wouldUseAgain: null,
-    notes: null,
-  }
+  const payload = buildCheckInDocument(userId, input, date, now, isGuest)
 
   await runTransaction(db, async (transaction) => {
     const snapshot = await transaction.get(checkInRef)
@@ -235,30 +494,9 @@ export async function submitWorkCheckIn(
 
   return {
     id: date,
-    userId,
-    organisationId: input.organisationId ?? null,
-    date,
-    checkInTime: now,
+    ...payload,
     createdAt: Timestamp.now(),
-    energyTank: input.energyTank,
-    maskingLoad: input.maskingLoad,
-    supportFelt: input.supportFelt,
-    biggestDrain: input.biggestDrain,
-    biggestDrainOther:
-      input.biggestDrain === 'other'
-        ? input.biggestDrainOther?.trim() || null
-        : null,
-    biggestRefill: input.biggestRefill,
-    biggestRefillOther:
-      input.biggestRefill === 'other'
-        ? input.biggestRefillOther?.trim() || null
-        : null,
-    mostDrainingTime: input.mostDrainingTime,
-    ableToAskNeeds: input.ableToAskNeeds,
-    accommodationWish: input.accommodationWish?.trim() || null,
-    wouldUseAgain: null,
-    notes: null,
-  }
+  } as WorkCheckIn
 }
 
 export async function fetchWorkCheckInForDate(

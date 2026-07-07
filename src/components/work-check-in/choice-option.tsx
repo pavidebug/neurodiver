@@ -5,9 +5,15 @@ interface ChoiceOptionProps {
   option: WorkCheckInQuestionOption
   selected: boolean
   onSelect: (value: string) => void
+  multi?: boolean
 }
 
-export function ChoiceOption({ option, selected, onSelect }: ChoiceOptionProps) {
+export function ChoiceOption({
+  option,
+  selected,
+  onSelect,
+  multi = false,
+}: ChoiceOptionProps) {
   return (
     <button
       type="button"
@@ -20,6 +26,19 @@ export function ChoiceOption({ option, selected, onSelect }: ChoiceOptionProps) 
           : 'border-border bg-surface hover:border-yellow hover:bg-yellow/20',
       )}
     >
+      {multi && (
+        <span
+          className={cn(
+            'mr-3 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 text-xs font-bold',
+            selected
+              ? 'border-green bg-green text-cream'
+              : 'border-border bg-surface-solid text-transparent',
+          )}
+          aria-hidden="true"
+        >
+          ✓
+        </span>
+      )}
       <span className="text-lg font-medium text-text">{option.label}</span>
     </button>
   )

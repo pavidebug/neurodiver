@@ -2,6 +2,13 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 export async function loadEnvLocal(root) {
+  if (typeof root !== 'string' || root.trim().length === 0) {
+    throw new Error(
+      'loadEnvLocal requires a project root directory path. Received: ' +
+        String(root),
+    )
+  }
+
   const envPath = path.join(root, '.env.local')
 
   try {
@@ -27,6 +34,13 @@ export async function loadEnvLocal(root) {
 }
 
 export async function resolveFirebaseProjectId(root) {
+  if (typeof root !== 'string' || root.trim().length === 0) {
+    throw new Error(
+      'resolveFirebaseProjectId requires a project root directory path. Received: ' +
+        String(root),
+    )
+  }
+
   await loadEnvLocal(root)
 
   if (process.env.FIREBASE_PROJECT_ID) {

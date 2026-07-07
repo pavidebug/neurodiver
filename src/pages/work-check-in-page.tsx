@@ -19,6 +19,7 @@ import {
   buildWorkCheckInInput,
   canProceedFromQuestion,
   getQuestionValue,
+  toggleMultiChoiceValue,
 } from '@/lib/work-check-in-form'
 import {
   DuplicateWorkCheckInError,
@@ -30,6 +31,11 @@ import type {
   WorkCheckInDraftAnswers,
   WorkCheckInQuestion,
 } from '@/types/work-energy'
+
+type OtherDetailField =
+  | 'drainsOther'
+  | 'refillsOther'
+  | 'accommodationNeedsOther'
 
 function goToReflection(
   navigate: ReturnType<typeof useNavigate>,
@@ -79,22 +85,54 @@ export function WorkCheckInPage() {
     setAnswers((current) => {
       const next = { ...current, [questionId]: value }
 
-      if (questionId === 'biggestDrain' && value !== 'other') {
-        delete next.biggestDrainOther
+      if (questionId === 'drains' && Array.isArray(value) && !value.includes('other')) {
+        delete next.drainsOther
       }
 
-      if (questionId === 'biggestRefill' && value !== 'other') {
-        delete next.biggestRefillOther
+      if (questionId === 'refills' && Array.isArray(value) && !value.includes('other')) {
+        delete next.refillsOther
+      }
+
+      if (
+        questionId === 'accommodationNeeds' &&
+        Array.isArray(value) &&
+        !value.includes('other')
+      ) {
+        delete next.accommodationNeedsOther
       }
 
       return next
     })
   }
 
-  const updateOtherDetail = (
-    field: 'biggestDrainOther' | 'biggestRefillOther',
+  const toggleMultiAnswer = (
+    questionId: 'drains' | 'refills' | 'accommodationNeeds',
     value: string,
   ) => {
+    clearError()
+    setLocalError(null)
+    setAnswers((current) => {
+      const currentValues = current[questionId] ?? []
+      const nextValues = toggleMultiChoiceValue(currentValues, value)
+      const next = { ...current, [questionId]: nextValues }
+
+      if (questionId === 'drains' && !nextValues.includes('other')) {
+        delete next.drainsOther
+      }
+
+      if (questionId === 'refills' && !nextValues.includes('other')) {
+        delete next.refillsOther
+      }
+
+      if (questionId === 'accommodationNeeds' && !nextValues.includes('other')) {
+        delete next.accommodationNeedsOther
+      }
+
+      return next
+    })
+  }
+
+  const updateOtherDetail = (field: OtherDetailField, value: string) => {
     clearError()
     setLocalError(null)
     setAnswers((current) => ({ ...current, [field]: value }))
@@ -182,6 +220,11 @@ export function WorkCheckInPage() {
     )
   }
 
+  const multiSelected =
+    question.type === 'multi-choice' && Array.isArray(selectedValue)
+      ? selectedValue
+      : []
+
   return (
     <div className="page-enter mx-auto flex min-h-[70dvh] max-w-md flex-col">
       <WorkCheckInProgress current={step + 1} total={total} className="mb-10" />
@@ -228,7 +271,27 @@ export function WorkCheckInPage() {
                 onSelect={(value) => updateAnswer(question.id, value)}
               />
             ))}
-            {question.otherDetailField && selectedValue === 'other' && (
+          </fieldset>
+        )}
+
+        {question.type === 'multi-choice' && (
+          <fieldset className="space-y-3">
+            <legend className="sr-only">{question.question}</legend>
+            {question.options.map((option) => (
+              <ChoiceOption
+                key={option.value}
+                option={option}
+                multi
+                selected={multiSelected.includes(option.value)}
+                onSelect={(value) =>
+                  toggleMultiAnswer(
+                    question.id as 'drains' | 'refills' | 'accommodationNeeds',
+                    value,
+                  )
+                }
+              />
+            ))}
+            {question.otherDetailField && multiSelected.includes('other') && (
               <Textarea
                 id={question.otherDetailField}
                 name={question.otherDetailField}

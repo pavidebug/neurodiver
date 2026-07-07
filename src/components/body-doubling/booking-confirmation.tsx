@@ -1,0 +1,151 @@
+import { CalendarPlus, ExternalLink } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { formatCountdown, useCountdown } from '@/hooks/use-countdown'
+import { downloadSessionIcsFile } from '@/lib/focus-session-calendar'
+import {
+  formatSessionDate,
+  formatSessionDuration,
+  formatSessionTime,
+  isSessionEnded,
+  isSessionUpcoming,
+} from '@/lib/focus-session-format'
+import type { FocusSession, SessionBooking } from '@/types/body-doubling'
+
+interface BookingConfirmationProps {
+  session: FocusSession
+  booking: SessionBooking
+  contactEmail: string | null
+  timezone: string
+  emailRemindersEnabled: boolean
+  feedbackSubmitted: boolean
+  onJoin: () => void
+  onReflect: () => void
+  onBack: () => void
+}
+
+export function BookingConfirmation({
+  session,
+  booking,
+  contactEmail,
+  timezone,
+  emailRemindersEnabled,
+  feedbackSubmitted,
+  onJoin,
+  onReflect,
+  onBack,
+}: BookingConfirmationProps) {
+  const countdown = useCountdown(
+    isSessionUpcoming(session) ? session.startsAt : null,
+  )
+  const ended = isSessionEnded(session)
+  const showCountdown = isSessionUpcoming(session) && countdown && countdown.totalMs > 0
+
+  const handleJoinClick = () => {
+    onJoin()
+    if (session.meetingLink) {
+      window.open(session.meetingLink, '_blank', 'noopener,noreferrer')
+    }
+  }
+
+  return (
+    <div className="space-y-8">
+      <header className="space-y-2 text-center">
+        <p className="text-sm font-medium text-green">You&apos;re booked!</p>
+        <h1 className="font-display text-3xl font-semibold text-text">
+          See you there
+        </h1>
+      </header>
+
+      <dl className="space-y-4 rounded-2xl border border-green/20 bg-green-muted/40 p-5 text-sm">
+        <div>
+          <dt className="text-text-muted">Session date</dt>
+          <dd className="mt-1 text-lg font-medium text-text">
+            {formatSessionDate(session.startsAt)}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-text-muted">Session time</dt>
+          <dd className="mt-1 text-lg font-medium text-text">
+            {formatSessionTime(session.startsAt)}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-text-muted">Duration</dt>
+          <dd className="mt-1 font-medium text-text">
+            {formatSessionDuration(session.durationMinutes)}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-text-muted">Platform</dt>
+          <dd className="mt-1 font-medium text-text">{session.platform}</dd>
+        </div>
+        {session.meetingLink && (
+          <div>
+            <dt className="text-text-muted">Meeting link</dt>
+            <dd className="mt-1 break-all font-medium text-text">
+              {session.meetingLink}
+            </dd>
+          </div>
+        )}
+        {booking.intention && (
+          <div>
+            <dt className="text-text-muted">Your intention</dt>
+            <dd className="mt-1 text-text">&ldquo;{booking.intention}&rdquo;</dd>
+          </div>
+        )}
+      </dl>
+
+      {contactEmail && (
+        <p className="rounded-xl bg-surface-solid px-4 py-3 text-sm text-text-muted">
+          A confirmation email with a calendar invite will be sent to {contactEmail}.
+          {emailRemindersEnabled &&
+            ' Reminders will arrive 24 hours and 30 minutes before the session.'}
+        </p>
+      )}
+
+      {showCountdown && (
+        <div className="rounded-2xl border border-border bg-surface-solid px-5 py-4 text-center">
+          <p className="text-sm text-text-muted">Starts in</p>
+          <p className="mt-1 font-display text-2xl font-semibold text-text">
+            {formatCountdown(countdown)}
+          </p>
+        </div>
+      )}
+
+      <Button type="button" className="h-14 w-full text-lg" onClick={handleJoinClick}>
+        <ExternalLink className="mr-2 h-5 w-5" aria-hidden="true" />
+        Join Session
+      </Button>
+
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full"
+        onClick={() => downloadSessionIcsFile(session, booking, { timezone })}
+      >
+        <CalendarPlus className="mr-2 h-4 w-4" aria-hidden="true" />
+        Add to calendar
+      </Button>
+
+      {ended && !feedbackSubmitted && (
+        <Button type="button" variant="secondary" className="w-full" onClick={onReflect}>
+          Share how it went
+        </Button>
+      )}
+
+      {ended && feedbackSubmitted && (
+        <p className="rounded-xl bg-green-muted/60 px-4 py-3 text-center text-sm text-green">
+          Thanks for your feedback.
+        </p>
+      )}
+
+      <p className="text-center text-xs text-text-muted">
+        WhatsApp reminders coming soon.
+      </p>
+
+      <Button type="button" variant="ghost" className="w-full" onClick={onBack}>
+        Back to sessions
+      </Button>
+    </div>
+  )
+}

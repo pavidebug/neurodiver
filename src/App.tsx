@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { ProtectedRoute } from '@/components/auth/protected-route'
+import { PublicRoute } from '@/components/auth/public-route'
 import { AppLayout } from '@/components/layout/app-layout'
 import { AuthProvider } from '@/context/auth-context'
 import { StrategyProvider } from '@/context/strategy-context'
@@ -14,6 +15,8 @@ import { WorkCheckInPage } from '@/pages/work-check-in-page'
 import { StrategiesPage } from '@/pages/strategies-page'
 import { BodyDoublePage } from '@/pages/body-double-page'
 import { ProfilePage } from '@/pages/profile-page'
+import { InviteFriendPage } from '@/pages/invite-friend-page'
+import { WeeklyInsightsPage } from '@/pages/weekly-insights-page'
 
 export default function App() {
   return (
@@ -23,8 +26,10 @@ export default function App() {
           <StrategyProvider>
             <BrowserRouter>
               <Routes>
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/login" element={<LoginPage />} />
+                <Route element={<PublicRoute />}>
+                  <Route path="/" element={<LandingPage />} />
+                  <Route path="/login" element={<LoginPage />} />
+                </Route>
 
                 <Route element={<ProtectedRoute />}>
                   <Route element={<AppLayout />}>
@@ -35,9 +40,11 @@ export default function App() {
                       element={<DailyWorkReflectionPage />}
                     />
                     <Route path="/energy-patterns" element={<EnergyPatternsPage />} />
+                    <Route path="/weekly-insights" element={<WeeklyInsightsPage />} />
                     <Route path="/strategies" element={<StrategiesPage />} />
                     <Route path="/body-double" element={<BodyDoublePage />} />
                     <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/profile/invite-friend" element={<InviteFriendPage />} />
 
                     {/* Pilot: personal check-in hidden */}
                     <Route
@@ -57,7 +64,7 @@ export default function App() {
                       element={<Navigate to="/energy-patterns" replace />}
                     />
 
-                    <Route path="*" element={<Navigate to="/" replace />} />
+                    <Route path="*" element={<Navigate to="/home" replace />} />
                   </Route>
                 </Route>
               </Routes>

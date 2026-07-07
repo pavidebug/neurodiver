@@ -1,35 +1,47 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
+import { DescribeThankYou } from '@/components/strategies/describe-thank-you'
 import { HelpMeChoose } from '@/components/strategies/help-me-choose'
+import { HelpMeDescribe } from '@/components/strategies/help-me-describe'
 import {
   StrategyNavigatorHome,
-  type NavigatorEntry,
 } from '@/components/strategies/strategy-navigator-home'
+import type { NavigatorEntry } from '@/components/strategies/strategy-navigator-types'
 import { StrategyDetailSheet } from '@/components/strategies/strategy-detail-sheet'
 import { StrategySwipeDeck } from '@/components/strategies/strategy-swipe-deck'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import {
+  filterStrategiesByBrowseCategory,
+  filterStrategiesBySituation,
+  getBrowseCategoryLabel,
+  getSituationChipLabel,
+} from '@/data/strategy-navigator-chips'
 import { useAuth } from '@/context/auth-context'
 import { useStrategies } from '@/context/strategy-context'
+import { useWorkEnergy } from '@/context/work-energy-context'
+import { getBrainStatusFromWorkCheckIn } from '@/lib/strategy-analytics'
 import {
   filterSavedStrategies,
   filterStrategiesByBestWhen,
   filterStrategiesByCategory,
-  searchStrategies,
 } from '@/lib/strategy-filters'
+import { getStrategiesForSearchTerm } from '@/lib/strategy-search'
 import type { BestWhenLabel, Strategy, StrategyCategory } from '@/types/strategy'
 
 type Screen = 'home' | 'flow'
 type HelpStep = 'pick' | 'browse'
+type DescribeStep = 'form' | 'results' | 'thank-you'
 
 const ENTRY_TITLES: Record<NavigatorEntry, string> = {
-  search: 'Search',
-  'help-me-choose': 'Help Me Choose',
+  search: 'Strategies',
+  'help-me-choose': 'Help Me Find One',
+  describe: "Tell us what's been happening",
   saved: 'Saved Strategies',
 }
 
 export function StrategiesPage() {
   const { user } = useAuth()
+  const { todayCheckIn } = useWorkEnergy()
   const {
     strategies,
     loading,
@@ -38,13 +50,19 @@ export function StrategiesPage() {
     toggleSaved,
     trackView,
     getSaved,
+    getRecommended,
     clearError,
   } = useStrategies()
 
   const [screen, setScreen] = useState<Screen>('home')
   const [entry, setEntry] = useState<NavigatorEntry>('search')
+  const [deckTitle, setDeckTitle] = useState<string>(ENTRY_TITLES.search)
   const [helpStep, setHelpStep] = useState<HelpStep>('pick')
-  const [searchQuery, setSearchQuery] = useState('')
+  const [describeStep, setDescribeStep] = useState<DescribeStep>('form')
+  const [describeDeck, setDescribeDeck] = useState<Strategy[]>([])
+  const [describeRequestId, setDescribeRequestId] = useState<string | null>(null)
+  const [describePrefill, setDescribePrefill] = useState('')
+  const [searchDeck, setSearchDeck] = useState<Strategy[]>([])
   const [selectedFeeling, setSelectedFeeling] = useState<BestWhenLabel | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<StrategyCategory | null>(
     null,
@@ -56,6 +74,12 @@ export function StrategiesPage() {
 
   const savedStrategies = getSaved()
 
+  const recommendedStrategies = useMemo(() => {
+    const brainStatus = getBrainStatusFromWorkCheckIn(todayCheckIn)
+    if (!brainStatus) return []
+    return getRecommended(brainStatus, 5)
+  }, [todayCheckIn, getRecommended])
+
   const deckStrategies = useMemo(() => {
     if (entry === 'saved') {
       return filterSavedStrategies(
@@ -65,7 +89,11 @@ export function StrategiesPage() {
     }
 
     if (entry === 'search') {
-      return searchStrategies(strategies, searchQuery)
+      return searchDeck
+    }
+
+    if (entry === 'describe' && describeStep === 'results') {
+      return describeDeck
     }
 
     if (entry === 'help-me-choose' && helpStep === 'browse' && selectedFeeling) {
@@ -80,8 +108,10 @@ export function StrategiesPage() {
   }, [
     entry,
     helpStep,
+    describeStep,
     savedStrategies,
-    searchQuery,
+    searchDeck,
+    describeDeck,
     selectedCategory,
     selectedFeeling,
     strategies,
@@ -105,23 +135,76 @@ export function StrategiesPage() {
 
   useEffect(() => {
     setDeckIndex(0)
-  }, [entry, helpStep, searchQuery, selectedFeeling, selectedCategory])
+  }, [
+    entry,
+    helpStep,
+    describeStep,
+    selectedFeeling,
+    selectedCategory,
+    searchDeck,
+    describeDeck,
+  ])
 
   useEffect(() => {
     if (!currentStrategy || !user || screen !== 'flow' || helpStep === 'pick') return
+    if (entry === 'search' && searchDeck.length === 0) return
+    if (entry === 'describe' && describeStep !== 'results') return
     void trackView(currentStrategy.id)
-  }, [currentStrategy?.id, user, trackView, screen, helpStep])
+  }, [
+    currentStrategy?.id,
+    user,
+    trackView,
+    screen,
+    helpStep,
+    entry,
+    describeStep,
+    searchDeck.length,
+  ])
 
-  const openEntry = useCallback((nextEntry: NavigatorEntry) => {
-    setEntry(nextEntry)
-    setHelpStep('pick')
-    setSearchQuery('')
-    setSelectedFeeling(null)
-    setSelectedCategory(null)
+  const resetDescribeFlow = useCallback(() => {
+    setDescribeStep('form')
+    setDescribeDeck([])
+    setDescribeRequestId(null)
+  }, [])
+
+  const openDeck = useCallback(
+    (deck: Strategy[], title: string, nextEntry: NavigatorEntry = 'search') => {
+      setSearchDeck(deck)
+      setDeckIndex(0)
+      setDeckTitle(title)
+      setEntry(nextEntry)
+      setSheetOpen(false)
+      setSheetStrategy(null)
+      setScreen('flow')
+    },
+    [],
+  )
+
+  const backToNavigatorHome = useCallback(() => {
+    setScreen('home')
+    setSearchDeck([])
+    setDeckTitle(ENTRY_TITLES.search)
+    resetDescribeFlow()
+    setDescribePrefill('')
     setSheetOpen(false)
     setSheetStrategy(null)
-    setScreen('flow')
-  }, [])
+  }, [resetDescribeFlow])
+
+  const openEntry = useCallback(
+    (nextEntry: NavigatorEntry, options?: { describePrefill?: string }) => {
+      setEntry(nextEntry)
+      setHelpStep('pick')
+      setSearchDeck([])
+      resetDescribeFlow()
+      setDescribePrefill(options?.describePrefill?.trim() ?? '')
+      setSelectedFeeling(null)
+      setSelectedCategory(null)
+      setSheetOpen(false)
+      setSheetStrategy(null)
+      setScreen('flow')
+    },
+    [resetDescribeFlow],
+  )
 
   const goBack = useCallback(() => {
     if (entry === 'help-me-choose' && helpStep === 'browse') {
@@ -130,10 +213,105 @@ export function StrategiesPage() {
       return
     }
 
-    setScreen('home')
-    setSheetOpen(false)
-    setSheetStrategy(null)
-  }, [entry, helpStep])
+    if (entry === 'describe' && describeStep === 'results') {
+      resetDescribeFlow()
+      setSheetOpen(false)
+      return
+    }
+
+    if (entry === 'describe' && describeStep === 'thank-you') {
+      backToNavigatorHome()
+      return
+    }
+
+    backToNavigatorHome()
+  }, [entry, helpStep, describeStep, resetDescribeFlow, backToNavigatorHome])
+
+  const handleSearchSelect = useCallback(
+    (strategy: Strategy, context: { searchTerm: string }) => {
+      const results = getStrategiesForSearchTerm(strategies, context.searchTerm)
+      const deck =
+        results.length > 0
+          ? results
+          : strategies.filter((item) => item.id === strategy.id)
+
+      const selectedIndex = deck.findIndex((item) => item.id === strategy.id)
+      setSearchDeck(deck)
+      setDeckIndex(selectedIndex >= 0 ? selectedIndex : 0)
+    },
+    [strategies],
+  )
+
+  const handleDescribeMatches = useCallback((matches: Strategy[]) => {
+    setDescribeDeck(matches)
+    setDescribeStep('results')
+    setDeckIndex(0)
+  }, [])
+
+  const handleDescribeNoMatches = useCallback((requestId: string) => {
+    setDescribeRequestId(requestId)
+    setDescribeStep('thank-you')
+  }, [])
+
+  const handleCantFind = useCallback(
+    (searchTerm: string) => {
+      openEntry('describe', { describePrefill: searchTerm })
+    },
+    [openEntry],
+  )
+
+  const handleSituationSelect = useCallback(
+    (situationId: string) => {
+      const deck = filterStrategiesBySituation(strategies, situationId)
+      openDeck(deck, getSituationChipLabel(situationId))
+    },
+    [strategies, openDeck],
+  )
+
+  const handleCategorySelect = useCallback(
+    (categoryId: string) => {
+      const deck = filterStrategiesByBrowseCategory(strategies, categoryId)
+      openDeck(deck, getBrowseCategoryLabel(categoryId))
+    },
+    [strategies, openDeck],
+  )
+
+  const handleRecommendedSelect = useCallback(
+    (strategy: Strategy) => {
+      const brainStatus = getBrainStatusFromWorkCheckIn(todayCheckIn)
+      const deck = brainStatus ? getRecommended(brainStatus, 5) : [strategy]
+      const selectedIndex = deck.findIndex((item) => item.id === strategy.id)
+      setSearchDeck(deck)
+      setDeckIndex(selectedIndex >= 0 ? selectedIndex : 0)
+      setDeckTitle('Recommended for you today')
+      setEntry('search')
+      setScreen('flow')
+    },
+    [todayCheckIn, getRecommended],
+  )
+
+  const handleHomeSearchSelect = useCallback(
+    (strategy: Strategy, context: { searchTerm: string }) => {
+      handleSearchSelect(strategy, context)
+      setDeckTitle(context.searchTerm.trim() || 'Strategies')
+      setEntry('search')
+      setScreen('flow')
+    },
+    [handleSearchSelect],
+  )
+
+  const handleSavedSelect = useCallback(
+    (strategy: Strategy) => {
+      const deck = savedStrategies
+      const selectedIndex = deck.findIndex((item) => item.id === strategy.id)
+      setSearchDeck(deck)
+      setDeckIndex(selectedIndex >= 0 ? selectedIndex : 0)
+      setDeckTitle(ENTRY_TITLES.saved)
+      setEntry('saved')
+      setScreen('flow')
+    },
+    [savedStrategies],
+  )
 
   const openTryThis = useCallback((strategy: Strategy) => {
     setSheetStrategy(strategy)
@@ -191,6 +369,14 @@ export function StrategiesPage() {
     )
   }
 
+  const detailSheet = (
+    <StrategyDetailSheet
+      strategy={sheetStrategy}
+      open={sheetOpen}
+      onClose={closeSheet}
+    />
+  )
+
   if (screen === 'home') {
     return (
       <div className="page-enter pb-4">
@@ -203,15 +389,27 @@ export function StrategiesPage() {
           </p>
         )}
         <StrategyNavigatorHome
-          savedCount={savedStrategies.length}
-          onSelect={openEntry}
+          strategies={strategies}
+          savedStrategies={savedStrategies}
+          recommendedStrategies={recommendedStrategies}
+          todayCheckIn={todayCheckIn}
+          onSearchSelect={handleHomeSearchSelect}
+          onCantFind={handleCantFind}
+          onSituationSelect={handleSituationSelect}
+          onCategorySelect={handleCategorySelect}
+          onRecommendedSelect={handleRecommendedSelect}
+          onSavedSelect={handleSavedSelect}
         />
+        {detailSheet}
       </div>
     )
   }
 
   const showingDeck =
-    entry !== 'help-me-choose' || helpStep === 'browse'
+    entry === 'search' ||
+    (entry === 'help-me-choose' && helpStep === 'browse') ||
+    (entry === 'describe' && describeStep === 'results') ||
+    entry === 'saved'
 
   return (
     <div className="page-enter space-y-5 pb-4">
@@ -228,9 +426,15 @@ export function StrategiesPage() {
         </Button>
         <div className="min-w-0 flex-1">
           <h1 className="font-display text-xl font-semibold text-text">
-            {ENTRY_TITLES[entry]}
+            {entry === 'help-me-choose'
+              ? ENTRY_TITLES[entry]
+              : entry === 'describe'
+                ? ENTRY_TITLES[entry]
+                : entry === 'saved'
+                  ? ENTRY_TITLES.saved
+                  : deckTitle}
           </h1>
-          {showingDeck && deckStrategies.length > 0 && (
+          {deckStrategies.length > 0 && (
             <p className="text-sm text-text-muted">
               {safeDeckIndex + 1} of {deckStrategies.length}
             </p>
@@ -247,19 +451,28 @@ export function StrategiesPage() {
         </p>
       )}
 
-      {!user && (
+      {!user && entry !== 'describe' && (
         <p className="rounded-xl bg-yellow/20 px-4 py-3 text-sm text-text-muted">
-          Sign in to save strategies.
+          Sign in to save strategies and submit requests.
         </p>
       )}
 
-      {entry === 'search' && (
-        <Input
-          type="search"
-          placeholder="Search by title, feeling, or challenge…"
-          value={searchQuery}
-          onChange={(event) => setSearchQuery(event.target.value)}
-          aria-label="Search strategies"
+      {entry === 'describe' && describeStep === 'form' && (
+        <HelpMeDescribe
+          strategies={strategies}
+          todayCheckIn={todayCheckIn}
+          onMatchesFound={handleDescribeMatches}
+          onNoMatches={handleDescribeNoMatches}
+          onBack={backToNavigatorHome}
+          initialDescription={describePrefill}
+          variant="simple"
+        />
+      )}
+
+      {entry === 'describe' && describeStep === 'thank-you' && describeRequestId && (
+        <DescribeThankYou
+          requestId={describeRequestId}
+          onBack={backToNavigatorHome}
         />
       )}
 
@@ -274,15 +487,27 @@ export function StrategiesPage() {
         />
       )}
 
+      {entry === 'describe' && describeStep === 'results' && (
+        <p className="text-base leading-relaxed text-text">
+          We found a few strategies that might help.
+        </p>
+      )}
+
       {showingDeck && deckStrategies.length === 0 && (
         <div className="rounded-2xl border border-border bg-surface-solid px-5 py-12 text-center">
           <p className="text-lg text-text-muted">
             {entry === 'saved'
               ? 'No saved strategies yet. Browse and tap the bookmark to save one.'
-              : entry === 'search'
-                ? 'No strategies match your search.'
-                : 'No strategies match those choices. Try a different feeling.'}
+              : 'No strategies match that filter yet. Try another chip or search manually.'}
           </p>
+          <Button
+            type="button"
+            variant="outline"
+            className="mt-4"
+            onClick={backToNavigatorHome}
+          >
+            Back to Strategy Navigator
+          </Button>
         </div>
       )}
 
@@ -297,6 +522,14 @@ export function StrategiesPage() {
           savePending={savePending}
           disabled={sheetOpen}
         />
+      )}
+
+      {entry === 'help-me-choose' && helpStep === 'browse' && deckStrategies.length === 0 && (
+        <div className="rounded-2xl border border-border bg-surface-solid px-5 py-12 text-center">
+          <p className="text-lg text-text-muted">
+            No strategies match those choices. Try a different feeling.
+          </p>
+        </div>
       )}
 
       <StrategyDetailSheet

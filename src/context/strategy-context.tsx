@@ -41,7 +41,7 @@ interface StrategyContextValue {
 const StrategyContext = createContext<StrategyContextValue | null>(null)
 
 export function StrategyProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth()
+  const { user, loading: authLoading } = useAuth()
   const [strategies, setStrategies] = useState<Strategy[]>([])
   const [userState, setUserState] = useState<UserStrategyState>(EMPTY_STRATEGY_STATE)
   const [catalogLoading, setCatalogLoading] = useState(true)
@@ -49,12 +49,21 @@ export function StrategyProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    if (authLoading) return
+
+    if (!user) {
+      setStrategies([])
+      setCatalogLoading(false)
+      return
+    }
+
     setCatalogLoading(true)
 
     const unsubscribe = subscribeToStrategies(
       (data) => {
         setStrategies(data)
         setCatalogLoading(false)
+        setError(null)
       },
       (subscriptionError) => {
         setError(getFirestoreStrategyErrorMessage(subscriptionError))
@@ -63,12 +72,12 @@ export function StrategyProvider({ children }: { children: ReactNode }) {
     )
 
     return unsubscribe
-  }, [])
+  }, [authLoading, user])
 
   useEffect(() => {
-    if (!user) {
+    if (authLoading || !user) {
       setUserState(EMPTY_STRATEGY_STATE)
-      setUserLoading(false)
+      setUserLoading(!authLoading && !user ? false : authLoading)
       return
     }
 
@@ -79,6 +88,7 @@ export function StrategyProvider({ children }: { children: ReactNode }) {
       (state) => {
         setUserState(state)
         setUserLoading(false)
+        setError(null)
       },
       (subscriptionError) => {
         setError(getFirestoreStrategyErrorMessage(subscriptionError))
@@ -87,7 +97,7 @@ export function StrategyProvider({ children }: { children: ReactNode }) {
     )
 
     return unsubscribe
-  }, [user])
+  }, [authLoading, user])
 
   const getRecommended = useCallback(
     (brainStatus: BrainStatusType, limit = 3) => {
@@ -174,7 +184,7 @@ export function StrategyProvider({ children }: { children: ReactNode }) {
     () => ({
       strategies,
       userState,
-      loading: catalogLoading || userLoading,
+      loading: authLoading || catalogLoading || userLoading,
       error,
       getRecommended,
       getByCategory,
@@ -188,6 +198,7 @@ export function StrategyProvider({ children }: { children: ReactNode }) {
     [
       strategies,
       userState,
+      authLoading,
       catalogLoading,
       userLoading,
       error,

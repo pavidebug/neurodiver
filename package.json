@@ -11,8 +11,12 @@
     "validate:strategies": "node scripts/validate-strategies.mjs",
     "seed:strategies": "node scripts/seed-strategies.mjs",
     "seed:strategies:dry-run": "node scripts/seed-strategies.mjs --dry-run",
+    "seed:focus-sessions": "node scripts/seed-focus-sessions.mjs",
+    "seed:focus-sessions:dry-run": "node scripts/seed-focus-sessions.mjs --dry-run",
     "deploy:rules": "firebase deploy --only firestore:rules",
-    "deploy:firestore": "firebase deploy --only firestore"
+    "deploy:firestore": "firebase deploy --only firestore",
+    "deploy:functions": "firebase deploy --only functions",
+    "build:functions": "npm --prefix functions run build"
   },
   "dependencies": {
     "@radix-ui/react-progress": "^1.1.10",
@@ -36,6 +40,7 @@
     "firebase-admin": "^13.10.0",
     "firebase-tools": "^15.22.4",
     "oxlint": "^1.69.0",
+    "playwright": "^1.61.1",
     "tailwindcss": "^4.3.2",
     "typescript": "~6.0.2",
     "vite": "^8.1.0"

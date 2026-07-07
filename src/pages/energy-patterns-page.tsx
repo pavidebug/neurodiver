@@ -1,8 +1,12 @@
 import { Link } from 'react-router-dom'
-import { Activity, ArrowRight } from 'lucide-react'
+import { Activity, ArrowRight, BarChart3 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { formatDisplayDate, getWeekStart, getTodayString } from '@/lib/dates'
+import {
+  countWeekCheckIns,
+  WEEKLY_REPORT_MIN_CHECK_INS,
+} from '@/lib/weekly-report'
 import {
   getEaseLabel,
   getEnergyTankLabel,
@@ -14,9 +18,11 @@ import { useWorkEnergy } from '@/context/work-energy-context'
 export function EnergyPatternsPage() {
   const { checkIns, loading, currentWeekId } = useWorkEnergy()
 
-  const weekStart = getTodayString(getWeekStart())
-  const weekEnd = getTodayString()
-  const weekCheckIns = getCheckInsForDateRange(checkIns, weekStart, weekEnd)
+  const weekStart = getWeekStart()
+  const weekStartStr = getTodayString(weekStart)
+  const weekEndStr = getTodayString()
+  const weekCheckIns = getCheckInsForDateRange(checkIns, weekStartStr, weekEndStr)
+  const weekCheckInCount = countWeekCheckIns(checkIns, weekStart)
 
   if (loading) {
     return (
@@ -40,6 +46,25 @@ export function EnergyPatternsPage() {
         </p>
       </header>
 
+      <Card className="border-green/20 bg-green-muted/30">
+        <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3">
+            <BarChart3 className="mt-0.5 h-6 w-6 shrink-0 text-green" aria-hidden="true" />
+            <div>
+              <p className="font-medium text-text">Weekly Insights</p>
+              <p className="text-sm text-text-muted">
+                {weekCheckInCount >= WEEKLY_REPORT_MIN_CHECK_INS
+                  ? 'Your weekly report is ready to view.'
+                  : `You've completed ${weekCheckInCount} of ${WEEKLY_REPORT_MIN_CHECK_INS} check-ins this week.`}
+              </p>
+            </div>
+          </div>
+          <Button asChild variant="outline" className="shrink-0">
+            <Link to="/weekly-insights">View Weekly Insights</Link>
+          </Button>
+        </CardContent>
+      </Card>
+
       {weekCheckIns.length === 0 ? (
         <Card className="border-yellow bg-yellow/20">
           <CardContent className="space-y-4 p-6 text-center">
@@ -50,7 +75,7 @@ export function EnergyPatternsPage() {
             <p className="font-medium text-text">No check-ins this week yet</p>
             <p className="text-sm leading-relaxed text-text-muted">
               Complete your first Work Energy Check-in to start seeing patterns
-              here. Reports and trends arrive in a later phase.
+              here.
             </p>
             <Button asChild>
               <Link to="/work-check-in">
@@ -90,16 +115,6 @@ export function EnergyPatternsPage() {
           </div>
         </section>
       )}
-
-      <Card>
-        <CardContent className="space-y-2 p-5">
-          <p className="font-medium text-text">Coming in Phase D</p>
-          <p className="text-sm leading-relaxed text-text-muted">
-            Weekly and monthly reports, trend charts, and downloadable summaries
-            will build on the check-in data saved here.
-          </p>
-        </CardContent>
-      </Card>
     </div>
   )
 }
