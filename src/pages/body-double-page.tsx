@@ -29,7 +29,7 @@ import type { ContactProfileInput } from '@/lib/user-contact-profile'
 type Screen = 'home' | 'confirmation' | 'reflection'
 
 export function BodyDoublePage() {
-  const { user } = useAuth()
+  const { user, isGuest } = useAuth()
   const { profile } = useWorkEnergy()
 
   const [screen, setScreen] = useState<Screen>('home')
@@ -42,11 +42,10 @@ export function BodyDoublePage() {
   const [contact, setContact] = useState<ContactProfileInput>(() =>
     buildContactProfileDefaults(profile, user?.email),
   )
-  const [savedContactEmail, setSavedContactEmail] = useState<string | null>(null)
 
   const [reservationOpen, setReservationOpen] = useState(false)
   const [reservationSuccess, setReservationSuccess] = useState(false)
-  const [reservationNotifyBefore, setReservationNotifyBefore] = useState(true)
+  const [confirmedEmail, setConfirmedEmail] = useState<string | null>(null)
 
   const [loading, setLoading] = useState(true)
   const [pending, setPending] = useState(false)
@@ -162,43 +161,49 @@ export function BodyDoublePage() {
   )
 
   const handleConfirmReservation = useCallback(
-    async (notifyBefore: boolean) => {
+    async (email: string) => {
       if (!user || !selectedSession) {
         setReservationError('Sign in to reserve a spot.')
         return
       }
 
-      setReservationNotifyBefore(notifyBefore)
-      setReservationError(null)
-
-      const normalizedContact = normalizeContactProfileInput({
-        ...buildContactProfileDefaults(profile, user.email),
-        ...contact,
-        email: contact.email || user.email || profile.email || '',
-        reminderPreference: 'email',
-        reminderEnabled: notifyBefore,
-      })
-
-      if (!normalizedContact.email) {
-        setReservationError('Add an email address in your profile to receive your calendar invite.')
+      const normalizedEmail = email.trim()
+      if (!normalizedEmail) {
+        setReservationError(
+          isGuest
+            ? 'Enter your email to receive your calendar invite.'
+            : 'Your account needs an email address to receive your calendar invite.',
+        )
         return
       }
 
+      setReservationError(null)
       setPending(true)
 
       try {
-        await updateUserContactProfile(user.uid, normalizedContact, profile)
+        if (isGuest) {
+          await updateUserContactProfile(
+            user.uid,
+            {
+              ...buildContactProfileDefaults(profile, normalizedEmail),
+              email: normalizedEmail,
+              reminderEnabled: false,
+              reminderPreference: 'email',
+            },
+            profile,
+          )
+        }
 
         const booking = await createSessionBooking({
           userId: user.uid,
           sessionId: selectedSession.id,
           intention: null,
-          contactEmail: normalizedContact.email,
-          reminderEnabled: notifyBefore,
+          contactEmail: normalizedEmail,
+          reminderEnabled: false,
         })
 
-        setContact(normalizedContact)
-        setSavedContactEmail(normalizedContact.email)
+        setContact((current) => ({ ...current, email: normalizedEmail }))
+        setConfirmedEmail(normalizedEmail)
         setActiveBooking(booking)
         setFeedbackSubmitted(false)
         setReservationSuccess(true)
@@ -208,7 +213,7 @@ export function BodyDoublePage() {
         setPending(false)
       }
     },
-    [contact, profile, selectedSession, user],
+    [isGuest, profile, selectedSession, user],
   )
 
   const handleInviteFriend = useCallback(async () => {
@@ -318,10 +323,11 @@ export function BodyDoublePage() {
           success={reservationSuccess}
           pending={pending}
           error={reservationError}
-          contactEmail={savedContactEmail ?? contact.email ?? profile.email ?? user?.email}
-          notifyBefore={reservationNotifyBefore}
+          isGuest={isGuest}
+          signedInEmail={user?.email}
+          confirmedEmail={confirmedEmail}
           onClose={closeReservationModal}
-          onConfirm={(notifyBefore) => void handleConfirmReservation(notifyBefore)}
+          onConfirm={(email) => void handleConfirmReservation(email)}
         />
       </div>
     )
@@ -349,7 +355,7 @@ export function BodyDoublePage() {
         <BookingConfirmation
           session={resolvedSession}
           booking={activeBooking}
-          contactEmail={savedContactEmail ?? contact.email ?? profile.email}
+          contactEmail={confirmedEmail ?? contact.email ?? profile.email ?? user?.email}
           timezone={contact.timezone || profile.timezone}
           emailRemindersEnabled={wantsEmailReminders(
             normalizeContactProfileInput(contact),

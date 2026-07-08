@@ -2,6 +2,7 @@ import { createPortal } from 'react-dom'
 import { useEffect, useState } from 'react'
 import { Check, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   formatSessionDate,
   formatSessionDuration,
@@ -24,10 +25,15 @@ interface ReservationModalProps {
   success: boolean
   pending: boolean
   error: string | null
-  contactEmail?: string | null
-  notifyBefore?: boolean
+  isGuest?: boolean
+  signedInEmail?: string | null
+  confirmedEmail?: string | null
   onClose: () => void
-  onConfirm: (notifyBefore: boolean) => void
+  onConfirm: (email: string) => void
+}
+
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
 }
 
 export function ReservationModal({
@@ -36,16 +42,17 @@ export function ReservationModal({
   success,
   pending,
   error,
-  contactEmail,
-  notifyBefore = true,
+  isGuest = false,
+  signedInEmail,
+  confirmedEmail,
   onClose,
   onConfirm,
 }: ReservationModalProps) {
-  const [notifyBeforeSelected, setNotifyBeforeSelected] = useState(true)
+  const [guestEmail, setGuestEmail] = useState('')
 
   useEffect(() => {
     if (open && !success) {
-      setNotifyBeforeSelected(true)
+      setGuestEmail('')
     }
   }, [open, success])
 
@@ -68,6 +75,16 @@ export function ReservationModal({
   }, [open, pending, onClose])
 
   if (!open || !session) return null
+
+  function handleConfirmClick() {
+    const email = isGuest ? guestEmail.trim() : (signedInEmail?.trim() ?? '')
+    if (!email) return
+    onConfirm(email)
+  }
+
+  const canConfirm = isGuest
+    ? isValidEmail(guestEmail)
+    : Boolean(signedInEmail?.trim())
 
   return createPortal(
     <div className="fixed inset-0 z-[100] flex items-end justify-center md:items-center md:p-4">
@@ -117,22 +134,17 @@ export function ReservationModal({
                 <Check className="h-8 w-8 text-green" strokeWidth={2} aria-hidden="true" />
               </div>
               <p className="text-lg leading-relaxed text-text">
-                You&apos;re in!
-                {contactEmail ? (
+                Your spot is reserved!
+                {confirmedEmail ? (
                   <>
                     {' '}
                     A confirmation email with a calendar invite is on its way to{' '}
-                    <span className="font-medium">{contactEmail}</span>.
+                    <span className="font-medium">{confirmedEmail}</span>.
                   </>
                 ) : (
                   <> We&apos;ll send your confirmation shortly.</>
                 )}
               </p>
-              {notifyBefore && (
-                <p className="text-sm text-text-muted">
-                  We&apos;ll also remind you 10 minutes before the session starts.
-                </p>
-              )}
               <p className="text-sm text-text-muted">
                 {formatSessionDate(session.startsAt)} at{' '}
                 {formatSessionTime(session.startsAt)}
@@ -190,31 +202,33 @@ export function ReservationModal({
                 </ul>
               </section>
 
-              <fieldset className="space-y-3">
-                <legend className="text-sm font-medium text-text">
-                  Reminder preference
-                </legend>
-                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-cream/50 px-4 py-3">
-                  <input
-                    type="radio"
-                    name="reminder-pref"
-                    checked={notifyBeforeSelected}
-                    onChange={() => setNotifyBeforeSelected(true)}
-                    className="mt-1 accent-green"
+              {isGuest ? (
+                <div className="space-y-2">
+                  <label htmlFor="guest-email" className="text-sm font-medium text-text">
+                    Email for your calendar invite
+                  </label>
+                  <Input
+                    id="guest-email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    value={guestEmail}
+                    onChange={(event) => setGuestEmail(event.target.value)}
                   />
-                  <span className="text-sm text-text">Notify me 10 minutes before</span>
-                </label>
-                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-cream/50 px-4 py-3">
-                  <input
-                    type="radio"
-                    name="reminder-pref"
-                    checked={!notifyBeforeSelected}
-                    onChange={() => setNotifyBeforeSelected(false)}
-                    className="mt-1 accent-green"
-                  />
-                  <span className="text-sm text-text">No reminder</span>
-                </label>
-              </fieldset>
+                  <p className="text-sm text-text-muted">
+                    We&apos;ll send your confirmation and calendar invite here.
+                  </p>
+                </div>
+              ) : signedInEmail ? (
+                <div className="rounded-2xl border border-border bg-cream/50 px-4 py-3 text-sm">
+                  <p className="font-medium text-text">Calendar invite</p>
+                  <p className="mt-1 text-text-muted">
+                    We&apos;ll email your confirmation to{' '}
+                    <span className="font-medium text-text">{signedInEmail}</span>
+                  </p>
+                </div>
+              ) : null}
 
               {error && (
                 <p
@@ -231,15 +245,15 @@ export function ReservationModal({
         <div className="shrink-0 border-t border-border px-5 py-4">
           {success ? (
             <Button type="button" className="w-full" size="lg" onClick={onClose}>
-              Done
+              You&apos;re in!
             </Button>
           ) : (
             <Button
               type="button"
               className="w-full"
               size="lg"
-              disabled={pending}
-              onClick={() => onConfirm(notifyBeforeSelected)}
+              disabled={pending || !canConfirm}
+              onClick={handleConfirmClick}
             >
               {pending ? 'Confirming…' : 'Confirm Reservation'}
             </Button>

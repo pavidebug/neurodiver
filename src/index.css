@@ -1,8 +1,8 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-cream: #f8f6ee;
-  --color-cream-dark: #f0ece0;
+  --color-cream: #faf7ef;
+  --color-cream-dark: #f3efe3;
   --color-yellow: #ebdfad;
   --color-yellow-soft: #f5efd9;
   --color-orange: #c17f3a;
@@ -10,18 +10,24 @@
   --color-green: #2d5a3d;
   --color-green-soft: #3d7350;
   --color-green-muted: #e8f0eb;
-  --color-text: #2a2824;
-  --color-text-muted: #5c574f;
-  --color-border: #e5e0d4;
-  --color-surface: rgb(255 255 255 / 0.82);
+  --color-lavender: #d4c8e8;
+  --color-lavender-muted: #f0edf8;
+  --color-lavender-deep: #7a6b96;
+  --color-sage: #a8c5b0;
+  --color-sage-light: #d4e8da;
+  --color-text: #1f2a24;
+  --color-text-muted: #6b6b63;
+  --color-border: #e8e4da;
+  --color-surface: rgb(255 255 255 / 0.88);
   --color-surface-solid: #ffffff;
 
   --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-display: 'DM Sans', var(--font-sans);
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
 
   --radius-lg: 1rem;
   --radius-xl: 1.25rem;
   --radius-2xl: 1.5rem;
+  --radius-3xl: 1.5rem;
 }
 
 @layer base {
@@ -51,6 +57,13 @@
     min-height: 100dvh;
   }
 
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display);
+  }
+
   :focus-visible {
     outline: 2px solid var(--color-orange);
     outline-offset: 3px;
@@ -66,6 +79,11 @@
     --color-green: #6aab7a;
     --color-green-soft: #7fbf8f;
     --color-green-muted: #243328;
+    --color-lavender: #4a4458;
+    --color-lavender-muted: #2a2834;
+    --color-lavender-deep: #c4b8dc;
+    --color-sage: #4a6b52;
+    --color-sage-light: #2a4030;
     --color-text: #f0ece4;
     --color-text-muted: #b8b0a4;
     --color-border: #3a3630;
@@ -154,6 +172,42 @@
 
   .popup-enter {
     animation: popup-enter 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
+  }
+
+  .onboarding-gradient {
+    background: linear-gradient(135deg, #fdf8e2 0%, #faf7ef 45%, #f4f7f2 100%);
+  }
+
+  .workspace-shell {
+    background: linear-gradient(135deg, #faf7ef 0%, #faf7ef 40%, #f4f7f2 100%);
+  }
+
+  .workspace-main {
+    background: transparent;
+  }
+
+  html.text-large {
+    font-size: 112.5%;
+  }
+
+  html.high-contrast {
+    --color-text: #1f2a24;
+    --color-text-muted: #3d4540;
+    --color-border: #1f2a24;
+  }
+
+  html.reduce-motion *,
+  html.reduce-motion *::before,
+  html.reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html.simplified-ui .page-enter,
+  html.simplified-ui .slide-up,
+  html.simplified-ui .popup-enter {
+    animation: none !important;
   }
 
   @keyframes popup-enter {

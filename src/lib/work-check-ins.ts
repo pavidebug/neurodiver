@@ -16,6 +16,7 @@ import { WORK_CHECK_IN_QUESTIONS } from '@/data/work-check-in-questions'
 import type { BrainStatusType } from '@/lib/data'
 import { getTodayString } from '@/lib/dates'
 import { db } from '@/lib/firebase'
+import { trackAnalyticsEvent } from '@/lib/product-analytics'
 import { getBrainStatusFromWorkCheckIn } from '@/lib/strategy-analytics'
 import type {
   AccommodationOption,
@@ -27,6 +28,16 @@ import type {
   WorkCheckInDocument,
   WorkCheckInInput,
 } from '@/types/work-energy'
+import type {
+  AccessibilityPreference,
+  AgeRange,
+  NdStatus,
+  NotificationPreference,
+  OnboardingChallenge,
+  OnboardingGoal,
+  Profession,
+  WorkEnvironment,
+} from '@/types/onboarding'
 import { DEFAULT_USER_WORK_PROFILE } from '@/types/work-energy'
 
 export class DuplicateWorkCheckInError extends Error {
@@ -43,7 +54,7 @@ export class IncompleteWorkCheckInError extends Error {
   }
 }
 
-function getUserRef(userId: string) {
+export function getUserRef(userId: string) {
   return doc(db, 'users', userId)
 }
 
@@ -251,7 +262,151 @@ export function mapUserWorkProfile(data: unknown): UserWorkProfile {
     selfDescription:
       typeof profile.selfDescription === 'string' ? profile.selfDescription : null,
     pilotAccess: profile.pilotAccess !== false,
+    displayName: typeof profile.displayName === 'string' ? profile.displayName : null,
+    ndStatus: isNdStatus(profile.ndStatus) ? profile.ndStatus : null,
+    ageRange: isAgeRange(profile.ageRange) ? profile.ageRange : null,
+    profession: isProfession(profile.profession) ? profile.profession : null,
+    workEnvironment: filterWorkEnvironment(profile.workEnvironment),
+    challenges: filterChallenges(profile.challenges),
+    goals: filterGoals(profile.goals),
+    accessibilityPreferences: filterAccessibility(profile.accessibilityPreferences),
+    notificationPreference: isNotificationPreference(profile.notificationPreference)
+      ? profile.notificationPreference
+      : null,
+    onboardingCompleted: profile.onboardingCompleted === true,
   }
+}
+
+function isNdStatus(value: unknown): value is NdStatus {
+  return (
+    value === 'diagnosed' ||
+    value === 'self-identify' ||
+    value === 'exploring' ||
+    value === 'supporting' ||
+    value === 'not-nd' ||
+    value === 'prefer-not-to-say'
+  )
+}
+
+function isAgeRange(value: unknown): value is AgeRange {
+  return (
+    value === 'under-18' ||
+    value === '18-24' ||
+    value === '25-34' ||
+    value === '35-44' ||
+    value === '45-54' ||
+    value === '55-plus' ||
+    value === 'prefer-not-to-say'
+  )
+}
+
+function isProfession(value: unknown): value is Profession {
+  const values: Profession[] = [
+    'student',
+    'working-professional',
+    'manager',
+    'executive',
+    'founder',
+    'freelancer',
+    'consultant',
+    'creative',
+    'engineer',
+    'finance',
+    'hr',
+    'educator',
+    'healthcare',
+    'government',
+    'looking-for-work',
+    'other',
+  ]
+  return typeof value === 'string' && values.includes(value as Profession)
+}
+
+function isNotificationPreference(value: unknown): value is NotificationPreference {
+  return (
+    value === 'never' ||
+    value === 'when-i-ask' ||
+    value === 'daily' ||
+    value === 'weekdays' ||
+    value === 'weekly'
+  )
+}
+
+function filterWorkEnvironment(value: unknown): WorkEnvironment[] {
+  if (!Array.isArray(value)) return []
+  const allowed: WorkEnvironment[] = [
+    'office',
+    'hybrid',
+    'remote',
+    'shift-work',
+    'freelance',
+    'university',
+    'home',
+  ]
+  return value.filter(
+    (entry): entry is WorkEnvironment =>
+      typeof entry === 'string' && allowed.includes(entry as WorkEnvironment),
+  )
+}
+
+function filterChallenges(value: unknown): OnboardingChallenge[] {
+  if (!Array.isArray(value)) return []
+  const allowed: OnboardingChallenge[] = [
+    'starting-tasks',
+    'prioritising',
+    'switching-tasks',
+    'remembering-things',
+    'time-blindness',
+    'sensory-overwhelm',
+    'meetings',
+    'burnout',
+    'emotional-regulation',
+    'focus',
+    'planning',
+    'procrastination',
+    'communication',
+    'sleep',
+    'work-life-balance',
+  ]
+  return value.filter(
+    (entry): entry is OnboardingChallenge =>
+      typeof entry === 'string' && allowed.includes(entry as OnboardingChallenge),
+  )
+}
+
+function filterGoals(value: unknown): OnboardingGoal[] {
+  if (!Array.isArray(value)) return []
+  const allowed: OnboardingGoal[] = [
+    'reduce-burnout',
+    'improve-focus',
+    'build-routines',
+    'understand-myself',
+    'discover-strategies',
+    'feel-less-overwhelmed',
+    'improve-performance',
+    'build-habits',
+  ]
+  return value.filter(
+    (entry): entry is OnboardingGoal =>
+      typeof entry === 'string' && allowed.includes(entry as OnboardingGoal),
+  )
+}
+
+function filterAccessibility(value: unknown): AccessibilityPreference[] {
+  if (!Array.isArray(value)) return []
+  const allowed: AccessibilityPreference[] = [
+    'reduced-animations',
+    'larger-text',
+    'high-contrast',
+    'fewer-notifications',
+    'simplified-interface',
+    'dark-mode',
+    'none',
+  ]
+  return value.filter(
+    (entry): entry is AccessibilityPreference =>
+      typeof entry === 'string' && allowed.includes(entry as AccessibilityPreference),
+  )
 }
 
 function isReminderPreference(value: unknown): value is ReminderPreference {
@@ -491,6 +646,8 @@ export async function submitWorkCheckIn(
 
     transaction.set(checkInRef, payload)
   })
+
+  void trackAnalyticsEvent(userId, 'completed_check_in', { date })
 
   return {
     id: date,

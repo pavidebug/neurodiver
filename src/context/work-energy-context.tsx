@@ -23,6 +23,8 @@ import type {
 } from '@/types/work-energy'
 import { DEFAULT_USER_WORK_PROFILE } from '@/types/work-energy'
 import { useAuth } from '@/context/auth-context'
+import { useTheme } from '@/context/theme-context'
+import { applyAccessibilityPreferences } from '@/lib/onboarding'
 
 interface WorkEnergyContextValue {
   checkIns: WorkCheckIn[]
@@ -41,6 +43,7 @@ const WorkEnergyContext = createContext<WorkEnergyContextValue | null>(null)
 
 export function WorkEnergyProvider({ children }: { children: ReactNode }) {
   const { user, isGuest } = useAuth()
+  const { setPreference } = useTheme()
   const [checkIns, setCheckIns] = useState<WorkCheckIn[]>([])
   const [profile, setProfile] = useState<UserWorkProfile>(DEFAULT_USER_WORK_PROFILE)
   const [loading, setLoading] = useState(true)
@@ -106,6 +109,11 @@ export function WorkEnergyProvider({ children }: { children: ReactNode }) {
       unsubscribeProfile()
     }
   }, [user])
+
+  useEffect(() => {
+    if (!profile.onboardingCompleted) return
+    applyAccessibilityPreferences(profile.accessibilityPreferences, setPreference)
+  }, [profile.accessibilityPreferences, profile.onboardingCompleted, setPreference])
 
   const clearError = useCallback(() => {
     setError(null)

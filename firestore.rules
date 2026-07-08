@@ -2,6 +2,11 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == 'pavi2024ns@gmail.com';
+    }
+
     // Global strategy catalog — read-only for signed-in users
     match /strategies/{strategyId} {
       allow read: if request.auth != null;
@@ -10,21 +15,24 @@ service cloud.firestore {
 
     // User profile (includes workProfile for pilot roles + reminder prefs)
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if isAdmin() || (request.auth != null && request.auth.uid == userId);
+      allow write: if request.auth != null && request.auth.uid == userId;
 
       // Work Energy Check-ins — one document per date (YYYY-MM-DD)
       match /workCheckIns/{checkInId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow read: if isAdmin() || (request.auth != null && request.auth.uid == userId);
+        allow write: if request.auth != null && request.auth.uid == userId;
       }
 
       // Cached weekly insight reports
       match /weeklyReports/{weekId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow read: if isAdmin() || (request.auth != null && request.auth.uid == userId);
+        allow write: if request.auth != null && request.auth.uid == userId;
       }
 
       // Share stats — shareCount incremented when user shares invites
       match /stats/{statId} {
-        allow read: if request.auth != null && request.auth.uid == userId;
+        allow read: if isAdmin() || (request.auth != null && request.auth.uid == userId);
         allow create: if request.auth != null
           && request.auth.uid == userId
           && request.auth.token.firebase.sign_in_provider != 'anonymous'
@@ -93,6 +101,7 @@ service cloud.firestore {
     }
 
     match /sessionFeedback/{feedbackId} {
+      allow read: if isAdmin();
       allow create: if request.auth != null
         && request.resource.data.userId == request.auth.uid
         && request.resource.data.sessionId is string
@@ -122,6 +131,24 @@ service cloud.firestore {
         && request.resource.data.isGuest == false
         && request.resource.data.createdAt == request.time;
       allow read, update, delete: if false;
+    }
+
+    // Product analytics — users create their own events; admin reads for dashboard
+    match /analyticsEvents/{eventId} {
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.eventType in [
+          'user_signed_up',
+          'completed_onboarding',
+          'completed_check_in',
+          'opened_strategy_card',
+          'saved_strategy',
+          'started_body_doubling',
+          'submitted_feedback'
+        ]
+        && request.resource.data.createdAt == request.time;
+      allow read: if isAdmin();
+      allow update, delete: if false;
     }
   }
 }

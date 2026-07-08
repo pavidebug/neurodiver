@@ -16,6 +16,7 @@ import {
 } from 'firebase/firestore'
 import { runPostBookingIntegrations } from '@/lib/focus-session-integrations'
 import { db } from '@/lib/firebase'
+import { trackAnalyticsEvent } from '@/lib/product-analytics'
 import type {
   FocusSession,
   SessionBooking,
@@ -268,6 +269,9 @@ export async function createSessionBooking(
   })
 
   void runPostBookingIntegrations(booking)
+  void trackAnalyticsEvent(input.userId, 'started_body_doubling', {
+    sessionId: input.sessionId,
+  })
 
   return booking
 }
@@ -284,6 +288,11 @@ export async function submitSessionFeedback(
     wouldJoinAgain: input.wouldJoinAgain,
     notes: input.notes?.trim() || null,
     submittedAt: serverTimestamp(),
+  })
+
+  void trackAnalyticsEvent(input.userId, 'submitted_feedback', {
+    sessionId: input.sessionId,
+    rating: input.wouldJoinAgain,
   })
 
   return ref.id

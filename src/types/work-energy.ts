@@ -106,6 +106,17 @@ export interface WorkCheckIn extends WorkCheckInDocument {
 /** In-progress answers saved locally until submission */
 export type WorkCheckInDraftAnswers = Partial<WorkCheckInInput>
 
+import type {
+  AccessibilityPreference,
+  AgeRange,
+  NdStatus,
+  NotificationPreference,
+  OnboardingChallenge,
+  OnboardingGoal,
+  Profession,
+  WorkEnvironment,
+} from '@/types/onboarding'
+
 export type ReminderPreference = 'email' | 'whatsapp' | 'both'
 
 /**
@@ -126,6 +137,17 @@ export interface UserWorkProfile {
   selfDescription: string | null
   /** Pilot users can view full weekly reports; future paid tier uses this flag */
   pilotAccess: boolean
+  /** Onboarding — preferred name shown across the app */
+  displayName: string | null
+  ndStatus: NdStatus | null
+  ageRange: AgeRange | null
+  profession: Profession | null
+  workEnvironment: WorkEnvironment[]
+  challenges: OnboardingChallenge[]
+  goals: OnboardingGoal[]
+  accessibilityPreferences: AccessibilityPreference[]
+  notificationPreference: NotificationPreference | null
+  onboardingCompleted: boolean
 }
 
 export const DEFAULT_USER_WORK_PROFILE: UserWorkProfile = {
@@ -140,6 +162,16 @@ export const DEFAULT_USER_WORK_PROFILE: UserWorkProfile = {
   reminderPreference: 'email',
   selfDescription: null,
   pilotAccess: true,
+  displayName: null,
+  ndStatus: null,
+  ageRange: null,
+  profession: null,
+  workEnvironment: [],
+  challenges: [],
+  goals: [],
+  accessibilityPreferences: [],
+  notificationPreference: null,
+  onboardingCompleted: false,
 }
 
 export interface OrganisationDocument {

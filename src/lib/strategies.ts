@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore'
 import type { BrainStatusType } from '@/lib/data'
 import { db } from '@/lib/firebase'
+import { trackAnalyticsEvent } from '@/lib/product-analytics'
 import { DEFAULT_STRATEGY_SEED } from '@/lib/strategy-seed'
 import type {
   Strategy,
@@ -284,6 +285,10 @@ export async function toggleSavedStrategy(
     )
   })
 
+  if (isSaved) {
+    void trackAnalyticsEvent(userId, 'saved_strategy', { strategyId })
+  }
+
   return isSaved
 }
 
@@ -338,6 +343,8 @@ export async function recordStrategyView(
       { merge: true },
     )
   })
+
+  void trackAnalyticsEvent(userId, 'opened_strategy_card', { strategyId })
 }
 
 export async function markStrategyHelpful(

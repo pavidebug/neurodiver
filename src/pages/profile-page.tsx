@@ -1,30 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   ArrowRight,
   Bell,
-  Heart,
   LogOut,
   Moon,
   Share2,
   Shield,
   Sun,
 } from 'lucide-react'
-import { ReminderContactForm } from '@/components/body-doubling/reminder-contact-form'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { PreferenceRow } from '@/components/ui/preference-row'
-import { Textarea } from '@/components/ui/textarea'
 import { useWorkEnergy } from '@/context/work-energy-context'
 import { useAuth } from '@/context/auth-context'
 import { useTheme } from '@/context/theme-context'
-import {
-  buildContactProfileDefaults,
-  isContactProfileValid,
-  normalizeContactProfileInput,
-} from '@/lib/user-contact-profile'
-import { updateUserContactProfile } from '@/lib/work-check-ins'
-import type { ContactProfileInput } from '@/lib/user-contact-profile'
+import { getDisplayName } from '@/lib/onboarding'
+import { isAdminUser } from '@/utils/admin'
 
 const ROLE_LABELS = {
   employee: 'Employee',
@@ -37,46 +29,10 @@ export function ProfilePage() {
   const { user, isGuest, signOut } = useAuth()
   const { resolvedTheme, toggleDarkMode } = useTheme()
   const [signingOut, setSigningOut] = useState(false)
-  const [contact, setContact] = useState<ContactProfileInput>(() =>
-    buildContactProfileDefaults(profile, user?.email),
-  )
-  const [contactSaving, setContactSaving] = useState(false)
-  const [contactSaved, setContactSaved] = useState(false)
-  const [contactError, setContactError] = useState<string | null>(null)
-  const [selfDescription, setSelfDescription] = useState(
-    () => profile.selfDescription ?? '',
-  )
 
-  useEffect(() => {
-    setContact(buildContactProfileDefaults(profile, user?.email))
-    setSelfDescription(profile.selfDescription ?? '')
-  }, [profile, user?.email])
-
-  const displayName = user?.displayName ?? user?.email?.split('@')[0] ?? 'You'
+  const displayName = getDisplayName(profile, user?.displayName ?? user?.email)
   const initials = displayName.slice(0, 1).toUpperCase()
-
-  async function handleSaveContact() {
-    if (!user) return
-
-    setContactSaving(true)
-    setContactError(null)
-    setContactSaved(false)
-
-    try {
-      const normalized = normalizeContactProfileInput(contact)
-      await updateUserContactProfile(
-        user.uid,
-        { ...normalized, selfDescription: selfDescription.trim() || null },
-        profile,
-      )
-      setContactSaved(true)
-      window.setTimeout(() => setContactSaved(false), 3000)
-    } catch {
-      setContactError('Unable to save your contact preferences. Please try again.')
-    } finally {
-      setContactSaving(false)
-    }
-  }
+  const showAdmin = isAdminUser(user)
 
   async function handleSignOut() {
     setSigningOut(true)
@@ -120,6 +76,16 @@ export function ProfilePage() {
           </p>
         )}
       </header>
+
+      <Button
+        variant="ghost"
+        className="w-full text-text-muted"
+        disabled={signingOut}
+        onClick={handleSignOut}
+      >
+        <LogOut className="h-4 w-4" aria-hidden="true" />
+        {signingOut ? 'Signing out…' : 'Sign out'}
+      </Button>
 
       <div className="grid grid-cols-2 gap-3">
         <Card className="text-center">
@@ -203,103 +169,44 @@ export function ProfilePage() {
           >
             Community
           </h2>
-          <Card className="border-green/20 bg-green-muted/30 transition-colors hover:bg-green-muted/45">
-            <CardContent className="p-0">
-              <Link
-                to="/profile/invite-friend"
-                className="flex items-center justify-between gap-4 p-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange"
-              >
-                <div className="min-w-0">
-                  <p className="font-medium text-text">Invite a friend</p>
-                  <p className="text-sm text-text-muted">
-                    Share NeuroDiver with someone who might find it helpful
-                  </p>
-                </div>
-                <Share2 className="h-5 w-5 shrink-0 text-green" aria-hidden="true" />
-              </Link>
-            </CardContent>
-          </Card>
+          <div className="space-y-3">
+            {showAdmin ? (
+              <Card className="border-green/20 bg-green-muted/30 transition-colors hover:bg-green-muted/45">
+                <CardContent className="p-0">
+                  <Link
+                    to="/admin"
+                    className="flex items-center justify-between gap-4 p-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange"
+                  >
+                    <div className="min-w-0">
+                      <p className="font-medium text-text">Admin dashboard</p>
+                      <p className="text-sm text-text-muted">
+                        Manage NeuroDiver settings and content
+                      </p>
+                    </div>
+                    <Shield className="h-5 w-5 shrink-0 text-green" aria-hidden="true" />
+                  </Link>
+                </CardContent>
+              </Card>
+            ) : null}
+            <Card className="border-green/20 bg-green-muted/30 transition-colors hover:bg-green-muted/45">
+              <CardContent className="p-0">
+                <Link
+                  to="/profile/invite-friend"
+                  className="flex items-center justify-between gap-4 p-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange"
+                >
+                  <div className="min-w-0">
+                    <p className="font-medium text-text">Invite a friend</p>
+                    <p className="text-sm text-text-muted">
+                      Share NeuroDiver with someone who might find it helpful
+                    </p>
+                  </div>
+                  <Share2 className="h-5 w-5 shrink-0 text-green" aria-hidden="true" />
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
         </section>
       )}
-
-      <section aria-labelledby="about-you-heading">
-        <h2
-          id="about-you-heading"
-          className="font-display mb-4 text-xl font-semibold text-text"
-        >
-          About you
-        </h2>
-        <Card className="p-5">
-          <label htmlFor="self-description" className="text-sm font-medium text-text">
-            Self-description for weekly reports
-          </label>
-          <p className="mb-3 text-sm text-text-muted">
-            Optional — how you describe yourself or your neurodivergence. Shown on
-            your weekly insight report only.
-          </p>
-          <Textarea
-            id="self-description"
-            value={selfDescription}
-            onChange={(event) => setSelfDescription(event.target.value)}
-            placeholder="e.g. Autistic, ADHD, still exploring…"
-            maxLength={200}
-            className="min-h-24"
-          />
-        </Card>
-      </section>
-
-      <section aria-labelledby="body-double-contact-heading">
-        <h2
-          id="body-double-contact-heading"
-          className="font-display mb-4 text-xl font-semibold text-text"
-        >
-          Body Doubling reminders
-        </h2>
-        <Card className="p-5">
-          <ReminderContactForm value={contact} onChange={setContact} />
-          {contactError && (
-            <p className="mt-4 rounded-xl bg-orange/10 px-4 py-3 text-sm text-orange" role="alert">
-              {contactError}
-            </p>
-          )}
-          {contactSaved && (
-            <p className="mt-4 rounded-xl bg-green-muted/60 px-4 py-3 text-sm text-green">
-              Contact preferences saved.
-            </p>
-          )}
-          <Button
-            type="button"
-            className="mt-4 w-full"
-            disabled={contactSaving || !isContactProfileValid(contact)}
-            onClick={() => void handleSaveContact()}
-          >
-            {contactSaving ? 'Saving…' : 'Save contact preferences'}
-          </Button>
-        </Card>
-      </section>
-
-      <Card className="border-green/20 bg-green-muted/30">
-        <CardContent className="flex items-start gap-3 p-5">
-          <Heart className="mt-0.5 h-5 w-5 text-green" aria-hidden="true" />
-          <div>
-            <p className="font-medium text-text">Built for neurodivergent minds</p>
-            <p className="text-sm leading-relaxed text-text-muted">
-              NeuroDiver is designed with accessibility, cognitive load reduction,
-              and self-compassion at its core.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Button
-        variant="ghost"
-        className="w-full text-text-muted"
-        disabled={signingOut}
-        onClick={handleSignOut}
-      >
-        <LogOut className="h-4 w-4" aria-hidden="true" />
-        {signingOut ? 'Signing out…' : 'Sign out'}
-      </Button>
     </div>
   )
 }

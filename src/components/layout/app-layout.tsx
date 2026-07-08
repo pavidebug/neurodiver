@@ -1,14 +1,11 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
-import { Home, Layers, Users, User } from 'lucide-react'
+import { Shield } from 'lucide-react'
+import { AppSidebar, navItems } from '@/components/layout/app-sidebar'
 import { SkipLink } from '@/components/layout/skip-link'
+import { NeuroDiverLogo } from '@/components/brand/neurodiver-logo'
+import { useAuth } from '@/context/auth-context'
+import { isAdminUser } from '@/utils/admin'
 import { cn } from '@/lib/utils'
-
-const navItems = [
-  { to: '/home', label: 'Home', icon: Home },
-  { to: '/strategies', label: 'Strategies', icon: Layers },
-  { to: '/body-double', label: 'Body Double', icon: Users },
-  { to: '/profile', label: 'Profile', icon: User },
-]
 
 const hiddenNavRoutes = [
   '/work-check-in',
@@ -17,36 +14,31 @@ const hiddenNavRoutes = [
   '/reflection',
   '/brain-status',
   '/login',
+  '/onboarding',
 ]
 
-function NavItem({
+function MobileNavItem({
   to,
   label,
   icon: Icon,
-  layout,
 }: {
   to: string
   label: string
-  icon: typeof Home
-  layout: 'mobile' | 'desktop'
+  icon: typeof navItems[number]['icon']
 }) {
   return (
     <NavLink
       to={to}
       className={({ isActive }) =>
         cn(
-          'font-medium transition-colors duration-200',
-          layout === 'mobile' &&
-            'flex min-h-14 min-w-[4.5rem] flex-col items-center justify-center gap-1 rounded-xl px-3 py-2 text-xs',
-          layout === 'desktop' &&
-            'flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm',
+          'flex min-h-14 min-w-[4.25rem] flex-col items-center justify-center gap-1 rounded-2xl px-2 py-1.5 text-[11px] font-medium transition-colors',
           isActive
             ? 'bg-green-muted text-green'
-            : 'text-text-muted hover:bg-yellow/40 hover:text-text',
+            : 'text-text-muted hover:text-text',
         )
       }
     >
-      <Icon className={cn('shrink-0', layout === 'mobile' ? 'h-5 w-5' : 'h-5 w-5')} aria-hidden="true" />
+      <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />
       <span>{label}</span>
     </NavLink>
   )
@@ -54,33 +46,29 @@ function NavItem({
 
 export function AppLayout() {
   const location = useLocation()
+  const { user } = useAuth()
+  const showAdmin = isAdminUser(user)
   const showNav = !hiddenNavRoutes.includes(location.pathname)
+  const isHome = location.pathname === '/home'
 
   return (
-    <div className="min-h-dvh bg-cream lg:flex">
+    <div className="workspace-shell min-h-dvh lg:flex">
       <SkipLink />
 
-      {showNav && (
-        <aside
-          aria-label="Main navigation"
-          className="hidden lg:sticky lg:top-0 lg:flex lg:h-dvh lg:w-64 lg:shrink-0 lg:flex-col lg:border-r lg:border-border lg:bg-cream lg:px-4 lg:py-8"
-        >
-          <p className="font-display mb-8 px-3 text-xl font-semibold tracking-tight text-text">
-            NeuroDiver
-          </p>
-          <nav className="flex flex-col gap-1">
-            {navItems.map((item) => (
-              <NavItem key={item.to} {...item} layout="desktop" />
-            ))}
-          </nav>
-        </aside>
-      )}
+      {showNav && <AppSidebar />}
 
-      <div className="mx-auto flex min-h-dvh w-full max-w-lg flex-1 flex-col lg:max-w-none">
+      <div className="flex min-h-dvh flex-1 flex-col">
+        {showNav && (
+          <header className="flex items-center justify-between border-b border-border/60 bg-surface-solid/70 px-5 py-4 backdrop-blur-sm lg:hidden">
+            <NeuroDiverLogo size="sm" />
+          </header>
+        )}
+
         <main
           className={cn(
-            'flex-1 px-5 pt-6 lg:px-8 lg:pt-8',
-            showNav ? 'pb-28 lg:pb-8' : 'pb-8',
+            'workspace-main flex-1',
+            showNav ? 'px-5 pt-5 pb-28 lg:px-12 lg:py-8 lg:pb-8' : 'px-5 py-8',
+            isHome && 'lg:flex lg:flex-col lg:overflow-y-auto lg:py-10',
           )}
           id="main-content"
           tabIndex={-1}
@@ -91,12 +79,15 @@ export function AppLayout() {
         {showNav && (
           <nav
             aria-label="Main navigation"
-            className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-cream/95 backdrop-blur-md lg:hidden"
+            className="fixed inset-x-0 bottom-0 z-50 border-t border-border/80 bg-surface-solid/95 backdrop-blur-md lg:hidden"
           >
             <div className="mx-auto flex max-w-lg items-stretch justify-around px-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2">
               {navItems.map((item) => (
-                <NavItem key={item.to} {...item} layout="mobile" />
+                <MobileNavItem key={item.to} {...item} />
               ))}
+              {showAdmin ? (
+                <MobileNavItem to="/admin" label="Admin" icon={Shield} />
+              ) : null}
             </div>
           </nav>
         )}

@@ -8,17 +8,29 @@ import {
   type User,
 } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
+import { trackAnalyticsEvent } from '@/lib/product-analytics'
 
 const googleProvider = new GoogleAuthProvider()
 googleProvider.setCustomParameters({ prompt: 'select_account' })
 
+function isNewAuthUser(user: User): boolean {
+  return user.metadata.creationTime === user.metadata.lastSignInTime
+}
+
 export async function signInAsGuest(): Promise<User> {
   const result = await signInAnonymously(auth)
+  void trackAnalyticsEvent(result.user.uid, 'user_signed_up', { method: 'guest' })
   return result.user
 }
 
 export async function signInWithGoogle(): Promise<User> {
   const result = await signInWithPopup(auth, googleProvider)
+  if (isNewAuthUser(result.user)) {
+    void trackAnalyticsEvent(result.user.uid, 'user_signed_up', {
+      method: 'google',
+      email: result.user.email,
+    })
+  }
   return result.user
 }
 
@@ -35,6 +47,10 @@ export async function signUpWithEmail(
   password: string,
 ): Promise<User> {
   const result = await createUserWithEmailAndPassword(auth, email, password)
+  void trackAnalyticsEvent(result.user.uid, 'user_signed_up', {
+    method: 'email',
+    email,
+  })
   return result.user
 }
 
