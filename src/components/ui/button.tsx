@@ -1,35 +1,34 @@
 import * as React from 'react'
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
+import { buttonPrimary } from '@/design-system/tokens'
 import { cn } from '@/lib/utils'
 
-const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl text-base font-semibold transition-all duration-200 ease-out disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange min-h-12 px-6 active:scale-[0.98]',
-  {
-    variants: {
-      variant: {
-        default:
-          'bg-green text-white hover:bg-green-soft shadow-sm hover:shadow-md',
-        secondary:
-          'bg-yellow text-text hover:bg-yellow-soft border border-border',
-        outline:
-          'border-2 border-green bg-transparent text-green hover:bg-green-muted',
-        ghost: 'bg-transparent text-green hover:bg-green-muted',
-        orange:
-          'bg-orange text-white hover:bg-orange-soft shadow-sm hover:shadow-md',
-      },
-      size: {
-        default: 'h-12 px-6',
-        lg: 'h-14 px-8 text-lg',
-        icon: 'h-12 w-12 rounded-xl px-0',
-      },
+const buttonVariants = cva(buttonPrimary, {
+  variants: {
+    variant: {
+      default:
+        'bg-green text-white hover:bg-green-soft shadow-sm hover:shadow-md',
+      secondary:
+        'bg-yellow text-text hover:bg-yellow-soft border border-border',
+      outline:
+        'border-2 border-green bg-transparent text-green hover:bg-green-muted',
+      ghost: 'bg-transparent text-green hover:bg-green-muted',
+      orange:
+        'bg-orange text-white hover:bg-orange-soft shadow-sm hover:shadow-md',
     },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
+    size: {
+      default: 'min-h-[3.25rem] px-5 py-4 lg:min-h-12 lg:px-7',
+      lg: 'min-h-14 px-8 text-lg',
+      sm: 'min-h-10 px-4 py-2 text-sm',
+      icon: 'min-h-11 min-w-11 rounded-full px-0',
     },
   },
-)
+  defaultVariants: {
+    variant: 'default',
+    size: 'default',
+  },
+})
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,

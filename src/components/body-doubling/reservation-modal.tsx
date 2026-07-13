@@ -1,23 +1,13 @@
 import { createPortal } from 'react-dom'
 import { useEffect, useState } from 'react'
 import { Check, X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
   formatSessionDate,
-  formatSessionDuration,
   formatSessionTime,
 } from '@/lib/focus-session-format'
 import type { FocusSession } from '@/types/body-doubling'
 import { cn } from '@/lib/utils'
-
-const GUIDELINES = [
-  'Camera optional',
-  'Stay muted unless speaking',
-  "Respect everyone's focus",
-  'Judgment-free space',
-  'Leave anytime if needed',
-]
 
 interface ReservationModalProps {
   session: FocusSession | null
@@ -25,8 +15,7 @@ interface ReservationModalProps {
   success: boolean
   pending: boolean
   error: string | null
-  isGuest?: boolean
-  signedInEmail?: string | null
+  defaultEmail?: string | null
   confirmedEmail?: string | null
   onClose: () => void
   onConfirm: (email: string) => void
@@ -42,19 +31,18 @@ export function ReservationModal({
   success,
   pending,
   error,
-  isGuest = false,
-  signedInEmail,
+  defaultEmail,
   confirmedEmail,
   onClose,
   onConfirm,
 }: ReservationModalProps) {
-  const [guestEmail, setGuestEmail] = useState('')
+  const [email, setEmail] = useState('')
 
   useEffect(() => {
     if (open && !success) {
-      setGuestEmail('')
+      setEmail(defaultEmail?.trim() ?? '')
     }
-  }, [open, success])
+  }, [defaultEmail, open, success])
 
   useEffect(() => {
     if (!open) return
@@ -76,21 +64,13 @@ export function ReservationModal({
 
   if (!open || !session) return null
 
-  function handleConfirmClick() {
-    const email = isGuest ? guestEmail.trim() : (signedInEmail?.trim() ?? '')
-    if (!email) return
-    onConfirm(email)
-  }
-
-  const canConfirm = isGuest
-    ? isValidEmail(guestEmail)
-    : Boolean(signedInEmail?.trim())
+  const canConfirm = isValidEmail(email)
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-end justify-center md:items-center md:p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <button
         type="button"
-        className="absolute inset-0 bg-text/35 backdrop-blur-sm"
+        className="absolute inset-0 bg-[#1F2A24]/30 backdrop-blur-[2px]"
         aria-label="Close reservation"
         disabled={pending}
         onClick={() => !pending && onClose()}
@@ -101,162 +81,109 @@ export function ReservationModal({
         aria-modal="true"
         aria-labelledby="reservation-modal-title"
         className={cn(
-          'popup-enter relative z-10 flex max-h-[min(92dvh,720px)] w-full flex-col overflow-hidden',
-          'rounded-t-3xl bg-surface-solid shadow-2xl ring-1 ring-border',
-          'md:max-w-lg md:rounded-3xl',
+          'popup-enter relative z-10 w-full max-w-[390px] max-h-[min(90dvh,640px)] overflow-y-auto rounded-[1.5rem]',
+          'bg-white shadow-[0_12px_40px_rgba(47,93,80,0.15)]',
         )}
       >
-        <div className="flex shrink-0 items-start justify-between gap-4 border-b border-border px-5 py-4">
+        <div className="flex items-start justify-between gap-3 px-5 pt-5">
           <h2
             id="reservation-modal-title"
-            className="font-display text-xl font-semibold text-text"
+            className="font-display text-xl font-semibold text-[#1F2A24]"
           >
             {success ? "You're in!" : 'Reserve your spot'}
           </h2>
           {!pending && (
-            <Button
+            <button
               type="button"
-              variant="ghost"
-              size="icon"
-              className="shrink-0 rounded-xl"
               aria-label="Close"
               onClick={onClose}
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[#6B6B63] transition-colors hover:bg-[#F9F7F2]"
             >
               <X className="h-5 w-5" />
-            </Button>
+            </button>
           )}
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
+        <div className="px-5 py-4">
           {success ? (
-            <div className="space-y-6 py-4 text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-muted">
-                <Check className="h-8 w-8 text-green" strokeWidth={2} aria-hidden="true" />
+            <div className="space-y-4 pb-2 text-center">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#E8F0EB]">
+                <Check className="h-7 w-7 text-[#2F5D50]" strokeWidth={2} aria-hidden="true" />
               </div>
-              <p className="text-lg leading-relaxed text-text">
-                Your spot is reserved!
+              <p className="text-sm leading-relaxed text-[#1F2A24]">
+                Your spot is saved
                 {confirmedEmail ? (
                   <>
-                    {' '}
-                    A confirmation email with a calendar invite is on its way to{' '}
+                    . We&apos;ll reach out at{' '}
                     <span className="font-medium">{confirmedEmail}</span>.
                   </>
                 ) : (
-                  <> We&apos;ll send your confirmation shortly.</>
+                  '.'
                 )}
               </p>
-              <p className="text-sm text-text-muted">
-                {formatSessionDate(session.startsAt)} at{' '}
+              <p className="text-xs text-[#6B6B63]">
+                {session.title} · {formatSessionDate(session.startsAt)} at{' '}
                 {formatSessionTime(session.startsAt)}
               </p>
             </div>
           ) : (
-            <div className="space-y-6">
-              <dl className="space-y-3 rounded-2xl bg-green-muted/40 p-4 text-sm ring-1 ring-green/15">
-                <div>
-                  <dt className="text-text-muted">Session</dt>
-                  <dd className="mt-1 font-medium text-text">{session.title}</dd>
-                </div>
-                <div className="flex flex-wrap gap-x-6 gap-y-2">
-                  <div>
-                    <dt className="text-text-muted">Date</dt>
-                    <dd className="mt-0.5 font-medium text-text">
-                      {formatSessionDate(session.startsAt)}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-text-muted">Time</dt>
-                    <dd className="mt-0.5 font-medium text-text">
-                      {formatSessionTime(session.startsAt)}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-text-muted">Duration</dt>
-                    <dd className="mt-0.5 font-medium text-text">
-                      {formatSessionDuration(session.durationMinutes)}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-text-muted">Platform</dt>
-                    <dd className="mt-0.5 font-medium text-text">{session.platform}</dd>
-                  </div>
-                </div>
-              </dl>
+            <div className="space-y-4">
+              <p className="text-sm text-[#6B6B63]">
+                <span className="font-medium text-[#1F2A24]">{session.title}</span>
+                <br />
+                {formatSessionDate(session.startsAt)} · {formatSessionTime(session.startsAt)} ·{' '}
+                Microsoft Teams
+              </p>
 
-              <section aria-labelledby="guidelines-heading">
-                <h3
-                  id="guidelines-heading"
-                  className="mb-3 text-sm font-medium text-text"
-                >
-                  Community guidelines
-                </h3>
-                <ul className="space-y-2 text-sm leading-relaxed text-text-muted">
-                  {GUIDELINES.map((item) => (
-                    <li key={item} className="flex gap-2">
-                      <span className="text-green" aria-hidden="true">
-                        •
-                      </span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
+              <div className="space-y-2">
+                <label htmlFor="reserve-email" className="text-sm font-medium text-[#1F2A24]">
+                  Your email
+                </label>
+                <Input
+                  id="reserve-email"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  className="h-12 rounded-xl border-[#E8E4DA] bg-[#F9F7F2]"
+                />
+                <p className="text-xs text-[#6B6B63]">
+                  We&apos;ll use this to confirm your spot and send session details.
+                </p>
+              </div>
 
-              {isGuest ? (
-                <div className="space-y-2">
-                  <label htmlFor="guest-email" className="text-sm font-medium text-text">
-                    Email for your calendar invite
-                  </label>
-                  <Input
-                    id="guest-email"
-                    type="email"
-                    inputMode="email"
-                    autoComplete="email"
-                    placeholder="you@example.com"
-                    value={guestEmail}
-                    onChange={(event) => setGuestEmail(event.target.value)}
-                  />
-                  <p className="text-sm text-text-muted">
-                    We&apos;ll send your confirmation and calendar invite here.
-                  </p>
-                </div>
-              ) : signedInEmail ? (
-                <div className="rounded-2xl border border-border bg-cream/50 px-4 py-3 text-sm">
-                  <p className="font-medium text-text">Calendar invite</p>
-                  <p className="mt-1 text-text-muted">
-                    We&apos;ll email your confirmation to{' '}
-                    <span className="font-medium text-text">{signedInEmail}</span>
-                  </p>
-                </div>
-              ) : null}
-
-              {error && (
+              {error ? (
                 <p
-                  className="rounded-xl bg-orange/10 px-4 py-3 text-sm text-orange"
+                  className="rounded-xl bg-[#D39A45]/10 px-3 py-2.5 text-sm text-[#C17F3A]"
                   role="alert"
                 >
                   {error}
                 </p>
-              )}
+              ) : null}
             </div>
           )}
         </div>
 
-        <div className="shrink-0 border-t border-border px-5 py-4">
+        <div className="px-5 pb-5">
           {success ? (
-            <Button type="button" className="w-full" size="lg" onClick={onClose}>
-              You&apos;re in!
-            </Button>
-          ) : (
-            <Button
+            <button
               type="button"
-              className="w-full"
-              size="lg"
-              disabled={pending || !canConfirm}
-              onClick={handleConfirmClick}
+              onClick={onClose}
+              className="w-full rounded-2xl bg-[#2F5D50] py-3.5 text-sm font-medium text-white transition-all hover:bg-[#3a6d5f] active:scale-[0.98]"
             >
-              {pending ? 'Confirming…' : 'Confirm Reservation'}
-            </Button>
+              You&apos;re in!
+            </button>
+          ) : (
+            <button
+              type="button"
+              disabled={pending || !canConfirm}
+              onClick={() => onConfirm(email.trim())}
+              className="w-full rounded-2xl bg-[#2F5D50] py-3.5 text-sm font-medium text-white transition-all hover:bg-[#3a6d5f] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {pending ? 'Saving…' : 'Confirm'}
+            </button>
           )}
         </div>
       </div>

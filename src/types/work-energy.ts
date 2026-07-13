@@ -1,5 +1,6 @@
 import type { Timestamp } from 'firebase/firestore'
 import type { BrainStatusType } from '@/lib/data'
+import type { PulseMood } from '@/types/pulse-check-in'
 
 export type UserRole = 'employee' | 'employer_admin' | 'super_admin'
 
@@ -78,6 +79,13 @@ export interface WorkCheckInDocument {
   wouldUseAgain: number
   brainStatus: BrainStatusType
   isGuest: boolean
+  /** Pulse check-in fields (type: daily) */
+  checkInType?: 'daily' | 'legacy'
+  mood?: PulseMood | null
+  energy?: number | null
+  focus?: number | null
+  stress?: number | null
+  optionalNote?: string | null
 }
 
 /** Payload submitted from the check-in form */
@@ -109,13 +117,25 @@ export type WorkCheckInDraftAnswers = Partial<WorkCheckInInput>
 import type {
   AccessibilityPreference,
   AgeRange,
+  BroughtHereReason,
+  EnergyDrain,
+  FamiliarExperience,
+  GenderOption,
+  InformationPreference,
   NdStatus,
   NotificationPreference,
   OnboardingChallenge,
   OnboardingGoal,
+  PeakEnergyTime,
   Profession,
+  SuccessGoal,
+  SupportStyle,
   WorkEnvironment,
+  WorkLocation,
+  WorkStatus,
 } from '@/types/onboarding'
+
+export type { WorkStatus }
 
 export type ReminderPreference = 'email' | 'whatsapp' | 'both'
 
@@ -140,6 +160,18 @@ export interface UserWorkProfile {
   /** Onboarding — preferred name shown across the app */
   displayName: string | null
   ndStatus: NdStatus | null
+  whatBroughtYouHere: BroughtHereReason | null
+  familiarExperiences: FamiliarExperience[]
+  workLocation: WorkLocation | null
+  energyDrains: EnergyDrain[]
+  peakEnergyTime: PeakEnergyTime | null
+  supportStyle: SupportStyle | null
+  informationPreference: InformationPreference | null
+  successGoals: SuccessGoal[]
+  gender: GenderOption | null
+  country: string | null
+  /** Simplified onboarding work status */
+  workStatus: WorkStatus | null
   ageRange: AgeRange | null
   profession: Profession | null
   workEnvironment: WorkEnvironment[]
@@ -164,6 +196,17 @@ export const DEFAULT_USER_WORK_PROFILE: UserWorkProfile = {
   pilotAccess: true,
   displayName: null,
   ndStatus: null,
+  whatBroughtYouHere: null,
+  familiarExperiences: [],
+  workLocation: null,
+  energyDrains: [],
+  peakEnergyTime: null,
+  supportStyle: null,
+  informationPreference: null,
+  successGoals: [],
+  gender: null,
+  country: null,
+  workStatus: null,
   ageRange: null,
   profession: null,
   workEnvironment: [],

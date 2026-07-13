@@ -6,8 +6,6 @@ import {
   type Query,
   type Timestamp,
 } from 'firebase/firestore'
-import { ND_STATUS_OPTIONS, PROFESSION_OPTIONS } from '@/data/onboarding-steps'
-import type { BrainStatusType } from '@/lib/data'
 import { getTodayString } from '@/lib/dates'
 import { db } from '@/lib/firebase'
 import { getDisplayName } from '@/lib/onboarding'
@@ -22,7 +20,6 @@ import type {
   AdminUserRow,
   SavedStrategyCount,
 } from '@/types/admin-dashboard'
-import type { NdStatus, Profession } from '@/types/onboarding'
 import {
   ANALYTICS_EVENT_LABELS,
   ANALYTICS_FEATURE_LABELS,
@@ -30,13 +27,6 @@ import {
 } from '@/types/product-analytics'
 import type { UserStrategyState } from '@/types/strategy'
 import type { UserWorkProfile, WorkCheckInDocument } from '@/types/work-energy'
-
-const BURNOUT_RISK_LABELS: Record<BrainStatusType, string> = {
-  'high-energy': 'Low risk',
-  steady: 'Stable',
-  'running-low': 'Watch closely',
-  'recovery-needed': 'High risk',
-}
 
 interface AnalyticsEventRecord {
   id: string
@@ -84,16 +74,6 @@ function isToday(value: Timestamp | null | undefined): boolean {
   )
 }
 
-function getProfessionLabel(value: Profession | null): string | null {
-  if (!value) return null
-  return PROFESSION_OPTIONS.find((option) => option.value === value)?.label ?? value
-}
-
-function getNdStatusLabel(value: NdStatus | null): string | null {
-  if (!value) return null
-  return ND_STATUS_OPTIONS.find((option) => option.value === value)?.label ?? value
-}
-
 function mapUserStrategyState(data: unknown): UserStrategyState {
   if (!data || typeof data !== 'object') {
     return { savedIds: [], lastViewedId: null, usage: {} }
@@ -126,6 +106,17 @@ function mapUserProfile(data: unknown): UserWorkProfile {
       pilotAccess: true,
       displayName: null,
       ndStatus: null,
+      whatBroughtYouHere: null,
+      familiarExperiences: [],
+      workLocation: null,
+      energyDrains: [],
+      peakEnergyTime: null,
+      supportStyle: null,
+      informationPreference: null,
+      successGoals: [],
+      gender: null,
+      country: null,
+      workStatus: null,
       ageRange: null,
       profession: null,
       workEnvironment: [],
@@ -273,7 +264,6 @@ function buildUserRows(
           (b.createdAt?.toMillis?.() ?? 0) - (a.createdAt?.toMillis?.() ?? 0),
       )
       const latestCheckIn = sortedCheckIns[0]
-      const brainStatus = latestCheckIn?.brainStatus ?? null
 
       const lastActiveTimestamp =
         latestEventByUser.get(user.id) ??
@@ -284,21 +274,45 @@ function buildUserRows(
       return {
         userId: user.id,
         name: getDisplayName(user.profile),
-        email: user.profile.email,
         joinedAt: formatDate(user.createdAt),
         lastActive: formatTimestamp(lastActiveTimestamp),
-        profession: getProfessionLabel(user.profile.profession),
-        ndStatus: getNdStatusLabel(user.profile.ndStatus),
         totalCheckIns: userCheckIns.length,
         savedStrategies: user.strategyState.savedIds.length,
-        latestEnergy: latestCheckIn?.energyTank ?? null,
-        latestBurnout: brainStatus ? BURNOUT_RISK_LABELS[brainStatus] : null,
       }
     })
     .sort(
       (a, b) =>
         new Date(b.lastActive ?? 0).getTime() - new Date(a.lastActive ?? 0).getTime(),
     )
+}
+
+function computePulseAverages(
+  checkIns: Array<WorkCheckInDocument & { docId: string }>,
+): Pick<AdminOverviewStats, 'avgEnergy' | 'avgFocus' | 'avgStress'> {
+  const energyValues: number[] = []
+  const focusValues: number[] = []
+  const stressValues: number[] = []
+
+  for (const checkIn of checkIns) {
+    const energy = typeof checkIn.energy === 'number' ? checkIn.energy : checkIn.energyTank
+    const focus = typeof checkIn.focus === 'number' ? checkIn.focus : null
+    const stress = typeof checkIn.stress === 'number' ? checkIn.stress : null
+
+    if (typeof energy === 'number') energyValues.push(energy)
+    if (typeof focus === 'number') focusValues.push(focus)
+    if (typeof stress === 'number') stressValues.push(stress)
+  }
+
+  const average = (values: number[]) =>
+    values.length > 0
+      ? Math.round((values.reduce((sum, value) => sum + value, 0) / values.length) * 10) / 10
+      : null
+
+  return {
+    avgEnergy: average(energyValues),
+    avgFocus: average(focusValues),
+    avgStress: average(stressValues),
+  }
 }
 
 function buildStrategyRows(
@@ -465,6 +479,7 @@ export async function fetchAdminDashboard(): Promise<AdminDashboardData> {
     activeToday: countActiveToday(users, events, checkIns),
     totalCheckIns: checkIns.length || (await countCheckInsFallback()),
     totalStrategySaves,
+    ...computePulseAverages(checkIns),
   }
 
   return {

@@ -2,9 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { BodyDoublingHome } from '@/components/body-doubling/body-doubling-home'
 import { BookingConfirmation } from '@/components/body-doubling/booking-confirmation'
+import { InviteFriendModal } from '@/components/body-doubling/invite-friend-modal'
 import { ReservationModal } from '@/components/body-doubling/reservation-modal'
 import { SessionReflection } from '@/components/body-doubling/session-reflection'
 import { Button } from '@/components/ui/button'
+import { Stack } from '@/design-system/layout'
 import { useAuth } from '@/context/auth-context'
 import { useWorkEnergy } from '@/context/work-energy-context'
 import {
@@ -19,8 +21,6 @@ import {
 } from '@/lib/focus-sessions'
 import {
   buildContactProfileDefaults,
-  normalizeContactProfileInput,
-  wantsEmailReminders,
 } from '@/lib/user-contact-profile'
 import { updateUserContactProfile } from '@/lib/work-check-ins'
 import type { FocusSession, SessionBooking } from '@/types/body-doubling'
@@ -29,7 +29,7 @@ import type { ContactProfileInput } from '@/lib/user-contact-profile'
 type Screen = 'home' | 'confirmation' | 'reflection'
 
 export function BodyDoublePage() {
-  const { user, isGuest } = useAuth()
+  const { user } = useAuth()
   const { profile } = useWorkEnergy()
 
   const [screen, setScreen] = useState<Screen>('home')
@@ -43,6 +43,7 @@ export function BodyDoublePage() {
     buildContactProfileDefaults(profile, user?.email),
   )
 
+  const [inviteOpen, setInviteOpen] = useState(false)
   const [reservationOpen, setReservationOpen] = useState(false)
   const [reservationSuccess, setReservationSuccess] = useState(false)
   const [confirmedEmail, setConfirmedEmail] = useState<string | null>(null)
@@ -92,7 +93,9 @@ export function BodyDoublePage() {
     const unsubscribeBookings = subscribeToUserBookings(
       user.uid,
       setUserBookings,
-      () => {},
+      (loadError) => {
+        setError(getFocusSessionsErrorMessage(loadError))
+      },
     )
 
     return unsubscribeBookings
@@ -167,13 +170,10 @@ export function BodyDoublePage() {
         return
       }
 
-      const normalizedEmail = email.trim()
+      const normalizedEmail =
+        email.trim() || user.email?.trim() || profile.email?.trim() || contact.email?.trim() || ''
       if (!normalizedEmail) {
-        setReservationError(
-          isGuest
-            ? 'Enter your email to receive your calendar invite.'
-            : 'Your account needs an email address to receive your calendar invite.',
-        )
+        setReservationError('Enter your email so we can confirm your spot.')
         return
       }
 
@@ -181,18 +181,16 @@ export function BodyDoublePage() {
       setPending(true)
 
       try {
-        if (isGuest) {
-          await updateUserContactProfile(
-            user.uid,
-            {
-              ...buildContactProfileDefaults(profile, normalizedEmail),
-              email: normalizedEmail,
-              reminderEnabled: false,
-              reminderPreference: 'email',
-            },
-            profile,
-          )
-        }
+        await updateUserContactProfile(
+          user.uid,
+          {
+            ...buildContactProfileDefaults(profile, normalizedEmail),
+            email: normalizedEmail,
+            reminderEnabled: false,
+            reminderPreference: 'email',
+          },
+          profile,
+        )
 
         const booking = await createSessionBooking({
           userId: user.uid,
@@ -206,6 +204,10 @@ export function BodyDoublePage() {
         setConfirmedEmail(normalizedEmail)
         setActiveBooking(booking)
         setFeedbackSubmitted(false)
+        setUserBookings((current) => {
+          if (current.some((entry) => entry.id === booking.id)) return current
+          return [booking, ...current]
+        })
         setReservationSuccess(true)
       } catch (bookingError) {
         setReservationError(getFocusSessionsErrorMessage(bookingError))
@@ -213,33 +215,8 @@ export function BodyDoublePage() {
         setPending(false)
       }
     },
-    [isGuest, profile, selectedSession, user],
+    [contact.email, profile, selectedSession, user],
   )
-
-  const handleInviteFriend = useCallback(async () => {
-    const shareText =
-      'Join me for a quiet focus session on NeuroDiver — getting started is easier together.'
-    const shareUrl = window.location.origin
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Focus Together on NeuroDiver',
-          text: shareText,
-          url: shareUrl,
-        })
-      } catch {
-        // User cancelled share
-      }
-      return
-    }
-
-    try {
-      await navigator.clipboard.writeText(`${shareText} ${shareUrl}`)
-    } catch {
-      // Clipboard unavailable
-    }
-  }, [])
 
   const handleJoinSession = useCallback(() => {
     if (!activeBooking) return
@@ -305,7 +282,7 @@ export function BodyDoublePage() {
 
   if (screen === 'home') {
     return (
-      <div className="page-enter pb-4">
+      <div className="page-enter w-full pb-4">
         <BodyDoublingHome
           sessions={sessions}
           bookingsBySessionId={bookingsBySessionId}
@@ -314,8 +291,10 @@ export function BodyDoublePage() {
           isSignedIn={Boolean(user)}
           onReserve={handleReserve}
           onJoin={(session, booking) => void handleJoinFromHome(session, booking)}
-          onInviteFriend={() => void handleInviteFriend()}
+          onInviteFriend={() => setInviteOpen(true)}
         />
+
+        <InviteFriendModal open={inviteOpen} onClose={() => setInviteOpen(false)} />
 
         <ReservationModal
           session={selectedSession}
@@ -323,8 +302,7 @@ export function BodyDoublePage() {
           success={reservationSuccess}
           pending={pending}
           error={reservationError}
-          isGuest={isGuest}
-          signedInEmail={user?.email}
+          defaultEmail={user?.email ?? profile.email ?? contact.email}
           confirmedEmail={confirmedEmail}
           onClose={closeReservationModal}
           onConfirm={(email) => void handleConfirmReservation(email)}
@@ -336,7 +314,7 @@ export function BodyDoublePage() {
   const screenTitle = screen === 'confirmation' ? 'Your booking' : 'Reflection'
 
   return (
-    <div className="page-enter space-y-5 pb-4">
+    <Stack className="pb-4">
       <div className="flex items-center gap-3">
         <Button
           type="button"
@@ -357,9 +335,6 @@ export function BodyDoublePage() {
           booking={activeBooking}
           contactEmail={confirmedEmail ?? contact.email ?? profile.email ?? user?.email}
           timezone={contact.timezone || profile.timezone}
-          emailRemindersEnabled={wantsEmailReminders(
-            normalizeContactProfileInput(contact),
-          )}
           feedbackSubmitted={feedbackSubmitted}
           onJoin={handleJoinSession}
           onReflect={handleOpenReflection}
@@ -378,6 +353,6 @@ export function BodyDoublePage() {
           }}
         />
       )}
-    </div>
+    </Stack>
   )
 }

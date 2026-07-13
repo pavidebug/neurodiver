@@ -137,7 +137,7 @@ export function InviteFriendPage() {
               <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>
-          <h1 className="font-display text-xl font-semibold text-text">Invite a friend</h1>
+          <h1 className="font-display text-xl font-semibold text-text">Invite a user</h1>
         </div>
 
         <Card className="border-orange/20 bg-orange/5">
@@ -146,7 +146,7 @@ export function InviteFriendPage() {
               <Lock className="h-7 w-7 text-orange" aria-hidden="true" />
             </div>
             <div className="space-y-2">
-              <p className="font-medium text-text">Sign in to invite friends</p>
+              <p className="font-medium text-text">Sign in to invite users</p>
               <p className="text-sm leading-relaxed text-text-muted">
                 Create a free account to share NeuroDiver with people you care about.
               </p>
@@ -174,7 +174,7 @@ export function InviteFriendPage() {
             <ArrowLeft className="h-5 w-5" />
           </Link>
         </Button>
-        <h1 className="font-display text-xl font-semibold text-text">Invite a friend</h1>
+        <h1 className="font-display text-xl font-semibold text-text">Invite a user</h1>
       </div>
 
       <header className="space-y-3">

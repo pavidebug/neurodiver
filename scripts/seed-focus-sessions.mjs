@@ -52,7 +52,9 @@ async function readCatalog() {
 
 async function uploadCatalog(catalog, projectId) {
   const db = initFirestore(projectId)
+  const catalogIds = new Set(catalog.sessions.map((session) => session.id))
   let written = 0
+  let deactivated = 0
 
   for (const session of catalog.sessions) {
     const { id, startsAt, ...rest } = session
@@ -85,18 +87,43 @@ async function uploadCatalog(catalog, projectId) {
     written++
   }
 
-  return written
+  const existingSnap = await db.collection('focusSessions').get()
+
+  for (const document of existingSnap.docs) {
+    if (catalogIds.has(document.id)) continue
+
+    const data = document.data()
+    if (data.isActive === false) continue
+
+    if (isDryRun) {
+      console.log(`[dry-run] deactivate focusSessions/${document.id}`)
+      deactivated++
+      continue
+    }
+
+    await document.ref.set(
+      {
+        isActive: false,
+        catalogVersion: catalog.version,
+        updatedAt: FieldValue.serverTimestamp(),
+      },
+      { merge: true },
+    )
+    deactivated++
+  }
+
+  return { written, deactivated }
 }
 
 async function main() {
   const projectId = await resolveFirebaseProjectId(ROOT)
   const catalog = await readCatalog()
-  const written = await uploadCatalog(catalog, projectId)
+  const result = await uploadCatalog(catalog, projectId)
 
   console.log(
     isDryRun
-      ? `Dry run complete — ${written} focus sessions validated.`
-      : `Seeded ${written} focus sessions to focusSessions.`,
+      ? `Dry run complete — ${result.written} focus sessions validated.`
+      : `Seeded ${result.written} focus sessions to focusSessions (${result.deactivated} deactivated).`,
   )
 }
 

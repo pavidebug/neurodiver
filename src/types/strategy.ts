@@ -57,11 +57,15 @@ export interface Strategy extends StrategyDocument {
 }
 
 /** Per-strategy engagement stored on the user document */
+export type StrategyFeedback = 'helped' | 'unsure' | 'not-helpful'
+
 export interface StrategyUsageRecord {
   timesViewed: number
   timesMarkedHelpful: number
   lastViewedAt: string | null
   lastMarkedHelpfulAt: string | null
+  lastFeedback?: StrategyFeedback | null
+  lastFeedbackAt?: string | null
 }
 
 /** Nested under users/{uid}.strategyState */

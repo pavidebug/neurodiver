@@ -30,6 +30,11 @@ service cloud.firestore {
         allow write: if request.auth != null && request.auth.uid == userId;
       }
 
+      // Weekly reflection reviews
+      match /weeklyReflections/{weekId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
       // Share stats — shareCount incremented when user shares invites
       match /stats/{statId} {
         allow read: if isAdmin() || (request.auth != null && request.auth.uid == userId);
@@ -84,8 +89,9 @@ service cloud.firestore {
     }
 
     match /sessionBookings/{bookingId} {
-      allow read: if request.auth != null
-        && resource.data.userId == request.auth.uid;
+      // Signed-in users can read bookings for capacity counts and their own reservations.
+      // Individual notes are not stored here; only session attendance metadata.
+      allow read: if request.auth != null;
       allow create: if request.auth != null
         && request.resource.data.userId == request.auth.uid
         && request.resource.data.sessionId is string
@@ -127,10 +133,32 @@ service cloud.firestore {
         && request.resource.data.userId == request.auth.uid
         && request.resource.data.shareType in ['copy', 'whatsapp', 'web_share']
         && request.resource.data.templateId in ['soft_invite', 'body_doubling', 'check_in', 'general']
-        && request.resource.data.sourceScreen == 'profile'
+        && request.resource.data.sourceScreen in ['profile', 'body_double']
         && request.resource.data.isGuest == false
         && request.resource.data.createdAt == request.time;
       allow read, update, delete: if false;
+    }
+
+    // Physical Focus Together sessions — email waitlist (one entry per user)
+    match /physicalSessionWaitlist/{userId} {
+      allow create: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.userId == userId
+        && request.resource.data.email is string
+        && request.resource.data.email.size() >= 5
+        && request.resource.data.email.size() <= 320
+        && request.resource.data.email.matches('.*@.*\\..*')
+        && request.resource.data.source == 'physical_sessions';
+      allow update: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.userId == userId
+        && request.resource.data.email is string
+        && request.resource.data.email.size() >= 5
+        && request.resource.data.email.size() <= 320
+        && request.resource.data.email.matches('.*@.*\\..*')
+        && request.resource.data.source == 'physical_sessions';
+      allow read: if isAdmin();
+      allow delete: if false;
     }
 
     // Product analytics — users create their own events; admin reads for dashboard

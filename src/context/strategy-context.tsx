@@ -14,12 +14,13 @@ import {
   getRecommendedStrategies,
   isStrategySaved,
   markStrategyHelpful,
+  recordStrategyFeedback,
   recordStrategyView,
   subscribeToStrategies,
   subscribeToUserStrategyState,
   toggleSavedStrategy,
 } from '@/lib/strategies'
-import type { Strategy, StrategyCategory, UserStrategyState } from '@/types/strategy'
+import type { Strategy, StrategyCategory, StrategyFeedback, UserStrategyState } from '@/types/strategy'
 import { EMPTY_STRATEGY_STATE } from '@/types/strategy'
 import { useAuth } from '@/context/auth-context'
 
@@ -35,6 +36,7 @@ interface StrategyContextValue {
   toggleSaved: (strategyId: string) => Promise<boolean>
   trackView: (strategyId: string) => Promise<void>
   trackHelpful: (strategyId: string) => Promise<void>
+  trackFeedback: (strategyId: string, feedback: StrategyFeedback) => Promise<void>
   clearError: () => void
 }
 
@@ -176,6 +178,25 @@ export function StrategyProvider({ children }: { children: ReactNode }) {
     [user],
   )
 
+  const trackFeedback = useCallback(
+    async (strategyId: string, feedback: StrategyFeedback) => {
+      if (!user) {
+        throw new Error('You must be signed in to share feedback.')
+      }
+
+      setError(null)
+
+      try {
+        await recordStrategyFeedback(user.uid, strategyId, feedback)
+      } catch (feedbackError) {
+        const message = getFirestoreStrategyErrorMessage(feedbackError)
+        setError(message)
+        throw feedbackError
+      }
+    },
+    [user],
+  )
+
   const clearError = useCallback(() => {
     setError(null)
   }, [])
@@ -193,6 +214,7 @@ export function StrategyProvider({ children }: { children: ReactNode }) {
       toggleSaved,
       trackView,
       trackHelpful,
+      trackFeedback,
       clearError,
     }),
     [
@@ -209,6 +231,7 @@ export function StrategyProvider({ children }: { children: ReactNode }) {
       toggleSaved,
       trackView,
       trackHelpful,
+      trackFeedback,
       clearError,
     ],
   )

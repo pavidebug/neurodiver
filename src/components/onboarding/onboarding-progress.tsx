@@ -16,15 +16,15 @@ export function OnboardingProgress({
 
   return (
     <div className={cn('space-y-2', className)} aria-live="polite">
-      <div className="flex items-center justify-between text-sm text-[#6B6B63]">
+      <div className="flex items-center justify-between text-sm text-text-muted">
         <span className="font-medium">
-          Step {current} of {total}
+          {current} of {total}
         </span>
       </div>
       <Progress
         value={percentage}
-        aria-label={`Onboarding progress: step ${current} of ${total}`}
-        className="h-2 bg-[#EBDFAD]/50"
+        aria-label={`Onboarding progress: ${current} of ${total}`}
+        className="h-1.5 bg-green-muted/40"
       />
     </div>
   )

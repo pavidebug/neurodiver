@@ -3,6 +3,9 @@ export interface AdminOverviewStats {
   activeToday: number
   totalCheckIns: number
   totalStrategySaves: number
+  avgEnergy: number | null
+  avgFocus: number | null
+  avgStress: number | null
 }
 
 export interface AdminSignUp {
@@ -35,15 +38,10 @@ export interface SavedStrategyCount {
 export interface AdminUserRow {
   userId: string
   name: string
-  email: string | null
   joinedAt: string | null
   lastActive: string | null
-  profession: string | null
-  ndStatus: string | null
   totalCheckIns: number
   savedStrategies: number
-  latestEnergy: number | null
-  latestBurnout: string | null
 }
 
 export interface AdminStrategyRow {

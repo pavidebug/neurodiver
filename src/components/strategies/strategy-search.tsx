@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { Search } from 'lucide-react'
+import { Search, Sparkles } from 'lucide-react'
 import { StrategyRequestPanel } from '@/components/strategies/strategy-request-panel'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
@@ -218,7 +218,7 @@ export function StrategySearch({
         <Search
           className={cn(
             'pointer-events-none absolute top-1/2 -translate-y-1/2 text-text-muted',
-            isLanding ? 'left-5 h-6 w-6' : 'left-4 h-5 w-5',
+            isLanding ? 'left-4 h-4 w-4 lg:left-4 lg:h-5 lg:w-5' : 'left-4 h-4 w-4',
           )}
           aria-hidden="true"
         />
@@ -237,10 +237,19 @@ export function StrategySearch({
           onFocus={() => setIsFocused(true)}
           onKeyDown={handleKeyDown}
           className={cn(
-            'pl-12 text-base shadow-sm',
-            isLanding ? 'h-16 rounded-2xl pl-14 text-lg' : 'h-14',
+            'border-border/80 bg-surface-solid pl-12 text-sm shadow-sm transition-shadow placeholder:text-sm',
+            'focus-visible:border-green/35 focus-visible:ring-2 focus-visible:ring-green/15 focus-visible:outline-none',
+            isLanding
+              ? 'h-14 rounded-2xl pl-12 pr-12 sm:text-base sm:placeholder:text-base lg:h-14 lg:rounded-2xl lg:pl-14 lg:pr-14'
+              : 'h-14 sm:text-base sm:placeholder:text-base',
           )}
         />
+        {isLanding ? (
+          <Sparkles
+            className="pointer-events-none absolute top-1/2 right-4 h-4 w-4 -translate-y-1/2 text-orange/70 lg:h-5 lg:w-5"
+            aria-hidden="true"
+          />
+        ) : null}
 
         {showDropdown && (showPopular || showSuggestions || showNoResults) && (
           <div

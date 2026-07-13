@@ -1,4 +1,10 @@
 import * as React from 'react'
+import {
+  surfaceCard,
+  surfaceCardPadding,
+  typeCardTitle,
+  typeBodyMuted,
+} from '@/design-system/tokens'
 import { cn } from '@/lib/utils'
 
 const Card = React.forwardRef<
@@ -8,7 +14,9 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      'rounded-3xl border border-border bg-surface p-6 shadow-sm backdrop-blur-sm transition-shadow duration-200 hover:shadow-md',
+      surfaceCard,
+      surfaceCardPadding,
+      'backdrop-blur-sm hover:shadow-[var(--shadow-premium-hover)]',
       className,
     )}
     {...props}
@@ -34,10 +42,7 @@ const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h3
     ref={ref}
-    className={cn(
-      'font-display text-xl font-semibold leading-tight tracking-tight text-text',
-      className,
-    )}
+    className={cn(typeCardTitle, className)}
     {...props}
   />
 ))
@@ -49,7 +54,7 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn('text-base leading-relaxed text-text-muted', className)}
+    className={cn(typeBodyMuted, className)}
     {...props}
   />
 ))

@@ -10,8 +10,6 @@ import { WorkEnergyProvider } from '@/context/work-energy-context'
 import { LandingPage } from '@/pages/landing-page'
 import { LoginPage } from '@/pages/login-page'
 import { DashboardPage } from '@/pages/dashboard-page'
-import { EnergyPatternsPage } from '@/pages/energy-patterns-page'
-import { DailyWorkReflectionPage } from '@/pages/daily-work-reflection-page'
 import { WorkCheckInPage } from '@/pages/work-check-in-page'
 import { StrategiesPage } from '@/pages/strategies-page'
 import { BodyDoublePage } from '@/pages/body-double-page'
@@ -19,6 +17,9 @@ import { ProfilePage } from '@/pages/profile-page'
 import { InviteFriendPage } from '@/pages/invite-friend-page'
 import { OnboardingPage } from '@/pages/onboarding-page'
 import { WeeklyInsightsPage } from '@/pages/weekly-insights-page'
+import { InsightsPage } from '@/pages/insights-page'
+import { WeeklyReflectionPage } from '@/pages/weekly-reflection-page'
+import { TodayReflectionPage } from '@/pages/today-reflection-page'
 import { AdminRoute } from '@/components/AdminRoute'
 import { AdminLayout } from '@/components/admin/AdminLayout'
 import { AdminPage } from '@/pages/admin-page'
@@ -55,12 +56,18 @@ export default function App() {
                     <Route element={<AppLayout />}>
                       <Route path="/home" element={<DashboardPage />} />
                     <Route path="/work-check-in" element={<WorkCheckInPage />} />
+                    <Route path="/today-reflection" element={<TodayReflectionPage />} />
                     <Route
                       path="/work-reflection"
-                      element={<DailyWorkReflectionPage />}
+                      element={<Navigate to="/weekly-reflection" replace />}
                     />
-                    <Route path="/energy-patterns" element={<EnergyPatternsPage />} />
+                    <Route
+                      path="/energy-patterns"
+                      element={<Navigate to="/insights" replace />}
+                    />
+                    <Route path="/insights" element={<InsightsPage />} />
                     <Route path="/weekly-insights" element={<WeeklyInsightsPage />} />
+                    <Route path="/weekly-reflection" element={<WeeklyReflectionPage />} />
                     <Route path="/strategies" element={<StrategiesPage />} />
                     <Route path="/body-double" element={<BodyDoublePage />} />
                     <Route path="/profile" element={<ProfilePage />} />
@@ -81,7 +88,7 @@ export default function App() {
                     />
                     <Route
                       path="/energy"
-                      element={<Navigate to="/energy-patterns" replace />}
+                      element={<Navigate to="/insights" replace />}
                     />
 
                     <Route path="*" element={<Navigate to="/home" replace />} />

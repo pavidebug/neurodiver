@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { DescribeThankYou } from '@/components/strategies/describe-thank-you'
 import { HelpMeChoose } from '@/components/strategies/help-me-choose'
@@ -9,7 +10,10 @@ import {
 import type { NavigatorEntry } from '@/components/strategies/strategy-navigator-types'
 import { StrategyDetailSheet } from '@/components/strategies/strategy-detail-sheet'
 import { StrategySwipeDeck } from '@/components/strategies/strategy-swipe-deck'
+import { StrategyBrowseScreen } from '@/components/strategies/strategy-browse-screen'
 import { Button } from '@/components/ui/button'
+import { Stack } from '@/design-system/layout'
+import { typePageTitle } from '@/design-system/tokens'
 import {
   filterStrategiesByBrowseCategory,
   filterStrategiesBySituation,
@@ -19,12 +23,13 @@ import {
 import { useAuth } from '@/context/auth-context'
 import { useStrategies } from '@/context/strategy-context'
 import { useWorkEnergy } from '@/context/work-energy-context'
-import { getBrainStatusFromWorkCheckIn } from '@/lib/strategy-analytics'
+import { getRecommendedStrategiesFromPulse } from '@/lib/pulse-recommendations'
 import {
   filterSavedStrategies,
   filterStrategiesByBestWhen,
   filterStrategiesByCategory,
 } from '@/lib/strategy-filters'
+import { getStrategyUsage } from '@/lib/strategies'
 import { getStrategiesForSearchTerm } from '@/lib/strategy-search'
 import type { BestWhenLabel, Strategy, StrategyCategory } from '@/types/strategy'
 
@@ -34,12 +39,15 @@ type DescribeStep = 'form' | 'results' | 'thank-you'
 
 const ENTRY_TITLES: Record<NavigatorEntry, string> = {
   search: 'Strategies',
+  browse: 'Browse',
   'help-me-choose': 'Help Me Find One',
   describe: "Tell us what's been happening",
   saved: 'Saved Strategies',
 }
 
 export function StrategiesPage() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const handledDirectStrategyId = useRef<string | null>(null)
   const { user } = useAuth()
   const { todayCheckIn } = useWorkEnergy()
   const {
@@ -49,8 +57,9 @@ export function StrategiesPage() {
     isSaved,
     toggleSaved,
     trackView,
+    trackFeedback,
+    userState,
     getSaved,
-    getRecommended,
     clearError,
   } = useStrategies()
 
@@ -74,11 +83,26 @@ export function StrategiesPage() {
 
   const savedStrategies = getSaved()
 
+  useEffect(() => {
+    const strategyId = searchParams.get('strategy')
+    if (!strategyId || loading || handledDirectStrategyId.current === strategyId) return
+
+    const strategy = strategies.find((item) => item.id === strategyId)
+    if (!strategy) return
+
+    handledDirectStrategyId.current = strategyId
+    setSearchDeck([strategy])
+    setDeckIndex(0)
+    setDeckTitle(strategy.title)
+    setEntry('search')
+    setSheetStrategy(strategy)
+    setSheetOpen(true)
+    setScreen('flow')
+  }, [loading, searchParams, strategies])
+
   const recommendedStrategies = useMemo(() => {
-    const brainStatus = getBrainStatusFromWorkCheckIn(todayCheckIn)
-    if (!brainStatus) return []
-    return getRecommended(brainStatus, 5)
-  }, [todayCheckIn, getRecommended])
+    return getRecommendedStrategiesFromPulse(strategies, todayCheckIn, 3)
+  }, [strategies, todayCheckIn])
 
   const deckStrategies = useMemo(() => {
     if (entry === 'saved') {
@@ -181,6 +205,8 @@ export function StrategiesPage() {
   )
 
   const backToNavigatorHome = useCallback(() => {
+    handledDirectStrategyId.current = null
+    setSearchParams({}, { replace: true })
     setScreen('home')
     setSearchDeck([])
     setDeckTitle(ENTRY_TITLES.search)
@@ -188,7 +214,7 @@ export function StrategiesPage() {
     setDescribePrefill('')
     setSheetOpen(false)
     setSheetStrategy(null)
-  }, [resetDescribeFlow])
+  }, [resetDescribeFlow, setSearchParams])
 
   const openEntry = useCallback(
     (nextEntry: NavigatorEntry, options?: { describePrefill?: string }) => {
@@ -278,16 +304,16 @@ export function StrategiesPage() {
 
   const handleRecommendedSelect = useCallback(
     (strategy: Strategy) => {
-      const brainStatus = getBrainStatusFromWorkCheckIn(todayCheckIn)
-      const deck = brainStatus ? getRecommended(brainStatus, 5) : [strategy]
-      const selectedIndex = deck.findIndex((item) => item.id === strategy.id)
-      setSearchDeck(deck)
+      const deck = getRecommendedStrategiesFromPulse(strategies, todayCheckIn, 5)
+      const resolvedDeck = deck.length > 0 ? deck : [strategy]
+      const selectedIndex = resolvedDeck.findIndex((item) => item.id === strategy.id)
+      setSearchDeck(resolvedDeck)
       setDeckIndex(selectedIndex >= 0 ? selectedIndex : 0)
-      setDeckTitle('Recommended for you today')
+      setDeckTitle('Today might be a good day to try…')
       setEntry('search')
       setScreen('flow')
     },
-    [todayCheckIn, getRecommended],
+    [strategies, todayCheckIn],
   )
 
   const handleHomeSearchSelect = useCallback(
@@ -311,6 +337,36 @@ export function StrategiesPage() {
       setScreen('flow')
     },
     [savedStrategies],
+  )
+
+  const handleViewAllSaved = useCallback(() => {
+    if (savedStrategies.length === 0) return
+    handleSavedSelect(savedStrategies[0])
+  }, [handleSavedSelect, savedStrategies])
+
+  const handleExploreBrowse = useCallback(() => {
+    setEntry('browse')
+    setScreen('flow')
+    setSheetOpen(false)
+    setSheetStrategy(null)
+  }, [])
+
+  const handleBrowseOpenStrategy = useCallback(
+    (strategy: Strategy) => {
+      setSheetStrategy(strategy)
+      setSheetOpen(true)
+      if (user) void trackView(strategy.id)
+    },
+    [trackView, user],
+  )
+
+  const handleBrowseSearchSelect = useCallback(
+    (strategy: Strategy, context: { searchTerm: string; resultsFound: number }) => {
+      handleSearchSelect(strategy, context)
+      setDeckTitle(context.searchTerm.trim() || 'Strategies')
+      setEntry('search')
+    },
+    [handleSearchSelect],
   )
 
   const openTryThis = useCallback((strategy: Strategy) => {
@@ -379,7 +435,7 @@ export function StrategiesPage() {
 
   if (screen === 'home') {
     return (
-      <div className="page-enter pb-4">
+      <div className="pb-4">
         {error && (
           <p
             className="mb-4 rounded-xl bg-orange/10 px-4 py-3 text-sm text-orange"
@@ -399,6 +455,8 @@ export function StrategiesPage() {
           onCategorySelect={handleCategorySelect}
           onRecommendedSelect={handleRecommendedSelect}
           onSavedSelect={handleSavedSelect}
+          onViewAllSaved={handleViewAllSaved}
+          onExploreBrowse={handleExploreBrowse}
         />
         {detailSheet}
       </div>
@@ -412,7 +470,7 @@ export function StrategiesPage() {
     entry === 'saved'
 
   return (
-    <div className="page-enter space-y-5 pb-4">
+    <Stack className="pb-4">
       <div className="flex items-center gap-3">
         <Button
           type="button"
@@ -425,16 +483,18 @@ export function StrategiesPage() {
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div className="min-w-0 flex-1">
-          <h1 className="font-display text-xl font-semibold text-text">
+          <h1 className={typePageTitle}>
             {entry === 'help-me-choose'
               ? ENTRY_TITLES[entry]
               : entry === 'describe'
                 ? ENTRY_TITLES[entry]
                 : entry === 'saved'
                   ? ENTRY_TITLES.saved
-                  : deckTitle}
+                  : entry === 'browse'
+                    ? ENTRY_TITLES.browse
+                    : deckTitle}
           </h1>
-          {deckStrategies.length > 0 && (
+          {deckStrategies.length > 0 && entry !== 'browse' && (
             <p className="text-sm text-text-muted">
               {safeDeckIndex + 1} of {deckStrategies.length}
             </p>
@@ -455,6 +515,16 @@ export function StrategiesPage() {
         <p className="rounded-xl bg-yellow/20 px-4 py-3 text-sm text-text-muted">
           Sign in to save strategies and submit requests.
         </p>
+      )}
+
+      {entry === 'browse' && (
+        <StrategyBrowseScreen
+          strategies={strategies}
+          todayCheckIn={todayCheckIn}
+          onOpenStrategy={handleBrowseOpenStrategy}
+          onSearchSelect={handleBrowseSearchSelect}
+          onCantFind={handleCantFind}
+        />
       )}
 
       {entry === 'describe' && describeStep === 'form' && (
@@ -519,6 +589,8 @@ export function StrategiesPage() {
           isSaved={isSaved}
           onToggleSave={(strategyId) => void handleToggleSave(strategyId)}
           onTryThis={openTryThis}
+          onFeedback={user ? (strategyId, feedback) => void trackFeedback(strategyId, feedback) : undefined}
+          getLastFeedback={(strategyId) => getStrategyUsage(userState, strategyId)?.lastFeedback ?? null}
           savePending={savePending}
           disabled={sheetOpen}
         />
@@ -537,6 +609,6 @@ export function StrategiesPage() {
         open={sheetOpen}
         onClose={closeSheet}
       />
-    </div>
+    </Stack>
   )
 }

@@ -6,7 +6,7 @@ export type ShareTemplateId =
   | 'check_in'
   | 'general'
 
-export type ShareSourceScreen = 'profile'
+export type ShareSourceScreen = 'profile' | 'body_double'
 
 export interface ShareEventInput {
   userId: string

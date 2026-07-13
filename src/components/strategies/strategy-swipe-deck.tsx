@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { StrategyCompactCard } from '@/components/strategies/strategy-compact-card'
 import { cn } from '@/lib/utils'
-import type { Strategy } from '@/types/strategy'
+import type { Strategy, StrategyFeedback } from '@/types/strategy'
 
 const SWIPE_THRESHOLD = 72
 const MAX_ROTATION = 10
@@ -15,6 +15,8 @@ interface StrategySwipeDeckProps {
   isSaved: (strategyId: string) => boolean
   onToggleSave: (strategyId: string) => void
   onTryThis: (strategy: Strategy) => void
+  onFeedback?: (strategyId: string, feedback: StrategyFeedback) => void
+  getLastFeedback?: (strategyId: string) => StrategyFeedback | null | undefined
   savePending?: boolean
   disabled?: boolean
 }
@@ -26,6 +28,8 @@ export function StrategySwipeDeck({
   isSaved,
   onToggleSave,
   onTryThis,
+  onFeedback,
+  getLastFeedback,
   savePending = false,
   disabled = false,
 }: StrategySwipeDeckProps) {
@@ -198,6 +202,8 @@ export function StrategySwipeDeck({
                 isSaved={isSaved(next.id)}
                 onToggleSave={() => onToggleSave(next.id)}
                 onTryThis={() => onTryThis(next)}
+              onFeedback={onFeedback ? (feedback) => onFeedback(next.id, feedback) : undefined}
+              lastFeedback={getLastFeedback?.(next.id) ?? null}
                 className="pointer-events-none shadow-sm"
               />
             </div>
@@ -222,6 +228,8 @@ export function StrategySwipeDeck({
               isSaved={isSaved(current.id)}
               onToggleSave={() => onToggleSave(current.id)}
               onTryThis={() => onTryThis(current)}
+              onFeedback={onFeedback ? (feedback) => onFeedback(current.id, feedback) : undefined}
+              lastFeedback={getLastFeedback?.(current.id) ?? null}
               savePending={savePending}
             />
           </div>

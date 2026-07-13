@@ -35,6 +35,9 @@ export function AdminPage() {
     activeToday: 0,
     totalCheckIns: 0,
     totalStrategySaves: 0,
+    avgEnergy: null,
+    avgFocus: null,
+    avgStress: null,
   }
 
   return (
@@ -82,6 +85,32 @@ export function AdminPage() {
             loading={loading}
           />
         </div>
+
+        {(stats.avgEnergy !== null || stats.avgFocus !== null || stats.avgStress !== null) && (
+          <div className="grid gap-4 sm:grid-cols-3">
+            {stats.avgEnergy !== null ? (
+              <StatCard label="Avg energy" value={stats.avgEnergy} icon={Activity} loading={loading} />
+            ) : null}
+            {stats.avgFocus !== null ? (
+              <StatCard
+                label="Avg focus"
+                value={stats.avgFocus}
+                icon={ClipboardList}
+                accentClass="bg-lavender-muted text-lavender-deep"
+                loading={loading}
+              />
+            ) : null}
+            {stats.avgStress !== null ? (
+              <StatCard
+                label="Avg stress"
+                value={stats.avgStress}
+                icon={Bookmark}
+                accentClass="bg-yellow/40 text-orange"
+                loading={loading}
+              />
+            ) : null}
+          </div>
+        )}
       </section>
 
       <div className="grid gap-6 xl:grid-cols-2">

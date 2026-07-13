@@ -28,6 +28,12 @@
   --radius-xl: 1.25rem;
   --radius-2xl: 1.5rem;
   --radius-3xl: 1.5rem;
+
+  --shadow-premium: 0 4px 24px rgb(31 42 36 / 0.06);
+  --shadow-premium-hover: 0 8px 32px rgb(31 42 36 / 0.08);
+  --content-max-tablet: 45rem;
+  --content-max-laptop: 65rem;
+  --content-max-desktop: 80rem;
 }
 
 @layer base {
@@ -55,6 +61,8 @@
 
   #root {
     min-height: 100dvh;
+    min-width: 0;
+    overflow-x: clip;
   }
 
   h1,
@@ -62,6 +70,12 @@
   h3,
   .font-display {
     font-family: var(--font-display);
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-sans);
   }
 
   :focus-visible {
@@ -175,7 +189,17 @@
   }
 
   .onboarding-gradient {
-    background: linear-gradient(135deg, #fdf8e2 0%, #faf7ef 45%, #f4f7f2 100%);
+    background: linear-gradient(160deg, #fdfcf9 0%, #f4f7f2 55%, #eef4ef 100%);
+  }
+
+  .onboarding-step-enter {
+    animation: fade-in 0.3s ease-out both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .onboarding-step-enter {
+      animation: none;
+    }
   }
 
   .workspace-shell {
@@ -184,6 +208,64 @@
 
   .workspace-main {
     background: transparent;
+  }
+
+  .card-premium {
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .card-premium:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: var(--shadow-premium-hover);
+    }
+  }
+
+  /* NeuroDiver design system utilities */
+  .nd-content {
+    margin-inline: auto;
+    width: 100%;
+    max-width: none;
+  }
+
+  @media (width >= 640px) {
+    .nd-content {
+      max-width: var(--content-max-tablet);
+    }
+  }
+
+  @media (width >= 1024px) {
+    .nd-content {
+      max-width: var(--content-max-laptop);
+    }
+  }
+
+  @media (width >= 1280px) {
+    .nd-content {
+      max-width: var(--content-max-desktop);
+    }
+  }
+
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0.35) 0%,
+      rgb(255 255 255 / 0.65) 50%,
+      rgb(255 255 255 / 0.35) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+
+  @keyframes skeleton-shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
   }
 
   html.text-large {
@@ -218,6 +300,108 @@
     to {
       opacity: 1;
       transform: scale(1) translateY(0);
+    }
+  }
+
+  .check-in-step {
+    min-height: 0;
+  }
+
+  .pulse-slider::-webkit-slider-thumb {
+    appearance: none;
+    height: 1.75rem;
+    width: 1.75rem;
+    border-radius: 9999px;
+    border: 3px solid white;
+    background: var(--color-green);
+    box-shadow: 0 4px 16px rgb(45 90 61 / 0.25);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .pulse-slider::-webkit-slider-thumb:active {
+    transform: scale(1.08);
+  }
+
+  .pulse-slider.accent-orange::-webkit-slider-thumb {
+    background: var(--color-orange);
+    box-shadow: 0 4px 16px rgb(193 127 58 / 0.28);
+  }
+
+  .pulse-slider.accent-lavender::-webkit-slider-thumb {
+    background: var(--color-lavender-deep);
+    box-shadow: 0 4px 16px rgb(122 107 150 / 0.28);
+  }
+
+  .pulse-slider::-moz-range-thumb {
+    height: 1.75rem;
+    width: 1.75rem;
+    border-radius: 9999px;
+    border: 3px solid white;
+    background: var(--color-green);
+    box-shadow: 0 4px 16px rgb(45 90 61 / 0.25);
+    cursor: pointer;
+  }
+
+  .pulse-slider.accent-orange::-moz-range-thumb {
+    background: var(--color-orange);
+  }
+
+  .pulse-slider.accent-lavender::-moz-range-thumb {
+    background: var(--color-lavender-deep);
+  }
+
+  .calm-home .slide-up,
+  .calm-home .card-premium,
+  .calm-home .popup-enter {
+    animation: none !important;
+  }
+
+  .calm-home .card-premium:hover {
+    transform: none;
+  }
+
+  .expand-panel {
+    animation: fade-in 0.25s ease-out both;
+  }
+
+  @keyframes bookmark-pop {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.12);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .bookmark-pop {
+    animation: bookmark-pop 0.35s ease-out;
+  }
+
+  .energy-tank {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .energy-tank-fill {
+    animation: energy-tank-fill 0.7s ease-out both;
+  }
+
+  .energy-tank-fill-calm {
+    animation-duration: 0.35s;
+  }
+
+  @keyframes energy-tank-fill {
+    from {
+      height: 0 !important;
+      opacity: 0.6;
+    }
+    to {
+      opacity: 1;
     }
   }
 }

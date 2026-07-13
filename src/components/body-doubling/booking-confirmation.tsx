@@ -16,7 +16,6 @@ interface BookingConfirmationProps {
   booking: SessionBooking
   contactEmail: string | null
   timezone: string
-  emailRemindersEnabled: boolean
   feedbackSubmitted: boolean
   onJoin: () => void
   onReflect: () => void
@@ -28,7 +27,6 @@ export function BookingConfirmation({
   booking,
   contactEmail,
   timezone,
-  emailRemindersEnabled,
   feedbackSubmitted,
   onJoin,
   onReflect,
@@ -97,9 +95,7 @@ export function BookingConfirmation({
 
       {contactEmail && (
         <p className="rounded-xl bg-surface-solid px-4 py-3 text-sm text-text-muted">
-          A confirmation email with a calendar invite will be sent to {contactEmail}.
-          {emailRemindersEnabled &&
-            ' Reminders will arrive 24 hours and 30 minutes before the session.'}
+          We&apos;ll confirm your spot at {contactEmail}.
         </p>
       )}
 

@@ -112,7 +112,7 @@ export function getFocusSessionsErrorMessage(error: unknown): string {
 
   if (error instanceof FirebaseError) {
     if (error.code === 'permission-denied') {
-      return 'You need to be signed in to book a session.'
+      return 'Could not complete your booking. Please try again or contact support.'
     }
   }
 
@@ -123,7 +123,7 @@ export function subscribeToUpcomingSessions(
   onData: (sessions: FocusSession[]) => void,
   onError: (error: Error) => void,
   bookingCounts: Record<string, number> = {},
-  limit = 5,
+  limit = 3,
 ): Unsubscribe {
   const sessionsQuery = query(
     collection(db, FOCUS_SESSIONS_COLLECTION),

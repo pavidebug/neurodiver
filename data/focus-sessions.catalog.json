@@ -1,66 +1,26 @@
 {
-  "version": 1,
+  "version": 2,
   "catalogName": "NeuroDiver Body Doubling Pilot Sessions",
-  "updatedAt": "2026-07-04",
+  "updatedAt": "2026-07-09",
   "sessions": [
     {
-      "id": "bd-morning-focus-1",
-      "title": "Morning Focus Hour",
-      "startsAt": "2026-07-07T09:00:00+08:00",
-      "durationMinutes": 60,
-      "platform": "Google Meet",
-      "meetingLink": "https://meet.google.com/placeholder-morning-focus",
-      "capacity": 8,
-      "isActive": true
-    },
-    {
-      "id": "bd-midweek-admin",
-      "title": "Midweek Admin Block",
-      "startsAt": "2026-07-08T14:00:00+08:00",
-      "durationMinutes": 45,
+      "id": "bd-monday-july20",
+      "title": "Monday Focus Session",
+      "startsAt": "2026-07-20T20:00:00+08:00",
+      "durationMinutes": 90,
       "platform": "Microsoft Teams",
-      "meetingLink": "https://teams.microsoft.com/l/meetup-join/placeholder-admin",
-      "capacity": 10,
+      "meetingLink": "https://teams.microsoft.com/l/meetup-join/placeholder-monday-july20",
+      "capacity": 8,
       "isActive": true
     },
     {
-      "id": "bd-gentle-cowork",
-      "title": "Gentle Co-Working",
-      "startsAt": "2026-07-09T16:30:00+08:00",
-      "durationMinutes": 30,
-      "platform": "Google Meet",
-      "meetingLink": "https://meet.google.com/placeholder-gentle-cowork",
-      "capacity": 6,
-      "isActive": true
-    },
-    {
-      "id": "bd-friday-wind-down",
-      "title": "Friday Wind-Down Work",
-      "startsAt": "2026-07-10T17:00:00+08:00",
-      "durationMinutes": 45,
+      "id": "bd-wednesday-july22",
+      "title": "Wednesday Focus Session",
+      "startsAt": "2026-07-22T10:00:00+08:00",
+      "durationMinutes": 90,
       "platform": "Microsoft Teams",
-      "meetingLink": "https://teams.microsoft.com/l/meetup-join/placeholder-wind-down",
+      "meetingLink": "https://teams.microsoft.com/l/meetup-join/placeholder-wednesday-july22",
       "capacity": 8,
-      "isActive": true
-    },
-    {
-      "id": "bd-monday-reset",
-      "title": "Monday Reset Session",
-      "startsAt": "2026-07-13T10:00:00+08:00",
-      "durationMinutes": 60,
-      "platform": "Google Meet",
-      "meetingLink": "https://meet.google.com/placeholder-monday-reset",
-      "capacity": 8,
-      "isActive": true
-    },
-    {
-      "id": "bd-quiet-afternoon",
-      "title": "Quiet Afternoon Focus",
-      "startsAt": "2026-07-14T15:00:00+08:00",
-      "durationMinutes": 45,
-      "platform": "Google Meet",
-      "meetingLink": "https://meet.google.com/placeholder-quiet-afternoon",
-      "capacity": 6,
       "isActive": true
     }
   ]

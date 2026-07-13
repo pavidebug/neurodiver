@@ -1,7 +1,10 @@
-import { getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import type { ThemePreference } from '@/context/theme-context'
-import { trackAnalyticsEvent } from '@/lib/product-analytics'
-import { getUserRef } from '@/lib/work-check-ins'
+import {
+  canProceedFromOnboardingStep,
+  getOnboardingValidationMessage,
+  isOnboardingQuestionOptional,
+} from '@/lib/onboarding-validation'
+import { completeOnboardingDocument } from '@/lib/user-document-service'
 import type { OnboardingAnswers } from '@/types/onboarding'
 import type { UserWorkProfile } from '@/types/work-energy'
 
@@ -17,7 +20,7 @@ export function getDisplayName(profile: UserWorkProfile, authName?: string | nul
     if (emailLocal) return emailLocal
   }
 
-  return 'friend'
+  return 'user'
 }
 
 export function applyAccessibilityPreferences(
@@ -36,10 +39,8 @@ export function applyAccessibilityPreferences(
   root.classList.toggle('high-contrast', wantsHighContrast)
   root.classList.toggle('simplified-ui', wantsSimplified)
 
-  if (setTheme) {
-    if (wantsDarkMode) {
-      setTheme('dark')
-    }
+  if (setTheme && wantsDarkMode) {
+    setTheme('dark')
   }
 
   try {
@@ -64,53 +65,19 @@ export function restoreAccessibilityFromStorage(
   }
 }
 
-function reminderEnabledFromNotification(
-  preference: OnboardingAnswers['notificationPreference'],
-): boolean {
-  return preference === 'daily' || preference === 'weekdays' || preference === 'weekly'
-}
-
 export async function completeOnboarding(
   userId: string,
   answers: OnboardingAnswers,
   existingProfile: UserWorkProfile,
 ): Promise<UserWorkProfile> {
-  const userRef = getUserRef(userId)
-  const snap = await getDoc(userRef)
-  const hasCreatedAt = snap.exists() && snap.data()?.createdAt
-
-  const accessibilityPreferences = answers.accessibilityPreferences.filter(
-    (pref) => pref !== 'none',
-  )
-
-  const nextProfile: UserWorkProfile = {
-    ...existingProfile,
-    displayName: answers.displayName.trim() || null,
-    ndStatus: answers.ndStatus,
-    ageRange: answers.ageRange,
-    profession: answers.profession,
-    workEnvironment: answers.workEnvironment,
-    challenges: answers.challenges,
-    goals: answers.goals,
-    accessibilityPreferences,
-    notificationPreference: answers.notificationPreference,
-    onboardingCompleted: true,
-    reminderEnabled:
-      !accessibilityPreferences.includes('fewer-notifications') &&
-      reminderEnabledFromNotification(answers.notificationPreference),
-  }
-
-  await setDoc(
-    userRef,
-    {
-      workProfile: nextProfile,
-      updatedAt: serverTimestamp(),
-      ...(hasCreatedAt ? {} : { createdAt: serverTimestamp() }),
-    },
-    { merge: true },
-  )
-
-  void trackAnalyticsEvent(userId, 'completed_onboarding')
-
-  return nextProfile
+  return completeOnboardingDocument(userId, answers, existingProfile)
 }
+
+export {
+  canProceedFromOnboardingStep,
+  getOnboardingValidationMessage,
+  isOnboardingQuestionOptional,
+}
+
+/** @deprecated Use isOnboardingQuestionOptional */
+export const isOnboardingStepOptional = isOnboardingQuestionOptional

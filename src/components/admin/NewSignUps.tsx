@@ -29,7 +29,7 @@ export function NewSignUps({ signUps, loading = false }: NewSignUpsProps) {
                 <div className="min-w-0">
                   <p className="font-medium text-text">{signUp.name}</p>
                   <p className="truncate text-sm text-text-muted">
-                    {signUp.email ?? signUp.userId.slice(0, 8) + '…'}
+                    Joined {signUp.joinedAt ?? 'recently'}
                   </p>
                 </div>
                 <span className="shrink-0 text-xs text-text-muted">

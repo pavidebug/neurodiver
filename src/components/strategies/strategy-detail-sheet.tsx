@@ -71,6 +71,31 @@ export function StrategyDetailSheet({
         </div>
 
         <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-5 py-5">
+          <div className="flex flex-wrap gap-2">
+            {strategy.bestWhen.slice(0, 2).map((label) => (
+              <span
+                key={label}
+                className="rounded-full bg-cream px-2.5 py-1 text-[0.6875rem] font-medium text-text-muted"
+              >
+                Best for {label}
+              </span>
+            ))}
+            <span className="rounded-full bg-cream px-2.5 py-1 text-[0.6875rem] font-medium text-text-muted">
+              {strategy.estimatedTime}
+            </span>
+            <span className="rounded-full bg-cream px-2.5 py-1 text-[0.6875rem] font-medium text-text-muted">
+              {strategy.energyRequired} energy
+            </span>
+            {strategy.tags.slice(0, 3).map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full bg-cream px-2.5 py-1 text-[0.6875rem] font-medium text-text-muted"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
           <section className="space-y-2 rounded-2xl bg-yellow/25 px-4 py-4 ring-1 ring-yellow/40">
             <p className="text-sm font-medium uppercase tracking-widest text-text-muted">
               A gentle reminder

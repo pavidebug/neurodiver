@@ -14,6 +14,7 @@ export interface SituationChip {
 export interface BrowseCategoryChip {
   id: string
   label: string
+  emoji: string
 }
 
 export const SITUATION_CHIPS: SituationChip[] = [
@@ -32,14 +33,14 @@ export const SITUATION_CHIPS: SituationChip[] = [
 ]
 
 export const BROWSE_CATEGORY_CHIPS: BrowseCategoryChip[] = [
-  { id: 'focus', label: 'Focus' },
-  { id: 'energy', label: 'Energy' },
-  { id: 'executive-function', label: 'Executive Function' },
-  { id: 'emotional-regulation', label: 'Emotional Regulation' },
-  { id: 'sensory', label: 'Sensory' },
-  { id: 'communication', label: 'Communication' },
-  { id: 'workplace', label: 'Workplace' },
-  { id: 'recovery', label: 'Recovery' },
+  { id: 'focus', label: 'Focus', emoji: '🎯' },
+  { id: 'energy', label: 'Energy', emoji: '⚡' },
+  { id: 'executive-function', label: 'Executive Function', emoji: '🧠' },
+  { id: 'emotional-regulation', label: 'Emotional Regulation', emoji: '💚' },
+  { id: 'sensory', label: 'Sensory', emoji: '👂' },
+  { id: 'communication', label: 'Communication', emoji: '💬' },
+  { id: 'workplace', label: 'Workplace', emoji: '💼' },
+  { id: 'recovery', label: 'Recovery', emoji: '🌿' },
 ]
 
 const BROWSE_CATEGORY_MAP: Record<

@@ -12,19 +12,20 @@ import {
   getWorkCheckInErrorMessage,
   getWorkCheckInForDate,
   hasWorkCheckInForDate,
-  submitWorkCheckIn,
   subscribeToUserWorkProfile,
   subscribeToWorkCheckIns,
 } from '@/lib/work-check-ins'
+import { getMonthlyCheckInCount, submitDailyPulseCheckIn } from '@/lib/pulse-check-in'
+import type { DailyPulseInput } from '@/types/pulse-check-in'
 import type {
   UserWorkProfile,
   WorkCheckIn,
-  WorkCheckInInput,
 } from '@/types/work-energy'
 import { DEFAULT_USER_WORK_PROFILE } from '@/types/work-energy'
 import { useAuth } from '@/context/auth-context'
 import { useTheme } from '@/context/theme-context'
 import { applyAccessibilityPreferences } from '@/lib/onboarding'
+import { ensureUserDocument } from '@/lib/user-document-service'
 
 interface WorkEnergyContextValue {
   checkIns: WorkCheckIn[]
@@ -35,7 +36,8 @@ interface WorkEnergyContextValue {
   loading: boolean
   submitting: boolean
   error: string | null
-  submitCheckIn: (input: WorkCheckInInput) => Promise<WorkCheckIn>
+  monthlyCheckInCount: number
+  submitPulseCheckIn: (input: DailyPulseInput) => Promise<WorkCheckIn>
   clearError: () => void
 }
 
@@ -57,6 +59,10 @@ export function WorkEnergyProvider({ children }: { children: ReactNode }) {
   )
   const hasCheckedInToday = hasWorkCheckInForDate(checkIns, today)
   const currentWeekId = getWeekId()
+  const monthlyCheckInCount = useMemo(
+    () => getMonthlyCheckInCount(checkIns),
+    [checkIns],
+  )
 
   useEffect(() => {
     if (!user) {
@@ -69,6 +75,10 @@ export function WorkEnergyProvider({ children }: { children: ReactNode }) {
     setLoading(true)
     let checkInsReady = false
     let profileReady = false
+
+    void ensureUserDocument(user).catch(() => {
+      // Non-blocking — profile subscription still loads user data
+    })
 
     function updateLoadingState() {
       if (checkInsReady && profileReady) {
@@ -119,27 +129,24 @@ export function WorkEnergyProvider({ children }: { children: ReactNode }) {
     setError(null)
   }, [])
 
-  const submitCheckIn = useCallback(
-    async (input: WorkCheckInInput) => {
+  const submitPulseCheckIn = useCallback(
+    async (input: DailyPulseInput) => {
       if (!user) {
-        throw new Error('You must be signed in to complete a work check-in.')
+        throw new Error('You must be signed in to complete a check-in.')
       }
 
       setSubmitting(true)
       setError(null)
 
       try {
-        const organisationId = input.organisationId ?? profile.organisationId
-        const result = await submitWorkCheckIn(
+        const result = await submitDailyPulseCheckIn(
           user.uid,
-          { ...input, organisationId },
-          { date: today, isGuest },
+          input,
+          { date: today, isGuest, organisationId: profile.organisationId },
         )
         setCheckIns((current) => {
           const withoutToday = current.filter((entry) => entry.date !== today)
-          return [result, ...withoutToday].sort((a, b) =>
-            b.date.localeCompare(a.date),
-          )
+          return [result, ...withoutToday].sort((a, b) => b.date.localeCompare(a.date))
         })
         return result
       } catch (submitError) {
@@ -163,7 +170,8 @@ export function WorkEnergyProvider({ children }: { children: ReactNode }) {
       loading,
       submitting,
       error,
-      submitCheckIn,
+      monthlyCheckInCount,
+      submitPulseCheckIn,
       clearError,
     }),
     [
@@ -175,7 +183,8 @@ export function WorkEnergyProvider({ children }: { children: ReactNode }) {
       loading,
       submitting,
       error,
-      submitCheckIn,
+      monthlyCheckInCount,
+      submitPulseCheckIn,
       clearError,
     ],
   )
@@ -193,4 +202,4 @@ export function useWorkEnergy() {
   return context
 }
 
-export { submitWorkCheckIn } from '@/lib/work-check-ins'
+export { submitDailyPulseCheckIn } from '@/lib/pulse-check-in'

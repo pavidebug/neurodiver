@@ -18,6 +18,7 @@ import { trackAnalyticsEvent } from '@/lib/product-analytics'
 import { DEFAULT_STRATEGY_SEED } from '@/lib/strategy-seed'
 import type {
   Strategy,
+  StrategyFeedback,
   StrategyFilters,
   StrategyUsageRecord,
   UserStrategyState,
@@ -325,6 +326,8 @@ export async function recordStrategyView(
       timesMarkedHelpful: existing?.timesMarkedHelpful ?? 0,
       lastViewedAt: now,
       lastMarkedHelpfulAt: existing?.lastMarkedHelpfulAt ?? null,
+      lastFeedback: existing?.lastFeedback ?? null,
+      lastFeedbackAt: existing?.lastFeedbackAt ?? null,
     }
 
     transaction.set(
@@ -364,6 +367,8 @@ export async function markStrategyHelpful(
       timesMarkedHelpful: (existing?.timesMarkedHelpful ?? 0) + 1,
       lastViewedAt: existing?.lastViewedAt ?? null,
       lastMarkedHelpfulAt: now,
+      lastFeedback: 'helped',
+      lastFeedbackAt: now,
     }
 
     transaction.set(
@@ -381,6 +386,55 @@ export async function markStrategyHelpful(
       { merge: true },
     )
   })
+
+  void trackAnalyticsEvent(userId, 'submitted_feedback', { strategyId })
+}
+
+export async function recordStrategyFeedback(
+  userId: string,
+  strategyId: string,
+  feedback: StrategyFeedback,
+): Promise<void> {
+  const userRef = getUserRef(userId)
+  const now = new Date().toISOString()
+
+  await runTransaction(db, async (transaction) => {
+    const snapshot = await transaction.get(userRef)
+    const current = mapUserStrategyState(snapshot.data()?.strategyState)
+    const existing = current.usage[strategyId]
+
+    const updatedRecord: StrategyUsageRecord = {
+      timesViewed: existing?.timesViewed ?? 0,
+      timesMarkedHelpful:
+        feedback === 'helped'
+          ? (existing?.timesMarkedHelpful ?? 0) + 1
+          : (existing?.timesMarkedHelpful ?? 0),
+      lastViewedAt: existing?.lastViewedAt ?? null,
+      lastMarkedHelpfulAt:
+        feedback === 'helped' ? now : (existing?.lastMarkedHelpfulAt ?? null),
+      lastFeedback: feedback,
+      lastFeedbackAt: now,
+    }
+
+    transaction.set(
+      userRef,
+      {
+        strategyState: {
+          ...current,
+          usage: {
+            ...current.usage,
+            [strategyId]: updatedRecord,
+          },
+        },
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true },
+    )
+  })
+
+  if (feedback === 'helped') {
+    void trackAnalyticsEvent(userId, 'submitted_feedback', { strategyId, feedback })
+  }
 }
 
 export function isStrategySaved(
