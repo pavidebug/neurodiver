@@ -9,6 +9,12 @@ import {
 import { getTodayString } from '@/lib/dates'
 import { db } from '@/lib/firebase'
 import { getDisplayName } from '@/lib/onboarding'
+import {
+  BROUGHT_HERE_OPTIONS,
+  ENERGY_DRAIN_OPTIONS,
+  FAMILIAR_EXPERIENCE_OPTIONS,
+  SUPPORT_STYLE_OPTIONS,
+} from '@/data/onboarding-options'
 import type {
   AdminActivityItem,
   AdminBodyDoubleInterest,
@@ -47,7 +53,24 @@ interface UserRecord {
 }
 
 function getUserName(user: UserRecord): string {
-  return user.displayName?.trim() || getDisplayName(user.profile)
+  return user.profile.displayName?.trim() || user.displayName?.trim() || getDisplayName(user.profile)
+}
+
+function getOptionLabel(
+  options: ReadonlyArray<{ value: string; label: string }>,
+  value: string | null,
+): string | null {
+  if (!value) return null
+  return options.find((option) => option.value === value)?.label ?? value
+}
+
+function getOptionLabels(
+  options: ReadonlyArray<{ value: string; label: string }>,
+  values: string[],
+): string[] {
+  return values.map(
+    (value) => options.find((option) => option.value === value)?.label ?? value,
+  )
 }
 
 function formatTimestamp(value: Timestamp | null | undefined): string | null {
@@ -309,6 +332,13 @@ function buildUserRows(
         userId: user.id,
         name: getUserName(user),
         email: user.email ?? user.profile.email,
+        broughtHere: getOptionLabel(BROUGHT_HERE_OPTIONS, user.profile.whatBroughtYouHere),
+        familiarExperiences: getOptionLabels(
+          FAMILIAR_EXPERIENCE_OPTIONS,
+          user.profile.familiarExperiences,
+        ),
+        energyDrains: getOptionLabels(ENERGY_DRAIN_OPTIONS, user.profile.energyDrains),
+        supportStyle: getOptionLabel(SUPPORT_STYLE_OPTIONS, user.profile.supportStyle),
         joinedAt: formatDate(user.createdAt),
         lastActive: formatTimestamp(lastActiveTimestamp),
         totalCheckIns: userCheckIns.length,

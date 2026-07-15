@@ -39,6 +39,10 @@ export interface AdminUserRow {
   userId: string
   name: string
   email: string | null
+  broughtHere: string | null
+  familiarExperiences: string[]
+  energyDrains: string[]
+  supportStyle: string | null
   joinedAt: string | null
   lastActive: string | null
   totalCheckIns: number

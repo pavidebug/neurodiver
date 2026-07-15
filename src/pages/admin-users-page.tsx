@@ -1,11 +1,39 @@
 import { AdminDataTable } from '@/components/admin/AdminDataTable'
 import { useAdminDashboard } from '@/context/admin-dashboard-context'
-import { Mail } from 'lucide-react'
+import { Mail, RefreshCw } from 'lucide-react'
 import type { AdminBodyDoubleInterest, AdminUserRow } from '@/types/admin-dashboard'
 
+function formatAnswers(values: string[]): string {
+  return values.length > 0 ? values.join(', ') : 'Skipped'
+}
+
 const columns = [
-  { key: 'name', header: 'Name', cell: (row: AdminUserRow) => row.name },
+  { key: 'name', header: 'Preferred name', cell: (row: AdminUserRow) => row.name },
   { key: 'email', header: 'Email', cell: (row: AdminUserRow) => row.email ?? '—' },
+  {
+    key: 'broughtHere',
+    header: 'What brought them here',
+    cell: (row: AdminUserRow) => row.broughtHere ?? 'Skipped',
+    className: 'min-w-52',
+  },
+  {
+    key: 'experiences',
+    header: 'Familiar experiences',
+    cell: (row: AdminUserRow) => formatAnswers(row.familiarExperiences),
+    className: 'min-w-64',
+  },
+  {
+    key: 'energyDrains',
+    header: 'Energy drains',
+    cell: (row: AdminUserRow) => formatAnswers(row.energyDrains),
+    className: 'min-w-56',
+  },
+  {
+    key: 'supportStyle',
+    header: 'Preferred support',
+    cell: (row: AdminUserRow) => row.supportStyle ?? 'Skipped',
+    className: 'min-w-48',
+  },
   { key: 'joined', header: 'Joined', cell: (row: AdminUserRow) => row.joinedAt ?? '—' },
   {
     key: 'lastActive',
@@ -31,16 +59,28 @@ const interestColumns = [
 ]
 
 export function AdminUsersPage() {
-  const { data, loading } = useAdminDashboard()
+  const { data, loading, reload } = useAdminDashboard()
 
   return (
     <div className="page-enter space-y-8">
       <section className="space-y-4">
-        <div>
-          <h2 className="font-display text-xl font-semibold text-text">Registered users</h2>
-          <p className="mt-1 text-sm text-text-muted">
-            Signup emails and aggregated engagement. Personal notes and health details are not shown.
-          </p>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="font-display text-xl font-semibold text-text">Registered users</h2>
+            <p className="mt-1 text-sm text-text-muted">
+              Account details, onboarding responses and aggregated engagement. Skipped optional
+              questions are clearly marked.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={reload}
+            disabled={loading}
+            className="inline-flex items-center gap-2 rounded-2xl border border-border bg-surface px-3.5 py-2 text-sm font-medium text-text transition-colors hover:bg-cream disabled:opacity-50"
+          >
+            <RefreshCw className={loading ? 'h-4 w-4 animate-spin' : 'h-4 w-4'} aria-hidden="true" />
+            Refresh users
+          </button>
         </div>
         <AdminDataTable
           columns={columns}

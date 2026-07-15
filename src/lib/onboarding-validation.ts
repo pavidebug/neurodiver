@@ -11,7 +11,7 @@ export function canProceedFromOnboardingStep(
   answers: OnboardingAnswers,
 ): boolean {
   const question = getOnboardingQuestion(stepIndex)
-  if (!question) return true
+  if (!question || !question.required) return true
 
   switch (question.id) {
     case 'preferred-name':

@@ -4,14 +4,28 @@ import { Switch } from '@/components/ui/switch'
 import { useFeatureConfig } from '@/context/feature-config-context'
 import { saveFeatureConfig } from '@/lib/feature-config'
 import { cn } from '@/lib/utils'
+import { ONBOARDING_QUESTIONS } from '@/data/onboarding-questions'
 import type { FeatureConfig, FeatureTabKey } from '@/types/feature-config'
 
 const TABS: Array<{ key: FeatureTabKey; label: string; description: string }> = [
   { key: 'today', label: 'Today', description: 'The user homepage and daily dashboard.' },
   { key: 'strategies', label: 'Strategies', description: 'Strategy search, categories and saved items.' },
   { key: 'bodyDouble', label: 'Body Double', description: 'Virtual and physical focus sessions.' },
+  { key: 'onboarding', label: 'Onboarding', description: 'First-time sign-up questions and profile setup.' },
   { key: 'profile', label: 'Profile', description: 'Account, preferences and community links.' },
 ]
+
+const ONBOARDING_SECTION_LABELS = Object.fromEntries(
+  ONBOARDING_QUESTIONS.map((question) => [
+    question.id,
+    {
+      label: question.title,
+      description: question.required
+        ? 'Required when this question is enabled.'
+        : 'Optional onboarding question.',
+    },
+  ]),
+)
 
 const SECTION_LABELS: Record<FeatureTabKey, Record<string, { label: string; description: string }>> = {
   today: {
@@ -43,6 +57,7 @@ const SECTION_LABELS: Record<FeatureTabKey, Record<string, { label: string; desc
     preferences: { label: 'Preferences', description: 'Theme, reminders and privacy.' },
     community: { label: 'Admin shortcut', description: 'Developer Dashboard link for the admin account.' },
   },
+  onboarding: ONBOARDING_SECTION_LABELS,
 }
 
 export function AdminModulesPage() {

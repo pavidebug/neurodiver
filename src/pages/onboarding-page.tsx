@@ -8,9 +8,11 @@ import { OnboardingQuestionStep } from '@/components/onboarding/onboarding-quest
 import { Button } from '@/components/ui/button'
 import {
   getOnboardingQuestion,
+  ONBOARDING_QUESTIONS,
   ONBOARDING_QUESTION_COUNT,
 } from '@/data/onboarding-questions'
 import { useAuth } from '@/context/auth-context'
+import { useFeatureConfig } from '@/context/feature-config-context'
 import { useWorkEnergy } from '@/context/work-energy-context'
 import { userDocumentToOnboardingAnswers } from '@/lib/onboarding-mapper'
 import {
@@ -38,12 +40,21 @@ export function OnboardingPage() {
   const navigate = useNavigate()
   const { user, isGuest, loading: authLoading } = useAuth()
   const { profile, loading: profileLoading } = useWorkEnergy()
+  const { config: featureConfig, loading: featureConfigLoading } = useFeatureConfig()
 
   const [step, setStep] = useState(INTRO_STEP)
   const [answers, setAnswers] = useState<OnboardingAnswers>(EMPTY_ONBOARDING_ANSWERS)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [initialized, setInitialized] = useState(false)
+
+  const enabledQuestionSteps = useMemo(
+    () =>
+      ONBOARDING_QUESTIONS.flatMap((question, index) =>
+        featureConfig.onboarding.sections[question.id] === false ? [] : [index + 1],
+      ),
+    [featureConfig.onboarding.sections],
+  )
 
   useEffect(() => {
     if (!user || initialized) return
@@ -83,7 +94,13 @@ export function OnboardingPage() {
   )
   const showSkip = !isIntro && !isComplete && isOnboardingQuestionOptional(step)
 
-  if (authLoading || profileLoading || !initialized) {
+  useEffect(() => {
+    if (isIntro || isComplete || enabledQuestionSteps.includes(step)) return
+    const nextStep = enabledQuestionSteps.find((questionStep) => questionStep > step)
+    setStep(nextStep ?? COMPLETE_STEP)
+  }, [enabledQuestionSteps, isComplete, isIntro, step])
+
+  if (authLoading || profileLoading || featureConfigLoading || !initialized) {
     return (
       <div className="flex min-h-dvh items-center justify-center onboarding-gradient">
         <p className="text-sm text-text-muted">Loading…</p>
@@ -92,6 +109,7 @@ export function OnboardingPage() {
   }
 
   if (!user) return <Navigate to="/" replace />
+  if (!featureConfig.onboarding.enabled) return <Navigate to="/home" replace />
   if (isGuest || profile.onboardingCompleted) return <Navigate to="/home" replace />
 
   async function persistProgress(complete = false) {
@@ -121,16 +139,12 @@ export function OnboardingPage() {
   async function goNext() {
     if (!canProceed) return
 
-    if (step === ONBOARDING_QUESTION_COUNT) {
-      setStep(COMPLETE_STEP)
-      return
-    }
-
     try {
       if (step >= FIRST_QUESTION_STEP) {
         await persistProgress(false)
       }
-      setStep((current) => current + 1)
+      const nextStep = enabledQuestionSteps.find((questionStep) => questionStep > step)
+      setStep(nextStep ?? COMPLETE_STEP)
     } catch {
       // Error surfaced via state
     }
@@ -139,7 +153,10 @@ export function OnboardingPage() {
   function goBack() {
     if (step <= INTRO_STEP) return
     setError(null)
-    setStep((current) => current - 1)
+    const previousStep = [...enabledQuestionSteps]
+      .reverse()
+      .find((questionStep) => questionStep < step)
+    setStep(previousStep ?? INTRO_STEP)
   }
 
   async function skipStep() {
@@ -151,7 +168,8 @@ export function OnboardingPage() {
         return
       }
     }
-    setStep((current) => current + 1)
+    const nextStep = enabledQuestionSteps.find((questionStep) => questionStep > step)
+    setStep(nextStep ?? COMPLETE_STEP)
   }
 
   return (
@@ -159,8 +177,8 @@ export function OnboardingPage() {
       <div className="mx-auto flex min-h-[calc(100dvh-3rem)] w-full max-w-lg flex-col lg:max-w-xl">
         {!isIntro && !isComplete ? (
           <OnboardingProgress
-            current={step}
-            total={ONBOARDING_QUESTION_COUNT}
+            current={enabledQuestionSteps.indexOf(step) + 1}
+            total={enabledQuestionSteps.length}
             className="mb-8"
           />
         ) : (
@@ -168,7 +186,11 @@ export function OnboardingPage() {
         )}
 
         <div className="flex-1">
-          {isIntro ? <OnboardingIntro onBegin={() => setStep(FIRST_QUESTION_STEP)} /> : null}
+          {isIntro ? (
+            <OnboardingIntro
+              onBegin={() => setStep(enabledQuestionSteps[0] ?? COMPLETE_STEP)}
+            />
+          ) : null}
 
           {currentQuestion ? (
             <OnboardingQuestionStep
@@ -216,7 +238,7 @@ export function OnboardingPage() {
                   onClick={() => void skipStep()}
                   disabled={saving}
                 >
-                  Skip
+                  Skip for now
                 </Button>
               ) : null}
               <Button

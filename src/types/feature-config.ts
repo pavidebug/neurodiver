@@ -1,5 +1,5 @@
 export type ConfigurablePageKey = 'today' | 'strategies' | 'bodyDouble'
-export type FeatureTabKey = ConfigurablePageKey | 'profile'
+export type FeatureTabKey = ConfigurablePageKey | 'profile' | 'onboarding'
 
 export interface FeaturePageConfig {
   enabled: boolean
@@ -48,6 +48,16 @@ export const DEFAULT_FEATURE_CONFIG: FeatureConfig = {
       support: true,
       preferences: true,
       community: true,
+    },
+  },
+  onboarding: {
+    enabled: true,
+    sections: {
+      'preferred-name': true,
+      'reason-for-joining': true,
+      experiences: true,
+      'energy-drainers': true,
+      'support-style': true,
     },
   },
 }
