@@ -60,6 +60,16 @@ function validateStrategy(strategy, index) {
   assert(typeof strategy.whyThisHelps === 'string' && strategy.whyThisHelps.length >= 10, `${label}.whyThisHelps is too short`)
   assert(typeof strategy.expectedOutcome === 'string' && strategy.expectedOutcome.length >= 10, `${label}.expectedOutcome is too short`)
   assert(typeof strategy.estimatedTime === 'string' && strategy.estimatedTime.length >= 2, `${label}.estimatedTime is required`)
+  if (strategy.timerEnabled !== undefined) {
+    assert(typeof strategy.timerEnabled === 'boolean', `${label}.timerEnabled must be a boolean`)
+  }
+  if (strategy.timerEnabled === true) {
+    assert(Number.isInteger(strategy.estimatedMinutes) && strategy.estimatedMinutes > 0 && strategy.estimatedMinutes <= 5, `${label}.estimatedMinutes must be between 1 and 5`)
+    assert(Array.isArray(strategy.timerOptions) && strategy.timerOptions.length > 0, `${label}.timerOptions must be a non-empty array`)
+    for (const option of strategy.timerOptions) {
+      assert(Number.isInteger(option) && option > 0 && option <= 5, `${label}.timerOptions must contain minutes between 1 and 5`)
+    }
+  }
   assert(ENERGY_REQUIRED.has(strategy.energyRequired), `${label}.energyRequired is invalid`)
   assert(DIFFICULTY_LEVELS.has(strategy.difficulty), `${label}.difficulty is invalid`)
   assert(Array.isArray(strategy.bestWhen) && strategy.bestWhen.length > 0, `${label}.bestWhen must be a non-empty array`)

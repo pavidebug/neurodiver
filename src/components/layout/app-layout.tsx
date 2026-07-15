@@ -13,6 +13,7 @@ import {
   touchTarget,
 } from '@/design-system/tokens'
 import { useAuth } from '@/context/auth-context'
+import { useFeatureConfig } from '@/context/feature-config-context'
 import { isAdminUser } from '@/utils/admin'
 import { cn } from '@/lib/utils'
 
@@ -26,8 +27,6 @@ const hiddenNavRoutes = [
   '/login',
   '/onboarding',
 ]
-
-const mobileNavItems = navItems
 
 function MobileNavItem({
   to,
@@ -44,10 +43,10 @@ function MobileNavItem({
       className={({ isActive }) =>
         cn(
           touchTarget,
-          'flex min-w-[3.25rem] flex-col items-center justify-center gap-0.5 rounded-2xl px-1.5 py-1.5 transition-all duration-200 active:scale-[0.96]',
+          'flex min-w-[3.25rem] flex-col items-center justify-center gap-0.5 rounded-2xl border border-transparent px-1.5 py-1.5 transition-all duration-200 active:scale-[0.96]',
           mobileNavLabel,
           isActive
-            ? 'bg-[#E8F0EB]/80 font-semibold text-[#2F5D50]'
+            ? 'bg-[#E8F0EB]/80 font-semibold text-[#2F5D50] ring-1 ring-green/20'
             : 'text-[#6B6B63] hover:text-[#1F2A24]',
         )
       }
@@ -72,6 +71,7 @@ function MobileNavItem({
 export function AppLayout() {
   const location = useLocation()
   const { user } = useAuth()
+  const { isPageEnabled } = useFeatureConfig()
   const showAdmin = isAdminUser(user)
   const showNav = !hiddenNavRoutes.includes(location.pathname)
   const isHome = location.pathname === '/home'
@@ -79,7 +79,10 @@ export function AppLayout() {
   const isWorkCheckIn = location.pathname === '/work-check-in'
   const isTodayReflection = location.pathname === '/today-reflection'
   const showSidebar = showNav || isWorkCheckIn || isTodayReflection
-  const showMobileHeader = showNav && !isBodyDouble
+  const showMobileHeader = showNav
+  const mobileNavItems = navItems.filter(
+    (item) => !item.featureKey || isPageEnabled(item.featureKey),
+  )
 
   return (
     <div
@@ -94,7 +97,7 @@ export function AppLayout() {
 
       <div className="flex min-h-dvh min-w-0 flex-1 flex-col">
         {showMobileHeader && (
-          <header className="border-b border-border/60 bg-surface-solid/70 backdrop-blur-sm lg:hidden">
+          <header className="border-b border-green/10 bg-gradient-to-r from-surface-solid/90 via-surface-solid/85 to-green-muted/70 shadow-sm backdrop-blur-md lg:hidden">
             <div className={cn(contentWidth, pagePadding, 'py-4')}>
               <NeuroDiverLogo size="sm" />
             </div>
@@ -103,7 +106,7 @@ export function AppLayout() {
 
         <main
           className={cn(
-            'workspace-main min-w-0 flex-1',
+            'workspace-main relative min-w-0 flex-1 overflow-hidden',
             pagePadding,
             showNav && cn('pt-4', pagePaddingBottomNav),
             !showNav && 'py-8',
@@ -117,7 +120,7 @@ export function AppLayout() {
         >
           <div
             className={cn(
-              'min-w-0',
+              'workspace-content relative z-[1] min-w-0',
               isBodyDouble ? contentWidthWide : contentWidth,
               isWorkCheckIn && 'sm:max-w-[860px]',
               isTodayReflection && 'sm:max-w-[860px]',
@@ -132,7 +135,7 @@ export function AppLayout() {
             aria-label="Main navigation"
             className="fixed inset-x-4 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-50 lg:hidden"
           >
-            <div className="mx-auto flex min-h-[4.5rem] max-h-20 w-full items-stretch justify-around gap-0.5 rounded-[1.75rem] border border-white/80 bg-white/95 px-2.5 py-2.5 shadow-[0_8px_32px_rgba(47,93,80,0.12)] backdrop-blur-md">
+            <div className="mx-auto flex min-h-[4.5rem] max-h-20 w-full items-stretch justify-around gap-0.5 rounded-[1.75rem] border border-white/80 bg-gradient-to-r from-white/95 via-white/95 to-green-muted/90 px-2.5 py-2.5 shadow-[0_8px_32px_rgba(47,93,80,0.14)] backdrop-blur-md">
               {mobileNavItems.map((item) => (
                 <MobileNavItem key={`${item.to}-${item.label}`} {...item} />
               ))}

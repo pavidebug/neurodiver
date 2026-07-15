@@ -1,7 +1,9 @@
 import {
   LayoutDashboard,
+  CalendarDays,
   Layers,
   MessageSquare,
+  SlidersHorizontal,
   Users,
 } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
@@ -13,13 +15,15 @@ const adminNavItems = [
   { to: '/admin/users', label: 'Users', icon: Users, end: false },
   { to: '/admin/strategies', label: 'Strategies', icon: Layers, end: false },
   { to: '/admin/feedback', label: 'Feedback', icon: MessageSquare, end: false },
+  { to: '/admin/modules', label: 'Page visibility', icon: SlidersHorizontal, end: false },
+  { to: '/admin/body-double', label: 'Body Double sessions', icon: CalendarDays, end: false },
 ] as const
 
 export function AdminSidebar() {
   return (
     <aside
       aria-label="Admin navigation"
-      className="flex h-full w-[15.5rem] shrink-0 flex-col border-r border-border/80 bg-surface-solid/90 px-4 py-6 backdrop-blur-sm"
+      className="sticky top-0 flex h-dvh min-h-dvh w-[15.5rem] shrink-0 self-start flex-col overflow-y-auto border-r border-border/80 bg-surface-solid px-4 py-6"
     >
       <div className="mb-8 px-2">
         <NeuroDiverLogo size="sm" />

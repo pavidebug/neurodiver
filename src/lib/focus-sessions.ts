@@ -2,6 +2,7 @@ import { FirebaseError } from 'firebase/app'
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -11,6 +12,7 @@ import {
   runTransaction,
   serverTimestamp,
   Timestamp,
+  updateDoc,
   where,
   type Unsubscribe,
 } from 'firebase/firestore'
@@ -27,6 +29,16 @@ import type {
 const FOCUS_SESSIONS_COLLECTION = 'focusSessions'
 const SESSION_BOOKINGS_COLLECTION = 'sessionBookings'
 const SESSION_FEEDBACK_COLLECTION = 'sessionFeedback'
+
+export interface AdminFocusSessionInput {
+  title: string
+  startsAt: Date
+  durationMinutes: number
+  platform: FocusSession['platform']
+  meetingLink: string
+  capacity: number
+  isActive: boolean
+}
 
 export class SessionFullError extends Error {
   constructor() {
@@ -150,6 +162,60 @@ export function subscribeToUpcomingSessions(
     },
     (error) => onError(error),
   )
+}
+
+export function subscribeToAdminFocusSessions(
+  onData: (sessions: FocusSession[]) => void,
+  onError: (error: Error) => void,
+): Unsubscribe {
+  const sessionsQuery = query(
+    collection(db, FOCUS_SESSIONS_COLLECTION),
+    orderBy('startsAt', 'desc'),
+  )
+
+  return onSnapshot(
+    sessionsQuery,
+    (snapshot) => {
+      onData(
+        snapshot.docs.map((document) =>
+          mapFocusSession(document.id, document.data() as Record<string, unknown>),
+        ),
+      )
+    },
+    (error) => onError(error),
+  )
+}
+
+function toSessionDocument(input: AdminFocusSessionInput) {
+  return {
+    title: input.title.trim(),
+    startsAt: Timestamp.fromDate(input.startsAt),
+    durationMinutes: input.durationMinutes,
+    platform: input.platform,
+    meetingLink: input.meetingLink.trim(),
+    capacity: input.capacity,
+    isActive: input.isActive,
+    updatedAt: serverTimestamp(),
+  }
+}
+
+export async function createFocusSession(input: AdminFocusSessionInput): Promise<string> {
+  const sessionRef = await addDoc(collection(db, FOCUS_SESSIONS_COLLECTION), {
+    ...toSessionDocument(input),
+    createdAt: serverTimestamp(),
+  })
+  return sessionRef.id
+}
+
+export async function updateFocusSession(
+  sessionId: string,
+  input: AdminFocusSessionInput,
+): Promise<void> {
+  await updateDoc(doc(db, FOCUS_SESSIONS_COLLECTION, sessionId), toSessionDocument(input))
+}
+
+export async function deleteFocusSession(sessionId: string): Promise<void> {
+  await deleteDoc(doc(db, FOCUS_SESSIONS_COLLECTION, sessionId))
 }
 
 export function subscribeToActiveBookingCounts(

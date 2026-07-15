@@ -8,9 +8,9 @@ const buttonVariants = cva(buttonPrimary, {
   variants: {
     variant: {
       default:
-        'bg-green text-white hover:bg-green-soft shadow-sm hover:shadow-md',
+        'bg-gradient-to-r from-green to-green-soft text-white shadow-[0_4px_14px_rgba(45,90,61,0.18)] hover:brightness-105 hover:shadow-[0_6px_18px_rgba(45,90,61,0.24)]',
       secondary:
-        'bg-yellow text-text hover:bg-yellow-soft border border-border',
+        'border border-orange/10 bg-gradient-to-r from-yellow to-yellow-soft text-text shadow-sm hover:brightness-105',
       outline:
         'border-2 border-green bg-transparent text-green hover:bg-green-muted',
       ghost: 'bg-transparent text-green hover:bg-green-muted',

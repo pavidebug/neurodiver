@@ -20,7 +20,7 @@ interface StrategySituationGridProps {
 
 export function StrategySituationGrid({ onSelect }: StrategySituationGridProps) {
   return (
-    <section className="space-y-4 sm:space-y-5">
+    <section className="space-y-3 rounded-[1.5rem] border border-orange/10 bg-gradient-to-br from-surface-solid to-yellow/20 p-4 shadow-[var(--shadow-premium)] sm:space-y-4 sm:p-6">
       <h2 className={cn(typeSectionTitle, 'flex items-center gap-2')}>
         <Leaf className="h-5 w-5 shrink-0 text-orange sm:h-6 sm:w-6" aria-hidden="true" />
         I&apos;m struggling with…
@@ -39,12 +39,12 @@ export function StrategySituationGrid({ onSelect }: StrategySituationGridProps) 
               key={chip.id}
               type="button"
               onClick={() => onSelect(chip.id)}
-              className="group flex min-w-0 flex-col items-center gap-1.5"
+              className="group flex min-w-0 flex-col items-center gap-1"
             >
               <span
                 className={cn(
-                  'flex items-center justify-center rounded-xl border border-white/60 p-1 shadow-[var(--shadow-premium)]',
-                  'sm:rounded-2xl lg:p-1.5',
+                  'flex items-center justify-center rounded-xl border border-white/60 p-1 shadow-[0_3px_12px_rgba(31,42,36,0.05)]',
+                  'sm:rounded-[0.875rem] lg:p-1',
                   strategyTileSize,
                   strategyTileHover,
                   style.bgClass,
@@ -59,7 +59,7 @@ export function StrategySituationGrid({ onSelect }: StrategySituationGridProps) 
                 ) : null}
               </span>
 
-              <span className="flex min-h-[2rem] w-full items-start justify-center lg:min-h-[2.125rem]">
+              <span className="flex min-h-[1.75rem] w-full items-start justify-center">
                 <span className={strategyTileLabel}>{chip.label}</span>
               </span>
             </button>

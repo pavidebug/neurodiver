@@ -1,11 +1,10 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import {
   ArrowRight,
   Calendar,
   CheckCircle2,
   ChevronRight,
   Clock,
-  Laptop,
   MapPin,
   Share2,
   Sparkles,
@@ -14,8 +13,7 @@ import {
   Users,
   Video,
 } from 'lucide-react'
-import { NeuroDiverLogo } from '@/components/brand/neurodiver-logo'
-import { CommunityIllustration, HeroIllustration } from '@/components/illustrations'
+import { BodyDoubleEmailCapture } from '@/components/body-doubling/body-double-email-capture'
 import { PhysicalSessionsComingSoon } from '@/components/body-doubling/physical-sessions-coming-soon'
 import { BodyDoublingLearnMoreModal } from '@/components/body-doubling/body-doubling-learn-more-modal'
 import { PrivacyNotice } from '@/components/privacy/privacy-notice'
@@ -28,6 +26,7 @@ import {
 } from '@/lib/focus-session-format'
 import type { FocusSession, SessionBooking } from '@/types/body-doubling'
 import { cn } from '@/lib/utils'
+import { useFeatureConfig } from '@/context/feature-config-context'
 
 /** Pilot community analytics — sign-ups are live; others until aggregate analytics ship */
 const COMMUNITY_ANALYTICS = {
@@ -45,6 +44,9 @@ interface BodyDoublingHomeProps {
   loading: boolean
   error: string | null
   isSignedIn: boolean
+  userId: string | null
+  defaultEmail?: string | null
+  isGuest: boolean
   onReserve: (session: FocusSession) => void
   onJoin: (session: FocusSession, booking: SessionBooking) => void
   onInviteFriend: () => void
@@ -64,12 +66,28 @@ export function BodyDoublingHome({
   loading,
   error,
   isSignedIn,
+  userId,
+  defaultEmail,
+  isGuest,
   onReserve,
   onJoin,
   onInviteFriend,
 }: BodyDoublingHomeProps) {
   const [learnMoreOpen, setLearnMoreOpen] = useState(false)
   const [sessionsView, setSessionsView] = useState<SessionsView>('virtual')
+  const { isSectionEnabled } = useFeatureConfig()
+  const showVirtual = isSectionEnabled('bodyDouble', 'virtualSessions')
+  const showPhysical = isSectionEnabled('bodyDouble', 'physicalSessions')
+  const showFocusIntro = isSectionEnabled('bodyDouble', 'focusIntro')
+  const showCommunityIntro = isSectionEnabled('bodyDouble', 'communityIntro')
+  const showEmailUpdates = isSectionEnabled('bodyDouble', 'emailUpdates')
+
+  useEffect(() => {
+    if (sessionsView === 'virtual' && !showVirtual && showPhysical) setSessionsView('physical')
+    if (sessionsView === 'physical' && !showPhysical && showVirtual) setSessionsView('virtual')
+  }, [sessionsView, showPhysical, showVirtual])
+
+  const visibleSessionsView: SessionsView = !showVirtual && showPhysical ? 'physical' : sessionsView
 
   if (loading) {
     return (
@@ -91,38 +109,22 @@ export function BodyDoublingHome({
       />
       {/* Mobile */}
       <div className="body-double-premium space-y-7 pb-6 lg:hidden">
-        <MobilePageHeader />
-        <BodyDoublingIntroSection
-          totalSignUps={totalSignUps}
-          onLearnMore={() => setLearnMoreOpen(true)}
-        />
+        {showFocusIntro ? <FocusTogetherHero /> : null}
 
-        <section className="flex items-start justify-between gap-3">
-          <div className="min-w-0 flex-1 space-y-2.5 pt-1">
-            <h1 className="font-display text-[1.75rem] font-semibold leading-tight tracking-tight text-[#1F2A24]">
-              Focus Together <span aria-hidden="true">✨</span>
-            </h1>
-            <p className="text-[0.9375rem] leading-relaxed text-[#6B6B63]">
-              Sometimes getting started is easier when someone else is there.
-              <br />
-              Join a quiet focus session with others.
-            </p>
-          </div>
-          <HeroIllustration className="h-[5.5rem] w-[6.5rem] shrink-0" />
-        </section>
+        {showVirtual ? <SessionAlerts error={error} isSignedIn={isSignedIn} /> : null}
 
-        <SessionAlerts error={error} isSignedIn={isSignedIn} />
-
-        <SessionsTabPanel
-          activeView={sessionsView}
+        {showVirtual || showPhysical ? <SessionsTabPanel
+          activeView={visibleSessionsView}
           onViewChange={setSessionsView}
           panelId="sessions-panel-mobile"
+          showVirtual={showVirtual}
+          showPhysical={showPhysical}
         >
-          {sessionsView === 'virtual' ? (
+          {visibleSessionsView === 'virtual' ? (
             sessions.length === 0 ? (
               <EmptySessionsState />
             ) : (
-              <>
+              <ScheduleCardGroup>
                 {featured ? (
                   <FeaturedSessionCard
                     session={featured}
@@ -148,46 +150,44 @@ export function BodyDoublingHome({
                     hideHeading
                   />
                 ) : null}
-              </>
+              </ScheduleCardGroup>
             )
           ) : (
             <PhysicalSessionsComingSoon variant="tab" />
           )}
-        </SessionsTabPanel>
+        </SessionsTabPanel> : null}
+
+        {showCommunityIntro ? <BodyDoublingIntroSection
+          totalSignUps={totalSignUps}
+          onLearnMore={() => setLearnMoreOpen(true)}
+        /> : null}
+
+        {showEmailUpdates ? <BodyDoubleEmailCapture
+          userId={userId}
+          defaultEmail={defaultEmail}
+          isGuest={isGuest}
+          instanceId="mobile"
+        /> : null}
       </div>
 
       {/* Desktop */}
       <div className="hidden w-full space-y-10 pb-8 lg:block lg:space-y-12">
-        <BodyDoublingDesktopIntroBanner
-          totalSignUps={totalSignUps}
-          onLearnMore={() => setLearnMoreOpen(true)}
-        />
+        {showFocusIntro ? <FocusTogetherHero desktop /> : null}
 
-        <section className="flex items-start justify-between gap-10 lg:gap-12">
-          <div className="min-w-0 flex-1 space-y-4">
-            <h1 className="font-display text-4xl font-semibold tracking-tight text-[#1F2A24] xl:text-[2.75rem]">
-              Focus Together <span aria-hidden="true">✨</span>
-            </h1>
-            <p className="max-w-2xl text-base leading-relaxed text-[#6B6B63] lg:text-lg">
-              Sometimes getting started is easier when someone else is there. Join a quiet focus
-              session with others.
-            </p>
-          </div>
-          <HeroIllustration className="h-32 w-36 shrink-0 xl:h-36 xl:w-40" />
-        </section>
+        {showVirtual ? <SessionAlerts error={error} isSignedIn={isSignedIn} variant="desktop" /> : null}
 
-        <SessionAlerts error={error} isSignedIn={isSignedIn} variant="desktop" />
-
-        <SessionsTabPanel
-          activeView={sessionsView}
+        {showVirtual || showPhysical ? <SessionsTabPanel
+          activeView={visibleSessionsView}
           onViewChange={setSessionsView}
           panelId="sessions-panel-desktop"
+          showVirtual={showVirtual}
+          showPhysical={showPhysical}
         >
-          {sessionsView === 'virtual' ? (
+          {visibleSessionsView === 'virtual' ? (
             sessions.length === 0 ? (
               <EmptySessionsState variant="desktop" />
             ) : (
-              <>
+              <ScheduleCardGroup>
                 {featured ? (
                   <FeaturedSessionCard
                     session={featured}
@@ -197,7 +197,6 @@ export function BodyDoublingHome({
                     onJoin={(booking) => onJoin(featured, booking)}
                     onInviteFriend={onInviteFriend}
                     buttonLayout="row"
-                    showIllustration
                   />
                 ) : null}
 
@@ -214,12 +213,24 @@ export function BodyDoublingHome({
                     hideHeading
                   />
                 ) : null}
-              </>
+              </ScheduleCardGroup>
             )
           ) : (
             <PhysicalSessionsComingSoon variant="tab" />
           )}
-        </SessionsTabPanel>
+        </SessionsTabPanel> : null}
+
+        {showCommunityIntro ? <BodyDoublingDesktopIntroBanner
+          totalSignUps={totalSignUps}
+          onLearnMore={() => setLearnMoreOpen(true)}
+        /> : null}
+
+        {showEmailUpdates ? <BodyDoubleEmailCapture
+          userId={userId}
+          defaultEmail={defaultEmail}
+          isGuest={isGuest}
+          instanceId="desktop"
+        /> : null}
 
         <PrivacyNotice variant="check-in" />
       </div>
@@ -227,46 +238,100 @@ export function BodyDoublingHome({
   )
 }
 
+function ScheduleCardGroup({ children }: { children: ReactNode }) {
+  return (
+    <div className="space-y-4 rounded-[1.75rem] border border-[#2F5D50]/15 bg-[#F9F7F2]/70 p-3 ring-1 ring-white/60 sm:p-4 lg:space-y-5 lg:p-5">
+      {children}
+    </div>
+  )
+}
+
+function FocusTogetherHero({ desktop = false }: { desktop?: boolean }) {
+  return (
+    <section
+      className={cn(
+        'relative overflow-hidden rounded-[2rem] border border-[#2F5D50]/10 bg-gradient-to-br from-[#EAF3EF] via-[#F9FBF8] to-[#F4E7BE]/65 shadow-[0_18px_46px_rgba(47,93,80,0.1)]',
+        desktop ? 'px-9 py-9 xl:px-11 xl:py-10' : 'px-5 py-6',
+      )}
+    >
+      <div className="pointer-events-none absolute -right-14 -top-20 h-52 w-52 rounded-full bg-[#D9CBE8]/35 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-20 left-1/3 h-44 w-44 rounded-full bg-[#F4D88E]/25 blur-3xl" />
+      <div className="relative flex items-start gap-4">
+        <span className={cn('flex shrink-0 items-center justify-center rounded-2xl bg-[#2F5D50] text-white shadow-[0_10px_24px_rgba(47,93,80,0.25)]', desktop ? 'h-16 w-16' : 'h-12 w-12')}>
+          <Users className={desktop ? 'h-8 w-8' : 'h-6 w-6'} aria-hidden="true" />
+        </span>
+        <div className="min-w-0">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2F5D50]">Quiet company, shared momentum</p>
+          <h1 className={cn('mt-2 font-display font-semibold leading-tight tracking-tight text-[#1F2A24]', desktop ? 'text-4xl xl:text-[2.75rem]' : 'text-[1.75rem]')}>
+            Focus Together <span aria-hidden="true">✨</span>
+          </h1>
+          <p className={cn('mt-3 max-w-2xl leading-relaxed text-[#6B6B63]', desktop ? 'text-lg' : 'text-[0.9375rem]')}>
+            Sometimes getting started is easier when someone else is there. Join a calm session,
+            choose one task, and work alongside people who understand.
+          </p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function SessionsTabPanel({
   activeView,
   onViewChange,
   panelId,
+  showVirtual,
+  showPhysical,
   children,
 }: {
   activeView: SessionsView
   onViewChange: (view: SessionsView) => void
   panelId: string
+  showVirtual: boolean
+  showPhysical: boolean
   children: ReactNode
 }) {
+  const virtualTabId = `${panelId}-virtual-tab`
+  const physicalTabId = `${panelId}-physical-tab`
+
   return (
-    <section className="space-y-5 lg:space-y-6">
-      <div
-        role="tablist"
-        aria-label="Session types"
-        className="flex gap-2 rounded-2xl bg-white/60 p-1 shadow-sm ring-1 ring-border/40 lg:inline-flex lg:gap-1"
-      >
-        <SessionsTabButton
-          active={activeView === 'virtual'}
-          onClick={() => onViewChange('virtual')}
-          icon={Video}
-          tabId="sessions-virtual-tab"
+    <section className="overflow-hidden rounded-[2rem] border border-[#2F5D50]/10 bg-white/45 shadow-[0_12px_34px_rgba(47,93,80,0.07)]">
+      <div className="border-b border-[#2F5D50]/10 bg-[#F9F7F2]/75 p-4 sm:p-5 lg:flex lg:items-center lg:justify-between lg:gap-5">
+        <div className="flex items-center gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#2F5D50] text-white">
+            <Calendar className="h-5 w-5" aria-hidden="true" />
+          </span>
+          <h2 className="font-display text-xl font-semibold text-[#1F2A24]">Session schedule</h2>
+        </div>
+
+        {showVirtual && showPhysical ? <div
+          role="tablist"
+          aria-label="Session schedule type"
+          className="mt-4 flex gap-1 rounded-2xl bg-white/80 p-1 ring-1 ring-border/50 lg:mt-0"
         >
-          Upcoming Sessions
-        </SessionsTabButton>
-        <SessionsTabButton
-          active={activeView === 'physical'}
-          onClick={() => onViewChange('physical')}
-          icon={MapPin}
-          tabId="sessions-physical-tab"
-        >
-          Physical Sessions
-        </SessionsTabButton>
+          <SessionsTabButton
+            active={activeView === 'virtual'}
+            onClick={() => onViewChange('virtual')}
+            icon={Video}
+            tabId={virtualTabId}
+          >
+            Upcoming
+          </SessionsTabButton>
+          <SessionsTabButton
+            active={activeView === 'physical'}
+            onClick={() => onViewChange('physical')}
+            icon={MapPin}
+            tabId={physicalTabId}
+          >
+            Physical
+          </SessionsTabButton>
+        </div> : null}
       </div>
 
       <div
         role="tabpanel"
         id={panelId}
-        aria-labelledby={activeView === 'virtual' ? 'sessions-virtual-tab' : 'sessions-physical-tab'}
+        aria-labelledby={showVirtual && showPhysical ? (activeView === 'virtual' ? virtualTabId : physicalTabId) : undefined}
+        className="min-h-56 p-4 sm:p-5 lg:p-6"
       >
         {children}
       </div>
@@ -295,7 +360,7 @@ function SessionsTabButton({
       aria-selected={active}
       onClick={onClick}
       className={cn(
-        'flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition-all lg:flex-none lg:px-5',
+        'flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition-all lg:min-w-32',
         active
           ? 'bg-white text-[#1F2A24] shadow-sm'
           : 'text-[#6B6B63] hover:text-[#1F2A24]',
@@ -304,14 +369,6 @@ function SessionsTabButton({
       <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
       {children}
     </button>
-  )
-}
-
-function MobilePageHeader() {
-  return (
-    <header className="-mx-1 py-1">
-      <NeuroDiverLogo size="sm" />
-    </header>
   )
 }
 
@@ -381,7 +438,6 @@ function FeaturedSessionCard({
   onJoin,
   onInviteFriend,
   buttonLayout,
-  showIllustration = false,
 }: {
   session: FocusSession
   booking?: SessionBooking
@@ -390,14 +446,14 @@ function FeaturedSessionCard({
   onJoin: (booking: SessionBooking) => void
   onInviteFriend: () => void
   buttonLayout: ButtonLayout
-  showIllustration?: boolean
 }) {
   const seatsLeft = getRemainingSeats(session)
   const isFull = seatsLeft <= 0 && !booking
 
   return (
-    <article className="overflow-hidden rounded-[1.75rem] bg-[#E8F0EB] shadow-[0_8px_32px_rgba(47,93,80,0.08)]">
-      <div className={cn('p-5', showIllustration && 'lg:flex lg:items-center lg:gap-10 lg:p-8 xl:gap-12')}>
+    <article className="relative overflow-hidden rounded-[1.75rem] border border-[#2F5D50]/10 bg-gradient-to-br from-[#E8F0EB] via-[#F7FAF8] to-[#F4E7BE]/45 shadow-[0_14px_38px_rgba(47,93,80,0.1)]">
+      <div className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full bg-[#7A6B96]/10 blur-3xl" />
+      <div className="relative p-5 lg:p-8">
         <div className="min-w-0 flex-1">
           <span className="inline-block rounded-full bg-white/70 px-3 py-1 text-[0.6875rem] font-semibold tracking-[0.12em] text-[#2F5D50] uppercase">
             Next session
@@ -442,12 +498,6 @@ function FeaturedSessionCard({
             onInviteFriend={onInviteFriend}
           />
         </div>
-
-        {showIllustration ? (
-          <div className="mx-auto mt-4 flex h-28 w-40 shrink-0 items-center justify-center rounded-[1.25rem] bg-white/50 lg:mx-0 lg:mt-0 lg:h-36 lg:w-52 lg:self-center">
-            <Laptop className="h-14 w-14 text-green opacity-80 lg:h-16 lg:w-16" strokeWidth={1.5} aria-hidden="true" />
-          </div>
-        ) : null}
       </div>
     </article>
   )
@@ -689,49 +739,45 @@ function BodyDoublingDesktopIntroBanner({
   const extraCount = Math.max(totalSignUps, 23)
 
   return (
-    <section className="overflow-hidden rounded-[1.5rem] border border-[#2F5D50]/15 bg-[#F4E7BE]/55 shadow-[0_4px_20px_rgba(47,93,80,0.05)] lg:rounded-[1.75rem]">
-      <div className="grid lg:grid-cols-2 lg:divide-x lg:divide-[#2F5D50]/10">
-        <div className="flex gap-5 p-5 lg:p-7">
-          <CommunityIllustration className="h-14 w-14 shrink-0" />
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-[#1F2A24]">What is Body Doubling?</p>
-            <p className="mt-2 text-sm leading-relaxed text-[#6B6B63]">
-              Body doubling means working alongside someone in a quiet shared space to make it easier
-              to start and stay focused.
-            </p>
-            <button
-              type="button"
-              onClick={onLearnMore}
-              className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-[#2F5D50] transition-opacity hover:opacity-80"
-            >
-              Learn more
-              <ChevronRight className="h-4 w-4" aria-hidden="true" />
-            </button>
+    <section className="relative overflow-hidden rounded-[2rem] border border-[#2F5D50]/15 bg-gradient-to-br from-[#EEF5F1] via-white to-[#F3EDF8] p-6 shadow-[0_14px_38px_rgba(47,93,80,0.08)] lg:p-8">
+      <div className="pointer-events-none absolute -right-20 -top-20 h-52 w-52 rounded-full bg-[#D9CBE8]/30 blur-3xl" />
+      <div className="relative grid gap-7 lg:grid-cols-[1.25fr_0.75fr] lg:items-stretch">
+        <div>
+          <div className="flex items-start gap-4">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#2F5D50] text-white shadow-[0_8px_20px_rgba(47,93,80,0.2)]">
+              <Users className="h-7 w-7" aria-hidden="true" />
+            </span>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#2F5D50]">Gentle shared focus</p>
+              <h2 className="mt-1 font-display text-2xl font-semibold text-[#1F2A24]">What is Body Doubling?</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#6B6B63] lg:text-base">
+                Work quietly alongside someone else. Their presence adds just enough structure to
+                help you begin, stay with the task, and feel less alone while doing it.
+              </p>
+            </div>
           </div>
+
+          <BodyDoublingPrinciples className="mt-6" />
+
+          <button
+            type="button"
+            onClick={onLearnMore}
+            className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#2F5D50]/15 bg-white/75 px-4 py-2.5 text-sm font-semibold text-[#2F5D50] transition hover:bg-white"
+          >
+            Learn how it works
+            <ChevronRight className="h-4 w-4" aria-hidden="true" />
+          </button>
         </div>
 
-        <div className="flex flex-col justify-center p-5 lg:p-7 lg:pl-8">
-          <p className="text-sm font-medium text-[#1F2A24]">Community</p>
-          <div className="mt-3 flex items-center gap-2">
-            {['A', 'B', 'C'].map((initial, index) => (
-              <span
-                key={initial}
-                className={cn(
-                  'flex h-9 w-9 items-center justify-center rounded-full border-2 border-white text-xs font-semibold text-white shadow-sm',
-                  index === 0 && 'bg-[#7A6B96]',
-                  index === 1 && 'bg-[#D39A45]',
-                  index === 2 && 'bg-[#2F5D50]',
-                )}
-                aria-hidden="true"
-              >
-                {initial}
-              </span>
-            ))}
-            <span className="rounded-full bg-white/80 px-2.5 py-1 text-xs font-semibold text-[#2F5D50]">
-              +{extraCount}
-            </span>
+        <div className="flex flex-col justify-between rounded-[1.5rem] border border-white/80 bg-white/65 p-5 ring-1 ring-[#2F5D50]/8">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#7A6B96]">You’re in good company</p>
+            <p className="mt-2 font-display text-xl font-semibold text-[#1F2A24]">Quiet support, shared momentum.</p>
           </div>
-          <p className="mt-2 text-sm text-[#6B6B63]">Join a growing group of focused minds.</p>
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <CommunityStat icon={UserPlus} value={`+${extraCount}`} label="people focusing" />
+            <CommunityStat icon={Sparkles} value={`${COMMUNITY_ANALYTICS.gotThingsDonePercent}%`} label="felt productive" />
+          </div>
         </div>
       </div>
     </section>
@@ -748,14 +794,24 @@ function BodyDoublingIntroSection({
   const [activeTab, setActiveTab] = useState<IntroTab>('about')
 
   return (
-    <section className="overflow-hidden rounded-[1.5rem] bg-[#F4E7BE]/55 p-5 shadow-[0_4px_20px_rgba(47,93,80,0.05)]">
+    <section className="relative overflow-hidden rounded-[1.75rem] border border-[#2F5D50]/15 bg-gradient-to-br from-[#EEF5F1] via-white to-[#F3EDF8] p-5 shadow-[0_12px_32px_rgba(47,93,80,0.08)]">
+      <div className="mb-5 flex items-start gap-3.5">
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#2F5D50] text-white">
+          <Users className="h-6 w-6" aria-hidden="true" />
+        </span>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#2F5D50]">Gentle shared focus</p>
+          <h2 className="mt-1 font-display text-xl font-semibold text-[#1F2A24]">What is Body Doubling?</h2>
+        </div>
+      </div>
+
       <div
         role="tablist"
         aria-label="Body doubling information"
-        className="flex gap-1 rounded-2xl bg-white/50 p-1"
+        className="flex gap-1 rounded-2xl bg-white/65 p-1 ring-1 ring-[#2F5D50]/8"
       >
         <IntroTabButton active={activeTab === 'about'} onClick={() => setActiveTab('about')}>
-          What is Body Doubling?
+          How it works
         </IntroTabButton>
         <IntroTabButton active={activeTab === 'analytics'} onClick={() => setActiveTab('analytics')}>
           Community
@@ -764,8 +820,7 @@ function BodyDoublingIntroSection({
 
       <div className="mt-4" role="tabpanel">
         {activeTab === 'about' ? (
-          <div className="flex gap-4">
-            <CommunityIllustration className="h-14 w-14 shrink-0" />
+          <div>
             <BodyDoublingAboutContent onLearnMore={onLearnMore} />
           </div>
         ) : (
@@ -817,19 +872,41 @@ function IntroTabButton({
 
 function BodyDoublingAboutContent({ onLearnMore }: { onLearnMore: () => void }) {
   return (
-    <div className="min-w-0 flex-1">
+    <div>
       <p className="text-sm leading-relaxed text-[#6B6B63]">
-        Body doubling means working alongside someone in a quiet shared space to make it easier to
-        start and stay focused.
+        Work quietly alongside someone else. Their presence adds just enough structure to make
+        starting and staying focused feel easier.
       </p>
+      <BodyDoublingPrinciples className="mt-4" />
       <button
         type="button"
         onClick={onLearnMore}
-        className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-[#2F5D50] transition-opacity hover:opacity-80"
+        className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-[#2F5D50]/15 bg-white/75 px-4 py-2 text-sm font-semibold text-[#2F5D50] transition hover:bg-white"
       >
-        Learn more
+        Learn how it works
         <ChevronRight className="h-4 w-4" aria-hidden="true" />
       </button>
+    </div>
+  )
+}
+
+function BodyDoublingPrinciples({ className }: { className?: string }) {
+  const principles = [
+    ['1', 'Show up'],
+    ['2', 'Choose one task'],
+    ['3', 'Work quietly'],
+  ]
+
+  return (
+    <div className={cn('grid grid-cols-3 gap-2.5', className)}>
+      {principles.map(([number, label]) => (
+        <div key={number} className="rounded-2xl border border-[#2F5D50]/10 bg-white/65 px-2 py-3 text-center">
+          <span className="mx-auto flex h-7 w-7 items-center justify-center rounded-full bg-[#E8F0EB] text-xs font-bold text-[#2F5D50]">
+            {number}
+          </span>
+          <p className="mt-2 text-[11px] font-semibold leading-tight text-[#1F2A24] sm:text-xs">{label}</p>
+        </div>
+      ))}
     </div>
   )
 }
@@ -844,7 +921,7 @@ function CommunityStat({
   label: string
 }) {
   return (
-    <div className="rounded-2xl bg-white/60 px-2 py-3">
+    <div className="rounded-2xl border border-[#2F5D50]/8 bg-white/70 px-2 py-3">
       <Icon className="mx-auto mb-1 h-4 w-4 text-[#2F5D50]" aria-hidden="true" />
       <p className="font-display text-lg font-semibold text-[#1F2A24]">{value}</p>
       <p className="mt-0.5 text-[10px] leading-tight text-[#6B6B63]">{label}</p>

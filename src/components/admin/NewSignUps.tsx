@@ -29,6 +29,9 @@ export function NewSignUps({ signUps, loading = false }: NewSignUpsProps) {
                 <div className="min-w-0">
                   <p className="font-medium text-text">{signUp.name}</p>
                   <p className="truncate text-sm text-text-muted">
+                    {signUp.email ?? 'No email available'}
+                  </p>
+                  <p className="truncate text-sm text-text-muted">
                     Joined {signUp.joinedAt ?? 'recently'}
                   </p>
                 </div>

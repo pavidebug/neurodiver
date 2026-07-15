@@ -1,19 +1,33 @@
 import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { ArrowLeft, X } from 'lucide-react'
+import { Bookmark, Layers, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { StrategyTimerButton } from '@/components/strategy-timer/strategy-timer-button'
+import { hasBuiltInStrategyTimer } from '@/lib/strategy-duration'
 import type { Strategy } from '@/types/strategy'
 
 interface StrategyDetailSheetProps {
   strategy: Strategy | null
   open: boolean
   onClose: () => void
+  onExploreOther?: () => void
+  isSaved?: boolean
+  savePending?: boolean
+  onToggleSave?: (strategyId: string) => void
+  timerActive?: boolean
+  onStartTimer?: (strategy: Strategy, minutes: number, trigger: HTMLButtonElement) => void
 }
 
 export function StrategyDetailSheet({
   strategy,
   open,
   onClose,
+  onExploreOther,
+  isSaved = false,
+  savePending = false,
+  onToggleSave,
+  timerActive = false,
+  onStartTimer,
 }: StrategyDetailSheetProps) {
   useEffect(() => {
     if (!open) return
@@ -86,6 +100,11 @@ export function StrategyDetailSheet({
             <span className="rounded-full bg-cream px-2.5 py-1 text-[0.6875rem] font-medium text-text-muted">
               {strategy.energyRequired} energy
             </span>
+            {hasBuiltInStrategyTimer(strategy) ? (
+              <span className="rounded-full bg-lavender-muted px-2.5 py-1 text-[0.6875rem] font-medium text-lavender-deep">
+                Built-in timer
+              </span>
+            ) : null}
             {strategy.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
@@ -104,6 +123,14 @@ export function StrategyDetailSheet({
               {strategy.gentleReminder}
             </p>
           </section>
+
+          {onStartTimer ? (
+            <StrategyTimerButton
+              strategy={strategy}
+              timerActive={timerActive}
+              onStart={(minutes, trigger) => onStartTimer(strategy, minutes, trigger)}
+            />
+          ) : null}
 
           <section className="space-y-3">
             <p className="text-sm font-medium text-text-muted">Try this</p>
@@ -128,15 +155,31 @@ export function StrategyDetailSheet({
           </section>
         </div>
 
-        <div className="shrink-0 border-t border-border px-5 py-4">
+        <div className="grid shrink-0 gap-2 border-t border-border px-5 py-4 sm:grid-cols-2">
+          {onToggleSave ? (
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              disabled={savePending}
+              aria-pressed={isSaved}
+              onClick={() => onToggleSave(strategy.id)}
+            >
+              <Bookmark
+                className={isSaved ? 'h-4 w-4 fill-current' : 'h-4 w-4'}
+                aria-hidden="true"
+              />
+              {savePending ? 'Saving…' : isSaved ? 'Saved' : 'Save strategy'}
+            </Button>
+          ) : null}
           <Button
             type="button"
             variant="outline"
             className="w-full"
-            onClick={onClose}
+            onClick={onExploreOther ?? onClose}
           >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            Back to strategies
+            <Layers className="h-4 w-4" aria-hidden="true" />
+            Explore other strategies
           </Button>
         </div>
       </div>

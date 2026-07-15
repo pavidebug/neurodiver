@@ -29,7 +29,7 @@ import type { ContactProfileInput } from '@/lib/user-contact-profile'
 type Screen = 'home' | 'confirmation' | 'reflection'
 
 export function BodyDoublePage() {
-  const { user } = useAuth()
+  const { user, isGuest } = useAuth()
   const { profile } = useWorkEnergy()
 
   const [screen, setScreen] = useState<Screen>('home')
@@ -79,6 +79,7 @@ export function BodyDoublePage() {
         setLoading(false)
       },
       bookingCounts,
+      20,
     )
 
     return unsubscribeSessions
@@ -289,6 +290,9 @@ export function BodyDoublePage() {
           loading={loading}
           error={error}
           isSignedIn={Boolean(user)}
+          userId={user?.uid ?? null}
+          defaultEmail={user?.email ?? profile.email ?? contact.email}
+          isGuest={isGuest}
           onReserve={handleReserve}
           onJoin={(session, booking) => void handleJoinFromHome(session, booking)}
           onInviteFriend={() => setInviteOpen(true)}

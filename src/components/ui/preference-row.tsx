@@ -23,7 +23,7 @@ export function PreferenceRow({
   return (
     <Card
       className={cn(
-        'card-premium rounded-[1.25rem] border-0 p-4 shadow-[0_2px_16px_rgba(31,42,36,0.05)]',
+        'card-premium rounded-[1.25rem] border border-green/10 p-4 shadow-[0_2px_16px_rgba(31,42,36,0.05)]',
         className,
       )}
     >

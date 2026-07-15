@@ -354,4 +354,4 @@ export type WorkCheckInQuestion =
   | WorkCheckInMultiChoiceQuestion
   | WorkCheckInTextQuestion
 
-export const WEEKLY_REPORT_MIN_CHECK_INS = 5
+export const WEEKLY_REPORT_MIN_CHECK_INS = 3

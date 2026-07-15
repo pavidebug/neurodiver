@@ -74,12 +74,12 @@ export const typeLabel =
 
 /** Cards */
 export const surfaceCard =
-  'rounded-[1.25rem] border border-border bg-surface shadow-[var(--shadow-premium)] transition-shadow duration-200 xl:rounded-3xl'
+  'rounded-[1.25rem] border border-green/10 bg-gradient-to-br from-surface-solid via-surface-solid to-green-muted/20 shadow-[var(--shadow-premium)] transition-all duration-200 xl:rounded-3xl'
 
 export const surfaceCardPadding = 'p-5 sm:p-6 xl:p-8'
 
 export const surfaceCardInteractive =
-  'card-premium rounded-[1.25rem] border border-border bg-surface shadow-[var(--shadow-premium)] transition-all duration-200 xl:rounded-3xl'
+  'card-premium rounded-[1.25rem] border border-green/10 bg-gradient-to-br from-surface-solid via-surface-solid to-green-muted/20 shadow-[var(--shadow-premium)] transition-all duration-200 xl:rounded-3xl'
 
 /** Buttons — pill shape, touch-friendly */
 export const buttonPrimary =
@@ -103,13 +103,13 @@ export const textareaBase =
 
 /** Strategy situation tiles */
 export const strategyTileGrid =
-  'grid grid-cols-3 justify-items-center gap-x-0 gap-y-2 sm:grid-cols-4 sm:gap-x-0 sm:gap-y-2 md:grid-cols-5 md:gap-y-2.5 lg:grid-cols-6 lg:gap-x-0 lg:gap-y-2.5 xl:grid-cols-6 2xl:grid-cols-7'
+  'grid grid-cols-[repeat(auto-fill,minmax(3.75rem,4rem))] justify-start gap-x-2.5 gap-y-3 sm:grid-cols-[repeat(auto-fill,minmax(4rem,4.25rem))] sm:gap-x-3 sm:gap-y-3.5 lg:gap-x-3.5'
 
 export const strategyTileSize =
-  'aspect-square w-[4rem] sm:w-[4.25rem] lg:w-[4.5rem] xl:w-[4.75rem]'
+  'aspect-square w-[3.5rem] sm:w-[3.75rem] lg:w-[4rem]'
 
 export const strategyTileIcon =
-  'h-5 w-5 shrink-0 lg:h-[1.375rem] lg:w-[1.375rem]'
+  'h-8 w-8 shrink-0 lg:h-9 lg:w-9'
 
 export const strategyTileLabel =
   'line-clamp-2 text-center text-[0.6875rem] leading-snug font-medium text-text sm:text-[0.6875rem] lg:text-xs'

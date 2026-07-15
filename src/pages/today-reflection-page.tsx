@@ -133,10 +133,14 @@ export function TodayReflectionPage() {
           <p className="text-xs font-medium uppercase tracking-wide text-green">
             One gentle suggestion
           </p>
-          <p className="mt-2 font-display text-xl font-semibold text-text">{topStrategy.title}</p>
+          <p className="mt-2 font-display text-xl font-semibold text-text">
+            &ldquo;{topStrategy.situation}&rdquo;
+          </p>
           <p className="mt-2 text-sm leading-relaxed text-text-muted">{topStrategy.gentleReminder}</p>
           <Button asChild variant="outline" className="mt-4 w-full sm:w-fit">
-            <Link to="/strategies">Browse strategies</Link>
+            <Link to={`/strategies?strategy=${encodeURIComponent(topStrategy.id)}`}>
+              Try this now
+            </Link>
           </Button>
         </section>
       ) : null}

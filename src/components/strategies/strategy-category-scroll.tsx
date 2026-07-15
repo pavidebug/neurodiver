@@ -9,13 +9,18 @@ interface StrategyCategoryScrollProps {
 
 export function StrategyCategoryScroll({ onSelect }: StrategyCategoryScrollProps) {
   return (
-    <section className="space-y-3 lg:space-y-4">
-      <h2 className={STRATEGY_SECTION_HEADER}>
+    <section className="space-y-3 rounded-[1.5rem] border border-green/10 bg-gradient-to-br from-surface-solid to-green-muted/25 p-4 shadow-[var(--shadow-premium)] sm:p-6 lg:space-y-4">
+      <h2 className={`${STRATEGY_SECTION_HEADER} flex items-center gap-2`}>
         <LayoutGrid className="h-5 w-5 shrink-0 text-green lg:h-6 lg:w-6" aria-hidden="true" />
         Browse by category
       </h2>
 
       <div className="flex flex-wrap gap-2 lg:gap-2.5">
+        <SelectableChip
+          label="Under 5 minutes"
+          emoji="⏱️"
+          onClick={() => onSelect('under-5')}
+        />
         {BROWSE_CATEGORY_CHIPS.map((chip) => (
           <SelectableChip
             key={chip.id}

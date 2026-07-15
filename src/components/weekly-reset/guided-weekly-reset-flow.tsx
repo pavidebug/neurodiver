@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { ArrowLeft, ArrowRight, NotebookPen, Shield } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Lock, NotebookPen, Shield } from 'lucide-react'
 import {
   WeeklyResetChip,
   WeeklyResetSelectCard,
@@ -68,6 +68,7 @@ interface GuidedWeeklyResetFlowProps {
   saving: boolean
   error: string | null
   completedReflection: WeeklyReflection | null
+  previewOnly?: boolean
   onSubmit: (input: WeeklyReflectionInput) => Promise<WeeklyReflection>
   onExit: () => void
 }
@@ -76,6 +77,7 @@ export function GuidedWeeklyResetFlow({
   saving,
   error,
   completedReflection,
+  previewOnly = false,
   onSubmit,
   onExit,
 }: GuidedWeeklyResetFlowProps) {
@@ -221,7 +223,7 @@ export function GuidedWeeklyResetFlow({
         {step === 'note' ? (
           <button
             type="button"
-            onClick={() => void handleFinish()}
+            onClick={previewOnly ? onExit : () => void handleFinish()}
             disabled={saving}
             className="shrink-0 px-2 py-1 text-sm font-medium text-text-muted transition-colors hover:text-text"
           >
@@ -247,6 +249,15 @@ export function GuidedWeeklyResetFlow({
                 intention for next week — no streaks, no scores.
               </p>
             </div>
+            {previewOnly ? (
+              <div className="flex items-start gap-3 rounded-2xl border border-lavender/25 bg-lavender-muted/35 px-4 py-4">
+                <Lock className="mt-0.5 h-5 w-5 shrink-0 text-lavender-deep" aria-hidden="true" />
+                <p className="text-sm leading-relaxed text-text-muted">
+                  Preview mode: complete at least 3 check-ins to unlock and save your weekly reset.
+                  You can still look through every question now.
+                </p>
+              </div>
+            ) : null}
             <div className="flex items-start gap-3 rounded-2xl border border-green/15 bg-green-muted/35 px-4 py-4">
               <Shield className="mt-0.5 h-5 w-5 shrink-0 text-green" aria-hidden="true" />
               <p className="text-sm leading-relaxed text-text-muted">
@@ -261,7 +272,7 @@ export function GuidedWeeklyResetFlow({
                 className="rounded-full bg-lavender-deep px-8 text-white hover:bg-lavender-deep/90"
                 onClick={() => goToStep('summary')}
               >
-                Begin Weekly Reset
+                {previewOnly ? 'Preview the questions' : 'Begin Weekly Reset'}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Button>
             </div>
@@ -419,10 +430,10 @@ export function GuidedWeeklyResetFlow({
               type="button"
               size="lg"
               className="w-full rounded-full bg-lavender-deep text-white hover:bg-lavender-deep/90 sm:w-auto sm:px-10"
-              disabled={saving || !buildInput()}
-              onClick={() => void handleFinish()}
+              disabled={!previewOnly && (saving || !buildInput())}
+              onClick={previewOnly ? onExit : () => void handleFinish()}
             >
-              {saving ? 'Saving…' : 'Finish'}
+              {previewOnly ? 'Finish preview' : saving ? 'Saving…' : 'Finish'}
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Button>
           ) : (
@@ -430,7 +441,7 @@ export function GuidedWeeklyResetFlow({
               type="button"
               size="lg"
               className="w-full rounded-full bg-lavender-deep text-white hover:bg-lavender-deep/90 sm:w-auto sm:px-10"
-              disabled={!canContinue()}
+              disabled={!previewOnly && !canContinue()}
               onClick={goNext}
             >
               Next

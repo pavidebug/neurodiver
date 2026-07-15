@@ -41,7 +41,7 @@ export function ProfileLinkCard({
   )
 
   const baseClass = cn(
-    'card-premium flex items-center gap-3 rounded-[1.25rem] bg-surface-solid p-4 shadow-[0_2px_16px_rgba(31,42,36,0.05)] transition-colors hover:bg-cream/50',
+    'card-premium flex items-center gap-3 rounded-[1.25rem] border border-green/10 bg-gradient-to-br from-surface-solid via-surface-solid to-green-muted/20 p-4 shadow-[var(--shadow-premium)] transition-colors hover:border-green/20 hover:bg-cream/50',
     badge && 'relative',
     className,
   )

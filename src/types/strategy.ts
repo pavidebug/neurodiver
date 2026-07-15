@@ -35,6 +35,9 @@ export interface StrategyDocument {
   whyThisHelps: string
   expectedOutcome: string
   estimatedTime: string
+  timerEnabled?: boolean
+  estimatedMinutes?: number
+  timerOptions?: number[]
   energyRequired: EnergyRequired
   difficulty: StrategyDifficulty
   bestWhen: BestWhenLabel[]

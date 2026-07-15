@@ -6,6 +6,7 @@ import {
   typeHelper,
 } from '@/design-system/tokens'
 import type { Strategy } from '@/types/strategy'
+import { hasBuiltInStrategyTimer } from '@/lib/strategy-duration'
 import { cn } from '@/lib/utils'
 
 const CATEGORY_ACCENT: Record<string, { label: string; className: string }> = {
@@ -61,6 +62,12 @@ export function StrategyBrowseCard({
       >
         {accent.label}
       </p>
+
+      {hasBuiltInStrategyTimer(strategy) ? (
+        <span className="mt-2 w-fit rounded-full bg-lavender-muted px-2.5 py-1 text-[0.6875rem] font-medium text-lavender-deep">
+          Built-in timer
+        </span>
+      ) : null}
 
       <div className="flex flex-1 flex-col justify-center py-4 sm:py-6">
         <p className={cn(typeCardTitle, 'font-display')}>

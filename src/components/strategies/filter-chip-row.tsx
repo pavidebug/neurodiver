@@ -50,7 +50,7 @@ export function SelectableChip({
       className={cn(chipBase, selected ? chipSelected : chipDefault)}
     >
       {emoji ? (
-        <span className="text-base leading-none" aria-hidden="true">
+        <span className="text-[1.625rem] leading-none sm:text-3xl" aria-hidden="true">
           {emoji}
         </span>
       ) : null}

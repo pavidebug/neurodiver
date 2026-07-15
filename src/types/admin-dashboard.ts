@@ -38,10 +38,18 @@ export interface SavedStrategyCount {
 export interface AdminUserRow {
   userId: string
   name: string
+  email: string | null
   joinedAt: string | null
   lastActive: string | null
   totalCheckIns: number
   savedStrategies: number
+}
+
+export interface AdminBodyDoubleInterest {
+  userId: string
+  email: string
+  isGuest: boolean
+  joinedAt: string | null
 }
 
 export interface AdminStrategyRow {
@@ -67,6 +75,7 @@ export interface AdminDashboardData {
   mostUsedFeatures: AdminFeatureUsage[]
   mostSavedStrategies: SavedStrategyCount[]
   users: AdminUserRow[]
+  bodyDoubleInterests: AdminBodyDoubleInterest[]
   strategies: AdminStrategyRow[]
   feedback: AdminFeedbackRow[]
 }

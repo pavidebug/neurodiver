@@ -6,6 +6,11 @@ export type AnalyticsEventType =
   | 'saved_strategy'
   | 'started_body_doubling'
   | 'submitted_feedback'
+  | 'strategy_timer_started'
+  | 'strategy_timer_paused'
+  | 'strategy_timer_resumed'
+  | 'strategy_timer_finished'
+  | 'strategy_timer_cancelled'
 
 export interface AnalyticsEventDocument {
   eventType: AnalyticsEventType
@@ -22,6 +27,11 @@ export const ANALYTICS_EVENT_TYPES: AnalyticsEventType[] = [
   'saved_strategy',
   'started_body_doubling',
   'submitted_feedback',
+  'strategy_timer_started',
+  'strategy_timer_paused',
+  'strategy_timer_resumed',
+  'strategy_timer_finished',
+  'strategy_timer_cancelled',
 ]
 
 export const ANALYTICS_EVENT_LABELS: Record<AnalyticsEventType, string> = {
@@ -32,6 +42,11 @@ export const ANALYTICS_EVENT_LABELS: Record<AnalyticsEventType, string> = {
   saved_strategy: 'Saved strategy',
   started_body_doubling: 'Started body doubling',
   submitted_feedback: 'Submitted feedback',
+  strategy_timer_started: 'Started strategy timer',
+  strategy_timer_paused: 'Paused strategy timer',
+  strategy_timer_resumed: 'Resumed strategy timer',
+  strategy_timer_finished: 'Finished strategy timer',
+  strategy_timer_cancelled: 'Cancelled strategy timer',
 }
 
 export const ANALYTICS_FEATURE_LABELS: Record<AnalyticsEventType, string> = {
@@ -42,4 +57,9 @@ export const ANALYTICS_FEATURE_LABELS: Record<AnalyticsEventType, string> = {
   saved_strategy: 'Save strategy',
   started_body_doubling: 'Body doubling',
   submitted_feedback: 'Feedback',
+  strategy_timer_started: 'Strategy timer',
+  strategy_timer_paused: 'Strategy timer',
+  strategy_timer_resumed: 'Strategy timer',
+  strategy_timer_finished: 'Strategy timer',
+  strategy_timer_cancelled: 'Strategy timer',
 }

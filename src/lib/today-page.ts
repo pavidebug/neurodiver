@@ -107,13 +107,13 @@ function shouldRecommendBodyDouble(
   )
 }
 
-export function getTodayPrimaryAction(
+export function getTodayPrimaryActions(
   strategies: Strategy[],
   checkIn: WorkCheckIn | null,
   hasCheckedInToday: boolean,
   userState: UserStrategyState,
   upcomingSession: FocusSession | null,
-): TodayPrimaryAction {
+): TodayPrimaryAction[] {
   const referenceCheckIn = checkIn
   const pulse = getPulseFields(referenceCheckIn)
   const brainState =
@@ -132,7 +132,7 @@ export function getTodayPrimaryAction(
       minute: '2-digit',
     })
 
-    return {
+    const sessionAction: TodayPrimaryAction = {
       kind: 'body-double',
       title: 'Join a focus session',
       description: `${upcomingSession.title} starts at ${timeLabel}. Quiet company can help you get started.`,
@@ -140,29 +140,51 @@ export function getTodayPrimaryAction(
       href: '/body-double',
       sessionId: upcomingSession.id,
     }
+
+    const taggedStrategies = getRecommendedStrategiesFromPulse(
+      strategies,
+      referenceCheckIn,
+      2,
+      userState.usage,
+    )
+
+    return [
+      sessionAction,
+      ...taggedStrategies.map((strategy): TodayPrimaryAction => ({
+        kind: 'strategy',
+        title: formatStrategyActionTitle(strategy, brainState),
+        description: strategy.situation,
+        ctaLabel: 'Try this now',
+        href: getStrategyHref(strategy.id),
+        strategyId: strategy.id,
+      })),
+    ]
   }
 
   const recommended = getRecommendedStrategiesFromPulse(
     strategies,
     referenceCheckIn,
-    1,
+    3,
     userState.usage,
   )
 
-  const strategy = recommended[0] ?? strategies.find((item) => item.isActive)
+  const suggestions =
+    recommended.length > 0
+      ? recommended
+      : strategies.filter((item) => item.isActive).slice(0, 3)
 
-  if (strategy) {
-    return {
+  if (suggestions.length > 0) {
+    return suggestions.map((strategy): TodayPrimaryAction => ({
       kind: 'strategy',
       title: formatStrategyActionTitle(strategy, brainState),
       description: strategy.situation,
       ctaLabel: 'Try this now',
       href: getStrategyHref(strategy.id),
       strategyId: strategy.id,
-    }
+    }))
   }
 
-  return {
+  return [{
     kind: 'explore',
     title: hasCheckedInToday ? 'Browse strategies' : 'Explore strategies',
     description: hasCheckedInToday
@@ -170,7 +192,23 @@ export function getTodayPrimaryAction(
       : 'Find a gentle starting point while you get into the rhythm of checking in.',
     ctaLabel: 'Open strategies',
     href: '/strategies',
-  }
+  }]
+}
+
+export function getTodayPrimaryAction(
+  strategies: Strategy[],
+  checkIn: WorkCheckIn | null,
+  hasCheckedInToday: boolean,
+  userState: UserStrategyState,
+  upcomingSession: FocusSession | null,
+): TodayPrimaryAction {
+  return getTodayPrimaryActions(
+    strategies,
+    checkIn,
+    hasCheckedInToday,
+    userState,
+    upcomingSession,
+  )[0]!
 }
 
 export function getTodayContinueItem(
@@ -213,7 +251,7 @@ export function getTodayContinueItem(
       return {
         kind: 'saved-strategy',
         title: 'Continue your saved strategy',
-        description: strategy.title,
+        description: strategy.situation,
         ctaLabel: 'Open strategy',
         href: getStrategyHref(strategy.id),
         strategyId: strategy.id,
@@ -227,7 +265,7 @@ export function getTodayContinueItem(
       return {
         kind: 'recent-strategy',
         title: 'Recently viewed',
-        description: strategy.title,
+        description: strategy.situation,
         ctaLabel: 'Pick up where you left off',
         href: getStrategyHref(strategy.id),
         strategyId: strategy.id,

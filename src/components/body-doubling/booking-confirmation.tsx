@@ -1,13 +1,11 @@
 import { CalendarPlus, ExternalLink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { formatCountdown, useCountdown } from '@/hooks/use-countdown'
 import { downloadSessionIcsFile } from '@/lib/focus-session-calendar'
 import {
   formatSessionDate,
   formatSessionDuration,
   formatSessionTime,
   isSessionEnded,
-  isSessionUpcoming,
 } from '@/lib/focus-session-format'
 import type { FocusSession, SessionBooking } from '@/types/body-doubling'
 
@@ -32,11 +30,7 @@ export function BookingConfirmation({
   onReflect,
   onBack,
 }: BookingConfirmationProps) {
-  const countdown = useCountdown(
-    isSessionUpcoming(session) ? session.startsAt : null,
-  )
   const ended = isSessionEnded(session)
-  const showCountdown = isSessionUpcoming(session) && countdown && countdown.totalMs > 0
 
   const handleJoinClick = () => {
     onJoin()
@@ -97,15 +91,6 @@ export function BookingConfirmation({
         <p className="rounded-xl bg-surface-solid px-4 py-3 text-sm text-text-muted">
           We&apos;ll confirm your spot at {contactEmail}.
         </p>
-      )}
-
-      {showCountdown && (
-        <div className="rounded-2xl border border-border bg-surface-solid px-5 py-4 text-center">
-          <p className="text-sm text-text-muted">Starts in</p>
-          <p className="mt-1 font-display text-2xl font-semibold text-text">
-            {formatCountdown(countdown)}
-          </p>
-        </div>
       )}
 
       <Button type="button" className="h-14 w-full text-lg" onClick={handleJoinClick}>

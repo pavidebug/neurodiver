@@ -7,6 +7,12 @@ service cloud.firestore {
         && request.auth.token.email == 'pavi2024ns@gmail.com';
     }
 
+    // Public app configuration for authenticated users; only admin can change modules.
+    match /appConfig/{configId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
     // Global strategy catalog — read-only for signed-in users
     match /strategies/{strategyId} {
       allow read: if request.auth != null;
@@ -85,7 +91,7 @@ service cloud.firestore {
     // Body Doubling pilot — manually seeded sessions
     match /focusSessions/{sessionId} {
       allow read: if request.auth != null;
-      allow write: if false;
+      allow write: if isAdmin();
     }
 
     match /sessionBookings/{bookingId} {
@@ -161,6 +167,21 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // Body Double updates — guests use Firebase anonymous auth, so no account is required.
+    match /bodyDoubleInterest/{userId} {
+      allow create, update: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.userId == userId
+        && request.resource.data.email is string
+        && request.resource.data.email.size() >= 5
+        && request.resource.data.email.size() <= 320
+        && request.resource.data.email.matches('.*@.*\\..*')
+        && request.resource.data.isGuest is bool
+        && request.resource.data.source == 'body_double';
+      allow read: if isAdmin();
+      allow delete: if false;
+    }
+
     // Product analytics — users create their own events; admin reads for dashboard
     match /analyticsEvents/{eventId} {
       allow create: if request.auth != null
@@ -172,7 +193,12 @@ service cloud.firestore {
           'opened_strategy_card',
           'saved_strategy',
           'started_body_doubling',
-          'submitted_feedback'
+          'submitted_feedback',
+          'strategy_timer_started',
+          'strategy_timer_paused',
+          'strategy_timer_resumed',
+          'strategy_timer_finished',
+          'strategy_timer_cancelled'
         ]
         && request.resource.data.createdAt == request.time;
       allow read: if isAdmin();

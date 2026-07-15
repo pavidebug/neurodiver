@@ -1,8 +1,8 @@
 {
   "$schema": "./strategies.schema.json",
-  "version": 1,
+  "version": 2,
   "catalogName": "NeuroDiver Strategy Navigator",
-  "updatedAt": "2026-07-04",
+  "updatedAt": "2026-07-14",
   "strategies": 
   [
       {
@@ -24,6 +24,9 @@
         "whyThisHelps": "Each of these gives your brain a smaller, more concrete entry point than the full task, which lowers the effort needed to begin.",
         "expectedOutcome": "Increase task initiation and reduce time spent stuck before starting.",
         "estimatedTime": "2 min",
+        "timerEnabled": true,
+        "estimatedMinutes": 2,
+        "timerOptions": [1, 2, 5],
         "energyRequired": "Low",
         "difficulty": "Easy",
         "bestWhen": [
@@ -63,6 +66,9 @@
         "whyThisHelps": "It replaces an overwhelming task with a tiny, low-stakes one, which makes starting far less effortful.",
         "expectedOutcome": "Lower activation energy and increase task initiation.",
         "estimatedTime": "2 min",
+        "timerEnabled": true,
+        "estimatedMinutes": 2,
+        "timerOptions": [1, 2, 5],
         "energyRequired": "Low",
         "difficulty": "Easy",
         "bestWhen": [
@@ -101,6 +107,9 @@
         "whyThisHelps": "Physical movement can shift your nervous system state, making it easier to transition out of an overthinking loop.",
         "expectedOutcome": "Reduce time spent stuck before starting and increase task initiation.",
         "estimatedTime": "2 min",
+        "timerEnabled": true,
+        "estimatedMinutes": 2,
+        "timerOptions": [1, 2],
         "energyRequired": "Low",
         "difficulty": "Easy",
         "bestWhen": [
@@ -178,6 +187,9 @@
         "whyThisHelps": "Reducing the decision to a single item removes the paralysis that comes from weighing everything at once.",
         "expectedOutcome": "Increase task initiation and reduce decision fatigue.",
         "estimatedTime": "5 min",
+        "timerEnabled": true,
+        "estimatedMinutes": 5,
+        "timerOptions": [2, 5],
         "energyRequired": "Low",
         "difficulty": "Easy",
         "bestWhen": [

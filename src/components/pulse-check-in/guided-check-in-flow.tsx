@@ -12,9 +12,7 @@ import { CheckInCalmIllustration } from '@/components/illustrations'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { getGreeting } from '@/lib/greeting'
-import { getTodayString } from '@/lib/dates'
 import { isPulseComplete } from '@/lib/pulse-check-in'
-import { cacheWorkReflection } from '@/lib/work-reflection-cache'
 import type { DailyPulseInput, PulseMood } from '@/types/pulse-check-in'
 import type { WorkCheckIn } from '@/types/work-energy'
 import { cn } from '@/lib/utils'
@@ -109,13 +107,12 @@ export function GuidedCheckInFlow({
     }
 
     try {
-      const [checkIn] = await Promise.all([
+      await Promise.all([
         onSubmit(input),
         new Promise<void>((resolve) => window.setTimeout(resolve, FINDING_SUPPORT_MS)),
       ])
 
-      cacheWorkReflection(checkIn, getTodayString())
-      navigate('/today-reflection', { replace: true, state: { checkIn } })
+      navigate('/home', { replace: true, state: { checkInCompleted: true } })
     } catch {
       setStep('note')
     }

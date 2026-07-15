@@ -30,15 +30,23 @@ function scoreStrategy(
   let score = 0
   const tags = strategy.tags.map((tag) => tag.toLowerCase())
   const category = strategy.category.toLowerCase()
+  const hasTag = (...keywords: string[]) =>
+    tags.some((tag) => keywords.some((keyword) => tag.includes(keyword)))
 
   if (pulse.energy !== null && pulse.energy <= 2) {
-    if (category.includes('energy') || tags.includes('burnout') || tags.includes('rest')) {
+    if (
+      category.includes('energy') ||
+      hasTag('burnout', 'rest', 'recovery', 'low energy', 'energy conservation')
+    ) {
       score += 3
     }
   }
 
   if (pulse.focus !== null && pulse.focus <= 2) {
-    if (category.includes('executive') || tags.includes('focus') || tags.includes('attention')) {
+    if (
+      category.includes('executive') ||
+      hasTag('focus', 'attention', 'task initiation', 'starting', 'prioritisation')
+    ) {
       score += 3
     }
   }
@@ -47,7 +55,7 @@ function scoreStrategy(
     if (
       category.includes('emotional') ||
       category.includes('sensory') ||
-      tags.includes('overwhelm')
+      hasTag('overwhelm', 'stress', 'regulation', 'freeze', 'sensory')
     ) {
       score += 3
     }

@@ -35,12 +35,11 @@ export function DescribeThankYou({ requestId, onBack }: DescribeThankYouProps) {
           You don&apos;t need to have the perfect words.
         </p>
         <p className="text-base leading-relaxed text-text-muted">
-          Sometimes describing what happened is enough to help us find a starting
-          point.
+          Your experience has been sent to NeuroDiver.
         </p>
         <p className="text-base leading-relaxed text-text-muted">
-          We don&apos;t have the right strategy for this yet, but experiences like
-          yours help us build better support for everyone.
+          Experiences like yours help us understand what support is missing and
+          build better strategies for everyone.
         </p>
         <p className="text-base leading-relaxed text-text-muted">
           We&apos;ll use anonymous insights to improve NeuroDiver over time.

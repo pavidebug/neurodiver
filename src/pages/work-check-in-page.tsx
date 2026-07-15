@@ -22,7 +22,7 @@ export function WorkCheckInPage() {
 
   useEffect(() => {
     if (!loading && hasCheckedInToday) {
-      navigate('/today-reflection', { replace: true })
+      navigate('/home', { replace: true })
     }
   }, [hasCheckedInToday, loading, navigate])
 

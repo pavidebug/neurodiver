@@ -11,6 +11,7 @@ import { db } from '@/lib/firebase'
 import { getDisplayName } from '@/lib/onboarding'
 import type {
   AdminActivityItem,
+  AdminBodyDoubleInterest,
   AdminDashboardData,
   AdminFeatureUsage,
   AdminFeedbackRow,
@@ -37,10 +38,16 @@ interface AnalyticsEventRecord {
 
 interface UserRecord {
   id: string
+  email: string | null
+  displayName: string | null
   createdAt: Timestamp | null
   updatedAt: Timestamp | null
   profile: UserWorkProfile
   strategyState: UserStrategyState
+}
+
+function getUserName(user: UserRecord): string {
+  return user.displayName?.trim() || getDisplayName(user.profile)
 }
 
 function formatTimestamp(value: Timestamp | null | undefined): string | null {
@@ -147,12 +154,39 @@ async function fetchUsers(): Promise<UserRecord[]> {
       const data = docSnap.data()
       return {
         id: docSnap.id,
+        email: typeof data.email === 'string' ? data.email : null,
+        displayName: typeof data.displayName === 'string' ? data.displayName : null,
         createdAt: (data.createdAt as Timestamp | undefined) ?? null,
         updatedAt: (data.updatedAt as Timestamp | undefined) ?? null,
         profile: mapUserProfile(data.workProfile),
         strategyState: mapUserStrategyState(data.strategyState),
       }
     })
+  } catch {
+    return []
+  }
+}
+
+async function fetchBodyDoubleInterests(): Promise<AdminBodyDoubleInterest[]> {
+  try {
+    const snapshot = await getDocs(collection(db, 'bodyDoubleInterest'))
+    return snapshot.docs
+      .map((docSnap) => {
+        const data = docSnap.data()
+        return {
+          userId: String(data.userId ?? docSnap.id),
+          email: String(data.email ?? ''),
+          isGuest: data.isGuest === true,
+          joinedAt: formatTimestamp(data.createdAt as Timestamp | undefined),
+          createdAt: (data.createdAt as Timestamp | undefined) ?? null,
+        }
+      })
+      .filter((entry) => entry.email.length > 0)
+      .sort(
+        (a, b) =>
+          (b.createdAt?.toMillis?.() ?? 0) - (a.createdAt?.toMillis?.() ?? 0),
+      )
+      .map(({ createdAt: _createdAt, ...entry }) => entry)
   } catch {
     return []
   }
@@ -273,7 +307,8 @@ function buildUserRows(
 
       return {
         userId: user.id,
-        name: getDisplayName(user.profile),
+        name: getUserName(user),
+        email: user.email ?? user.profile.email,
         joinedAt: formatDate(user.createdAt),
         lastActive: formatTimestamp(lastActiveTimestamp),
         totalCheckIns: userCheckIns.length,
@@ -397,7 +432,7 @@ function buildRecentActivity(
   users: UserRecord[],
 ): AdminActivityItem[] {
   const nameByUserId = new Map(
-    users.map((user) => [user.id, getDisplayName(user.profile)]),
+    users.map((user) => [user.id, getUserName(user)]),
   )
 
   return [...events]
@@ -425,8 +460,8 @@ function buildNewSignUps(users: UserRecord[]): AdminSignUp[] {
     .slice(0, 5)
     .map((user) => ({
       userId: user.id,
-      name: getDisplayName(user.profile),
-      email: user.profile.email,
+      name: getUserName(user),
+      email: user.email ?? user.profile.email,
       joinedAt: formatDate(user.createdAt),
     }))
 }
@@ -461,12 +496,13 @@ function countActiveToday(
 }
 
 export async function fetchAdminDashboard(): Promise<AdminDashboardData> {
-  const [users, events, checkIns, strategyTitles, feedback] = await Promise.all([
+  const [users, events, checkIns, strategyTitles, feedback, bodyDoubleInterests] = await Promise.all([
     fetchUsers(),
     fetchAnalyticsEvents(),
     fetchWorkCheckIns(),
     fetchStrategyTitles(),
     fetchFeedbackRows(),
+    fetchBodyDoubleInterests(),
   ])
 
   const totalStrategySaves = users.reduce(
@@ -489,6 +525,7 @@ export async function fetchAdminDashboard(): Promise<AdminDashboardData> {
     mostUsedFeatures: buildMostUsedFeatures(events),
     mostSavedStrategies: buildMostSavedStrategies(users, strategyTitles),
     users: buildUserRows(users, checkIns, events),
+    bodyDoubleInterests,
     strategies: buildStrategyRows(users, strategyTitles),
     feedback,
   }

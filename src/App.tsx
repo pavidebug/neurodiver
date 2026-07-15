@@ -7,6 +7,8 @@ import { AuthProvider } from '@/context/auth-context'
 import { StrategyProvider } from '@/context/strategy-context'
 import { ThemeProvider } from '@/context/theme-context'
 import { WorkEnergyProvider } from '@/context/work-energy-context'
+import { FeatureConfigProvider } from '@/context/feature-config-context'
+import { FeaturePageGate } from '@/components/feature-page-gate'
 import { LandingPage } from '@/pages/landing-page'
 import { LoginPage } from '@/pages/login-page'
 import { DashboardPage } from '@/pages/dashboard-page'
@@ -16,8 +18,6 @@ import { BodyDoublePage } from '@/pages/body-double-page'
 import { ProfilePage } from '@/pages/profile-page'
 import { InviteFriendPage } from '@/pages/invite-friend-page'
 import { OnboardingPage } from '@/pages/onboarding-page'
-import { WeeklyInsightsPage } from '@/pages/weekly-insights-page'
-import { InsightsPage } from '@/pages/insights-page'
 import { WeeklyReflectionPage } from '@/pages/weekly-reflection-page'
 import { TodayReflectionPage } from '@/pages/today-reflection-page'
 import { AdminRoute } from '@/components/AdminRoute'
@@ -26,11 +26,14 @@ import { AdminPage } from '@/pages/admin-page'
 import { AdminUsersPage } from '@/pages/admin-users-page'
 import { AdminStrategiesPage } from '@/pages/admin-strategies-page'
 import { AdminFeedbackPage } from '@/pages/admin-feedback-page'
+import { AdminModulesPage } from '@/pages/admin-modules-page'
+import { AdminBodyDoublePage } from '@/pages/admin-body-double-page'
 
 export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
+        <FeatureConfigProvider>
         <WorkEnergyProvider>
           <StrategyProvider>
             <BrowserRouter>
@@ -49,12 +52,14 @@ export default function App() {
                       <Route path="/admin/users" element={<AdminUsersPage />} />
                       <Route path="/admin/strategies" element={<AdminStrategiesPage />} />
                       <Route path="/admin/feedback" element={<AdminFeedbackPage />} />
+                      <Route path="/admin/modules" element={<AdminModulesPage />} />
+                      <Route path="/admin/body-double" element={<AdminBodyDoublePage />} />
                     </Route>
                   </Route>
 
                   <Route element={<OnboardingGate />}>
                     <Route element={<AppLayout />}>
-                      <Route path="/home" element={<DashboardPage />} />
+                      <Route path="/home" element={<FeaturePageGate page="today"><DashboardPage /></FeaturePageGate>} />
                     <Route path="/work-check-in" element={<WorkCheckInPage />} />
                     <Route path="/today-reflection" element={<TodayReflectionPage />} />
                     <Route
@@ -63,13 +68,13 @@ export default function App() {
                     />
                     <Route
                       path="/energy-patterns"
-                      element={<Navigate to="/insights" replace />}
+                      element={<Navigate to="/home" replace />}
                     />
-                    <Route path="/insights" element={<InsightsPage />} />
-                    <Route path="/weekly-insights" element={<WeeklyInsightsPage />} />
+                    <Route path="/insights" element={<Navigate to="/home" replace />} />
+                    <Route path="/weekly-insights" element={<Navigate to="/home" replace />} />
                     <Route path="/weekly-reflection" element={<WeeklyReflectionPage />} />
-                    <Route path="/strategies" element={<StrategiesPage />} />
-                    <Route path="/body-double" element={<BodyDoublePage />} />
+                    <Route path="/strategies" element={<FeaturePageGate page="strategies"><StrategiesPage /></FeaturePageGate>} />
+                    <Route path="/body-double" element={<FeaturePageGate page="bodyDouble"><BodyDoublePage /></FeaturePageGate>} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/profile/invite-friend" element={<InviteFriendPage />} />
 
@@ -88,7 +93,7 @@ export default function App() {
                     />
                     <Route
                       path="/energy"
-                      element={<Navigate to="/insights" replace />}
+                      element={<Navigate to="/home" replace />}
                     />
 
                     <Route path="*" element={<Navigate to="/home" replace />} />
@@ -99,6 +104,7 @@ export default function App() {
             </BrowserRouter>
           </StrategyProvider>
         </WorkEnergyProvider>
+        </FeatureConfigProvider>
       </AuthProvider>
     </ThemeProvider>
   )

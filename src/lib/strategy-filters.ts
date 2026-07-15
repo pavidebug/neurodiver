@@ -1,4 +1,5 @@
 import type { BestWhenLabel, Strategy, StrategyCategory } from '@/types/strategy'
+import { getStrategyEstimatedMinutes } from '@/lib/strategy-duration'
 
 export function searchStrategies(strategies: Strategy[], query: string): Strategy[] {
   const normalized = query.trim().toLowerCase()
@@ -39,4 +40,14 @@ export function filterSavedStrategies(
 ): Strategy[] {
   const saved = new Set(savedIds)
   return strategies.filter((strategy) => saved.has(strategy.id))
+}
+
+export function filterStrategiesUnderMinutes(
+  strategies: Strategy[],
+  maximumMinutes: number,
+): Strategy[] {
+  return strategies.filter((strategy) => {
+    const estimatedMinutes = getStrategyEstimatedMinutes(strategy)
+    return estimatedMinutes !== null && estimatedMinutes <= maximumMinutes
+  })
 }

@@ -78,6 +78,14 @@
         "whyThisHelps": { "type": "string", "minLength": 10 },
         "expectedOutcome": { "type": "string", "minLength": 10 },
         "estimatedTime": { "type": "string", "minLength": 2 },
+        "timerEnabled": { "type": "boolean" },
+        "estimatedMinutes": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "timerOptions": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
         "energyRequired": { "type": "string", "enum": ["Low", "Medium"] },
         "difficulty": { "type": "string", "enum": ["Easy", "Moderate", "Advanced"] },
         "bestWhen": {

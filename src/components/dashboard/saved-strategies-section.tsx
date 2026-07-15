@@ -31,7 +31,7 @@ export function SavedStrategiesSection({
         {strategies.map((strategy) => (
           <Link
             key={strategy.id}
-            to="/strategies"
+            to={`/strategies?strategy=${encodeURIComponent(strategy.id)}`}
             className="card-premium group rounded-[1.25rem] bg-surface-solid p-5 shadow-[var(--shadow-premium)]"
           >
             <Bookmark
@@ -39,7 +39,7 @@ export function SavedStrategiesSection({
               aria-hidden="true"
             />
             <p className="line-clamp-2 text-sm font-medium leading-snug text-text">
-              {strategy.title}
+              &ldquo;{strategy.situation}&rdquo;
             </p>
           </Link>
         ))}

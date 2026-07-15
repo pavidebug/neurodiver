@@ -8,11 +8,13 @@ import {
   submitWeeklyReflection,
 } from '@/lib/weekly-reflection'
 import type { WeeklyReflection } from '@/types/weekly-reflection'
+import { countWeekCheckIns } from '@/lib/weekly-report'
+import { WEEKLY_REPORT_MIN_CHECK_INS } from '@/types/work-energy'
 
 export function WeeklyReflectionPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { currentWeekId } = useWorkEnergy()
+  const { currentWeekId, checkIns, loading: checkInsLoading } = useWorkEnergy()
   const [completedReflection, setCompletedReflection] = useState<WeeklyReflection | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -39,7 +41,7 @@ export function WeeklyReflectionPage() {
     }
   }, [currentWeekId, user])
 
-  if (loading) {
+  if (loading || checkInsLoading) {
     return (
       <div className="flex min-h-[calc(100dvh-2rem)] items-center justify-center">
         <p className="text-sm text-text-muted">Loading…</p>
@@ -47,14 +49,18 @@ export function WeeklyReflectionPage() {
     )
   }
 
+  const previewOnly = countWeekCheckIns(checkIns) < WEEKLY_REPORT_MIN_CHECK_INS
+
   return (
     <div className="page-enter pb-6">
       <GuidedWeeklyResetFlow
         saving={saving}
         error={error}
         completedReflection={completedReflection}
+        previewOnly={previewOnly}
         onExit={() => navigate('/home')}
         onSubmit={async (input) => {
+          if (previewOnly) throw new Error('Complete three check-ins to save a weekly reset')
           if (!user) throw new Error('Sign in required')
           setSaving(true)
           setError(null)

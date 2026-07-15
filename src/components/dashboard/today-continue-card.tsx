@@ -21,7 +21,7 @@ export function TodayContinueCard({ item, className }: TodayContinueCardProps) {
   return (
     <article
       className={cn(
-        'rounded-[1.25rem] border border-border/50 bg-cream/40 px-5 py-4',
+        'rounded-[1.25rem] border border-orange/10 bg-gradient-to-br from-white to-yellow/20 px-5 py-5 shadow-[var(--shadow-premium)]',
         className,
       )}
     >

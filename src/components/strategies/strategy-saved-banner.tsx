@@ -1,12 +1,10 @@
-import { Heart, Sparkles } from 'lucide-react'
-import { SavedCollectionIllustration } from '@/components/illustrations'
+import { Heart } from 'lucide-react'
 import type { Strategy } from '@/types/strategy'
 import { cn } from '@/lib/utils'
 
 interface StrategySavedBannerProps {
   savedStrategies: Strategy[]
   onSavedSelect: (strategy: Strategy) => void
-  onExplore: () => void
   onViewAllSaved: () => void
   variant?: 'mobile' | 'desktop'
 }
@@ -14,7 +12,6 @@ interface StrategySavedBannerProps {
 export function StrategySavedBanner({
   savedStrategies,
   onSavedSelect,
-  onExplore,
   onViewAllSaved,
   variant = 'desktop',
 }: StrategySavedBannerProps) {
@@ -25,12 +22,8 @@ export function StrategySavedBanner({
   return (
     <section className="rounded-2xl border border-green/15 bg-green-muted/50 p-4 shadow-sm lg:rounded-3xl lg:p-5">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
-        <div className="flex gap-3 lg:min-w-0 lg:flex-1 lg:items-center lg:gap-4">
-          <SavedCollectionIllustration
-            className={cn('shrink-0', isMobile ? 'h-12 w-16' : 'h-14 w-[4.5rem]')}
-          />
-
-          <div className="min-w-0 flex-1 space-y-1.5">
+        <div className="min-w-0 flex-1">
+          <div className="min-w-0 space-y-1.5">
             <h2 className="flex items-center gap-2 font-display text-xl font-semibold text-text lg:text-[1.75rem]">
               Saved strategies
               <Heart className="h-4 w-4 text-orange" aria-hidden="true" />
@@ -64,13 +57,13 @@ export function StrategySavedBanner({
           </div>
         </div>
 
-        <div
-          className={cn(
-            'flex flex-col gap-2',
-            isMobile ? 'w-full' : 'shrink-0',
-          )}
-        >
-          {hasSaved ? (
+        {hasSaved ? (
+          <div
+            className={cn(
+              'flex flex-col gap-2',
+              isMobile ? 'w-full' : 'shrink-0',
+            )}
+          >
             <button
               type="button"
               onClick={onViewAllSaved}
@@ -81,19 +74,8 @@ export function StrategySavedBanner({
             >
               View saved
             </button>
-          ) : null}
-          <button
-            type="button"
-            onClick={onExplore}
-            className={cn(
-              'inline-flex items-center justify-center gap-2 rounded-full bg-green text-base font-medium text-white shadow-[0_4px_16px_rgba(47,93,80,0.2)] transition-colors hover:bg-green-soft',
-              isMobile ? 'w-full py-3' : 'px-6 py-3',
-            )}
-          >
-            Explore strategies
-            <Sparkles className="h-4 w-4 opacity-80" aria-hidden="true" />
-          </button>
-        </div>
+          </div>
+        ) : null}
       </div>
     </section>
   )

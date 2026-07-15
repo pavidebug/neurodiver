@@ -1,5 +1,6 @@
 import { getTodayString, getWeekStart } from '@/lib/dates'
 import type { WorkCheckIn } from '@/types/work-energy'
+import { WEEKLY_REPORT_MIN_CHECK_INS } from '@/types/work-energy'
 
 export const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const
 
@@ -18,8 +19,8 @@ export function getWeekDayCheckIns(
 export type WeeklyReviewReadiness = 'early' | 'building' | 'ready'
 
 export function getWeeklyReviewReadiness(weekCheckInCount: number): WeeklyReviewReadiness {
-  if (weekCheckInCount >= 5) return 'ready'
-  if (weekCheckInCount >= 3) return 'building'
+  if (weekCheckInCount >= WEEKLY_REPORT_MIN_CHECK_INS) return 'ready'
+  if (weekCheckInCount >= 1) return 'building'
   return 'early'
 }
 

@@ -57,6 +57,12 @@ function mapStrategyDoc(id: string, data: Record<string, unknown>): Strategy {
     whyThisHelps: String(data.whyThisHelps ?? ''),
     expectedOutcome: String(data.expectedOutcome ?? ''),
     estimatedTime: String(data.estimatedTime ?? ''),
+    timerEnabled: data.timerEnabled === true,
+    estimatedMinutes:
+      typeof data.estimatedMinutes === 'number' ? data.estimatedMinutes : undefined,
+    timerOptions: Array.isArray(data.timerOptions)
+      ? data.timerOptions.filter((value): value is number => typeof value === 'number')
+      : undefined,
     energyRequired: (data.energyRequired as Strategy['energyRequired']) ?? 'Low',
     difficulty: (data.difficulty as Strategy['difficulty']) ?? 'Easy',
     bestWhen,

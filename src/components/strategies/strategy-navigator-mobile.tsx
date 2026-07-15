@@ -1,15 +1,12 @@
 import { Stack } from '@/design-system/layout'
-import { typeBodyMuted, typePageTitle } from '@/design-system/tokens'
 import { useRef } from 'react'
-import { Sparkles } from 'lucide-react'
 import { StrategyCategoryScroll } from '@/components/strategies/strategy-category-scroll'
-import { HeroIllustration } from '@/components/illustrations'
+import { StrategyNavigatorHeader } from '@/components/strategies/strategy-navigator-header'
 import { StrategySavedBanner } from '@/components/strategies/strategy-saved-banner'
 import { StrategySearch } from '@/components/strategies/strategy-search'
 import { StrategySituationGrid } from '@/components/strategies/strategy-situation-grid'
 import type { Strategy } from '@/types/strategy'
 import type { WorkCheckIn } from '@/types/work-energy'
-import { cn } from '@/lib/utils'
 
 export interface StrategyNavigatorSharedProps {
   strategies: Strategy[]
@@ -24,7 +21,7 @@ export interface StrategyNavigatorSharedProps {
   onCategorySelect: (categoryId: string) => void
   onSavedSelect: (strategy: Strategy) => void
   onViewAllSaved: () => void
-  onExploreBrowse: () => void
+  visibleSections?: Record<string, boolean>
 }
 
 export function StrategyNavigatorMobile({
@@ -37,26 +34,21 @@ export function StrategyNavigatorMobile({
   onCategorySelect,
   onSavedSelect,
   onViewAllSaved,
-  onExploreBrowse,
+  visibleSections = {},
 }: StrategyNavigatorSharedProps) {
   const searchRef = useRef<HTMLDivElement>(null)
 
   return (
-    <Stack className="pb-4">
-      <header className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1 space-y-1.5">
-          <h1 className={cn(typePageTitle, 'flex flex-wrap items-center gap-1.5')}>
-            Help me find a strategy
-            <Sparkles className="h-4 w-4 text-orange sm:h-5 sm:w-5" aria-hidden="true" />
-          </h1>
-          <p className={typeBodyMuted}>
-            Search first, or tap a chip if you&apos;re not sure where to start.
-          </p>
-        </div>
-        <HeroIllustration className="h-14 w-16 shrink-0" />
-      </header>
+    <Stack gap="card" className="pb-4">
+      {visibleSections.header !== false ? <StrategyNavigatorHeader /> : null}
 
-      <section ref={searchRef}>
+      {visibleSections.situations !== false ? <StrategySituationGrid onSelect={onSituationSelect} /> : null}
+
+      {visibleSections.search !== false ? <section
+        ref={searchRef}
+        className="rounded-[1.5rem] border border-lavender/15 bg-gradient-to-br from-surface-solid to-lavender-muted/35 p-4 shadow-[var(--shadow-premium)] sm:p-6"
+      >
+        <p className="mb-3 text-sm font-semibold text-text">Search strategies</p>
         <StrategySearch
           variant="landing"
           strategies={strategies}
@@ -65,19 +57,16 @@ export function StrategyNavigatorMobile({
           onCantFind={onCantFind}
           onBackToNavigator={() => {}}
         />
-      </section>
+      </section> : null}
 
-      <StrategyCategoryScroll onSelect={onCategorySelect} />
+      {visibleSections.categories !== false ? <StrategyCategoryScroll onSelect={onCategorySelect} /> : null}
 
-      <StrategySituationGrid onSelect={onSituationSelect} />
-
-      <StrategySavedBanner
+      {visibleSections.saved !== false ? <StrategySavedBanner
         variant="mobile"
         savedStrategies={savedStrategies}
         onSavedSelect={onSavedSelect}
-        onExplore={onExploreBrowse}
         onViewAllSaved={onViewAllSaved}
-      />
+      /> : null}
     </Stack>
   )
 }

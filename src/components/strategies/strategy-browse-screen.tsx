@@ -9,6 +9,7 @@ import {
 import type { Strategy } from '@/types/strategy'
 import type { WorkCheckIn } from '@/types/work-energy'
 import { cn } from '@/lib/utils'
+import { filterStrategiesUnderMinutes } from '@/lib/strategy-filters'
 
 const FREE_PREVIEW_LIMIT = 3
 
@@ -37,6 +38,9 @@ export function StrategyBrowseScreen({
 
   const filteredStrategies = useMemo(() => {
     if (filterId === 'all') return strategies
+    if (filterId === 'under-5') {
+      return filterStrategiesUnderMinutes(strategies, 5)
+    }
     return filterStrategiesByBrowseCategory(strategies, filterId)
   }, [filterId, strategies])
 
@@ -81,6 +85,12 @@ export function StrategyBrowseScreen({
               emoji="✨"
               selected={filterId === 'all'}
               onClick={() => setFilterId('all')}
+            />
+            <SelectableChip
+              label="Under 5 minutes"
+              emoji="⏱️"
+              selected={filterId === 'under-5'}
+              onClick={() => setFilterId('under-5')}
             />
             {BROWSE_CATEGORY_CHIPS.map((chip) => (
               <SelectableChip

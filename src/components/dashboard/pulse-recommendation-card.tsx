@@ -28,7 +28,7 @@ export function PulseRecommendationCard({
       </p>
       <p className="mt-3 text-sm leading-relaxed text-text-muted">{copy}</p>
       <h2 className="mt-2 font-display text-xl font-semibold text-text lg:text-2xl">
-        {strategy.title}
+        &ldquo;{strategy.situation}&rdquo;
       </h2>
       <Button
         asChild

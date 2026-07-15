@@ -19,7 +19,7 @@ export function NeuroDiverLogo({
         <img
           src="/neurodiver-icon.png"
           alt="NeuroDiver"
-          className={cn('rounded-xl object-contain', size === 'sm' ? 'h-9 w-9' : 'h-10 w-10')}
+          className={cn('nd-logo-icon rounded-xl object-contain', size === 'sm' ? 'h-9 w-9' : 'h-10 w-10')}
         />
       </div>
     )
@@ -30,7 +30,12 @@ export function NeuroDiverLogo({
       <img
         src="/neurodiver-logo.png"
         alt="NeuroDiver"
-        className={cn('w-auto max-w-full object-contain', heightClass)}
+        className={cn('nd-logo-light w-auto max-w-full object-contain', heightClass)}
+      />
+      <img
+        src="/neurodiver-logo-dark.png"
+        alt="NeuroDiver"
+        className={cn('nd-logo-dark w-auto max-w-full object-contain', heightClass)}
       />
     </div>
   )

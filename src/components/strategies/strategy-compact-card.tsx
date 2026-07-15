@@ -9,6 +9,7 @@ import {
   typeCardTitle,
 } from '@/design-system/tokens'
 import type { Strategy, StrategyFeedback } from '@/types/strategy'
+import { hasBuiltInStrategyTimer } from '@/lib/strategy-duration'
 import { cn } from '@/lib/utils'
 
 interface StrategyCompactCardProps {
@@ -95,6 +96,9 @@ export function StrategyCompactCard({
             ))}
             <MetaChip icon={Clock} label={strategy.estimatedTime} />
             <MetaChip icon={Zap} label={`${strategy.energyRequired} energy`} />
+            {hasBuiltInStrategyTimer(strategy) ? (
+              <MetaChip icon={Clock} label="Built-in timer" />
+            ) : null}
             {strategy.tags.slice(0, 2).map((tag) => (
               <MetaChip key={tag} label={tag} />
             ))}

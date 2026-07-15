@@ -20,7 +20,9 @@ export function ProfileHeader({
   onSignOut,
 }: ProfileHeaderProps) {
   return (
-    <article className="card-premium slide-up rounded-[1.25rem] bg-surface-solid px-4 py-4 shadow-[0_2px_16px_rgba(31,42,36,0.06)] lg:rounded-[1.5rem] lg:px-6 lg:py-5">
+    <article className="card-premium slide-up relative mx-auto flex aspect-square w-full max-w-[18rem] items-center justify-center overflow-hidden rounded-full border border-green/15 bg-gradient-to-br from-green-muted/80 via-surface-solid to-lavender-muted/60 p-6 shadow-[0_16px_40px_rgba(45,90,61,0.1)]">
+      <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-sage/20 blur-2xl" />
+      <div className="pointer-events-none absolute -bottom-10 -left-8 h-28 w-28 rounded-full bg-lavender/20 blur-2xl" />
       <ProfileIdentity
         displayName={displayName}
         email={email}
@@ -29,7 +31,7 @@ export function ProfileHeader({
         signingOut={signingOut}
         onSignOut={onSignOut}
         centered
-        className="lg:items-center lg:text-center"
+        className="relative w-full items-center text-center"
       />
     </article>
   )
@@ -64,7 +66,7 @@ function ProfileIdentity({
 
       <div className="space-y-0.5">
         <h1 className="font-display text-xl font-semibold text-text">{displayName}</h1>
-        <p className="text-sm text-text-muted">{email ?? "You're doing great by showing up."}</p>
+        <p className="mx-auto max-w-[13rem] break-all text-sm leading-snug text-text-muted">{email ?? "You're doing great by showing up."}</p>
       </div>
 
       <Button

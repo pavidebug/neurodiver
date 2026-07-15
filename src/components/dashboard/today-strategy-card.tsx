@@ -55,10 +55,7 @@ export function TodayStrategyCard({
 
       <div className="mt-3 flex items-start justify-between gap-3">
         <div className="min-w-0 space-y-2">
-          <p className={typeCardTitle}>{strategy.title}</p>
-          <p className="line-clamp-2 text-sm leading-relaxed text-text-muted">
-            {strategy.situation}
-          </p>
+          <p className={typeCardTitle}>&ldquo;{strategy.situation}&rdquo;</p>
         </div>
         <button
           type="button"

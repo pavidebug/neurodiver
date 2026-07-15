@@ -1,12 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { Grid3X3, MoveHorizontal } from 'lucide-react'
 import { StrategyCompactCard } from '@/components/strategies/strategy-compact-card'
-import { cn } from '@/lib/utils'
 import type { Strategy, StrategyFeedback } from '@/types/strategy'
-
-const SWIPE_THRESHOLD = 72
-const MAX_ROTATION = 10
-const EXIT_MS = 220
 
 interface StrategySwipeDeckProps {
   strategies: Strategy[]
@@ -21,6 +16,10 @@ interface StrategySwipeDeckProps {
   disabled?: boolean
 }
 
+/**
+ * Native horizontal card scroller. The historical component name is retained so
+ * existing navigator flows do not need a separate migration.
+ */
 export function StrategySwipeDeck({
   strategies,
   index,
@@ -33,256 +32,129 @@ export function StrategySwipeDeck({
   savePending = false,
   disabled = false,
 }: StrategySwipeDeckProps) {
-  const [offsetX, setOffsetX] = useState(0)
-  const [dragging, setDragging] = useState(false)
-  const [exitDirection, setExitDirection] = useState<'left' | 'right' | null>(null)
-  const startX = useRef(0)
-  const startY = useRef(0)
-  const lockedAxis = useRef<'x' | 'y' | null>(null)
-  const deckRef = useRef<HTMLDivElement>(null)
-
-  const safeIndex =
-    strategies.length > 0 ? ((index % strategies.length) + strategies.length) % strategies.length : 0
-  const current = strategies[safeIndex]
-  const next =
-    strategies.length > 1
-      ? strategies[(safeIndex + 1) % strategies.length]
-      : null
-
-  const canNavigate = strategies.length > 1 && !disabled && !exitDirection
-
-  const goNext = useCallback(() => {
-    if (!canNavigate) return
-    onIndexChange((safeIndex + 1) % strategies.length)
-  }, [canNavigate, onIndexChange, safeIndex, strategies.length])
-
-  const goPrev = useCallback(() => {
-    if (!canNavigate) return
-    onIndexChange((safeIndex - 1 + strategies.length) % strategies.length)
-  }, [canNavigate, onIndexChange, safeIndex, strategies.length])
-
-  const finishSwipe = useCallback(
-    (direction: 'left' | 'right') => {
-      setExitDirection(direction)
-      window.setTimeout(() => {
-        if (direction === 'right') {
-          onIndexChange((safeIndex + 1) % strategies.length)
-        } else {
-          onIndexChange((safeIndex - 1 + strategies.length) % strategies.length)
-        }
-        setOffsetX(0)
-        setExitDirection(null)
-      }, EXIT_MS)
-    },
-    [onIndexChange, safeIndex, strategies.length],
-  )
-
-  const resetDrag = useCallback(() => {
-    setDragging(false)
-    lockedAxis.current = null
-    setOffsetX(0)
-  }, [])
-
-  const shouldAllowSwipe = useCallback((pointerType: string) => {
-    if (pointerType === 'mouse' && window.matchMedia('(min-width: 768px)').matches) {
-      return false
-    }
-    return true
-  }, [])
-
-  const isInteractiveTarget = (target: EventTarget | null) => {
-    if (!(target instanceof Element)) return false
-    return Boolean(
-      target.closest('button, a, input, textarea, select, [role="button"]'),
-    )
-  }
-
-  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (disabled || exitDirection || strategies.length <= 1) return
-    if (!shouldAllowSwipe(event.pointerType)) return
-    if (isInteractiveTarget(event.target)) return
-
-    startX.current = event.clientX
-    startY.current = event.clientY
-    lockedAxis.current = null
-    setDragging(true)
-    event.currentTarget.setPointerCapture(event.pointerId)
-  }
-
-  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!dragging || exitDirection) return
-
-    const deltaX = event.clientX - startX.current
-    const deltaY = event.clientY - startY.current
-
-    if (!lockedAxis.current) {
-      if (Math.abs(deltaX) < 8 && Math.abs(deltaY) < 8) return
-      lockedAxis.current = Math.abs(deltaX) > Math.abs(deltaY) ? 'x' : 'y'
-    }
-
-    if (lockedAxis.current === 'y') return
-
-    event.preventDefault()
-    setOffsetX(deltaX)
-  }
-
-  const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!dragging) return
-
-    event.currentTarget.releasePointerCapture(event.pointerId)
-
-    if (lockedAxis.current === 'x' && Math.abs(offsetX) > SWIPE_THRESHOLD) {
-      finishSwipe(offsetX < 0 ? 'left' : 'right')
-    } else {
-      resetDrag()
-      return
-    }
-
-    setDragging(false)
-    lockedAxis.current = null
-  }
-
-  const handlePointerCancel = () => {
-    resetDrag()
-  }
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const lastReportedIndex = useRef(index)
+  const [showAll, setShowAll] = useState(false)
 
   useEffect(() => {
-    if (disabled || strategies.length <= 1) return
+    const container = scrollRef.current
+    if (!container || strategies.length === 0) return
 
-    function handleKeyDown(event: KeyboardEvent) {
-      const target = event.target as HTMLElement | null
-      if (
-        target instanceof HTMLInputElement ||
-        target instanceof HTMLTextAreaElement ||
-        target?.isContentEditable
-      ) {
-        return
-      }
+    const safeIndex = Math.min(Math.max(index, 0), strategies.length - 1)
+    const card = container.children.item(safeIndex) as HTMLElement | null
+    if (!card) return
 
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault()
-        goPrev()
-      }
-
-      if (event.key === 'ArrowRight') {
-        event.preventDefault()
-        goNext()
-      }
+    const targetLeft =
+      card.offsetLeft -
+      container.offsetLeft -
+      (container.clientWidth - card.offsetWidth) / 2
+    if (Math.abs(container.scrollLeft - targetLeft) > 8) {
+      container.scrollTo({ left: targetLeft, behavior: 'smooth' })
     }
+  }, [index, strategies.length])
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [disabled, strategies.length, goPrev, goNext])
+  const handleScroll = useCallback(() => {
+    const container = scrollRef.current
+    if (!container || container.children.length === 0) return
 
-  if (!current) return null
+    let closestIndex = 0
+    let closestDistance = Number.POSITIVE_INFINITY
 
-  const rotation = Math.max(-MAX_ROTATION, Math.min(MAX_ROTATION, offsetX / 20))
-  const exitX = exitDirection === 'left' ? -520 : exitDirection === 'right' ? 520 : offsetX
-  const exitRotate =
-    exitDirection === 'left'
-      ? -MAX_ROTATION * 1.5
-      : exitDirection === 'right'
-        ? MAX_ROTATION * 1.5
-        : rotation
+    Array.from(container.children).forEach((child, childIndex) => {
+      const card = child as HTMLElement
+      const cardCenter = card.offsetLeft - container.offsetLeft + card.offsetWidth / 2
+      const viewportCenter = container.scrollLeft + container.clientWidth / 2
+      const distance = Math.abs(cardCenter - viewportCenter)
+      if (distance < closestDistance) {
+        closestDistance = distance
+        closestIndex = childIndex
+      }
+    })
+
+    if (closestIndex !== lastReportedIndex.current) {
+      lastReportedIndex.current = closestIndex
+      onIndexChange(closestIndex)
+    }
+  }, [onIndexChange])
+
+  if (strategies.length === 0) return null
+
+  const renderCard = (strategy: Strategy) => (
+    <StrategyCompactCard
+      strategy={strategy}
+      isSaved={isSaved(strategy.id)}
+      onToggleSave={() => onToggleSave(strategy.id)}
+      onTryThis={() => onTryThis(strategy)}
+      onFeedback={
+        onFeedback
+          ? (feedback) => onFeedback(strategy.id, feedback)
+          : undefined
+      }
+      lastFeedback={getLastFeedback?.(strategy.id) ?? null}
+      savePending={savePending}
+      className={disabled ? 'pointer-events-none' : undefined}
+    />
+  )
 
   return (
-    <div ref={deckRef} className="w-full">
-      <div className="flex items-center justify-center gap-4 md:gap-6">
-        <DeckNavButton
-          direction="prev"
-          onClick={goPrev}
-          disabled={!canNavigate}
-        />
-
-        <div className="relative w-full min-w-0 max-w-md max-md:touch-none md:max-w-xl lg:max-w-2xl">
-          {next && (
-            <div className="absolute inset-x-3 top-3 bottom-0 scale-[0.96] opacity-60">
-              <StrategyCompactCard
-                strategy={next}
-                isSaved={isSaved(next.id)}
-                onToggleSave={() => onToggleSave(next.id)}
-                onTryThis={() => onTryThis(next)}
-              onFeedback={onFeedback ? (feedback) => onFeedback(next.id, feedback) : undefined}
-              lastFeedback={getLastFeedback?.(next.id) ?? null}
-                className="pointer-events-none shadow-sm"
-              />
-            </div>
-          )}
-
-          <div
-            className={cn(
-              'relative z-10',
-              !dragging && !exitDirection && 'transition-transform duration-200 ease-out',
-            )}
-            style={{
-              transform: `translateX(${exitX}px) rotate(${exitRotate}deg)`,
-              transitionDuration: exitDirection ? `${EXIT_MS}ms` : undefined,
-            }}
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            onPointerCancel={handlePointerCancel}
+    <div className="w-full min-w-0">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <p className="text-sm text-text-muted">
+          {strategies.length} matching strateg{strategies.length === 1 ? 'y' : 'ies'}
+        </p>
+        {strategies.length > 1 ? (
+          <button
+            type="button"
+            onClick={() => setShowAll((current) => !current)}
+            className="inline-flex min-h-10 items-center gap-2 rounded-full border border-green/20 bg-surface-solid px-4 text-sm font-semibold text-green shadow-sm transition-colors hover:bg-green-muted/50"
           >
-            <StrategyCompactCard
-              strategy={current}
-              isSaved={isSaved(current.id)}
-              onToggleSave={() => onToggleSave(current.id)}
-              onTryThis={() => onTryThis(current)}
-              onFeedback={onFeedback ? (feedback) => onFeedback(current.id, feedback) : undefined}
-              lastFeedback={getLastFeedback?.(current.id) ?? null}
-              savePending={savePending}
-            />
-          </div>
-        </div>
-
-        <DeckNavButton
-          direction="next"
-          onClick={goNext}
-          disabled={!canNavigate}
-        />
+            {showAll ? (
+              <MoveHorizontal className="h-4 w-4" aria-hidden="true" />
+            ) : (
+              <Grid3X3 className="h-4 w-4" aria-hidden="true" />
+            )}
+            {showAll ? 'Card scroll' : 'See all'}
+          </button>
+        ) : null}
       </div>
 
-      {strategies.length > 1 && (
+      {showAll ? (
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {strategies.map((strategy) => (
+            <div key={strategy.id}>{renderCard(strategy)}</div>
+          ))}
+        </div>
+      ) : (
         <>
-          <p className="mt-4 text-center text-sm text-text-muted md:hidden">
-            Swipe right for next, left for previous
-          </p>
-          <p className="mt-4 hidden text-center text-sm text-text-muted md:block">
-            Use the arrows to browse strategies.
-          </p>
+          <div
+            ref={scrollRef}
+            onScroll={handleScroll}
+            aria-label="Strategies"
+            className="flex w-full snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-[6%] pb-4 scroll-smooth [scrollbar-color:rgb(168_197_176/0.65)_transparent] [scrollbar-width:thin] sm:gap-5 sm:px-[14%] lg:px-[21%] xl:px-[26%]"
+          >
+            {strategies.map((strategy, strategyIndex) => (
+              <div
+                key={strategy.id}
+                aria-current={strategyIndex === index ? 'true' : undefined}
+                className={`w-[88%] min-w-[17rem] max-w-xl shrink-0 snap-center transition-all duration-300 ease-out sm:w-[72%] lg:w-[58%] xl:w-[48%] ${
+                  strategyIndex === index
+                    ? 'relative z-10 scale-100 opacity-100 saturate-100'
+                    : 'scale-[0.9] opacity-45 saturate-50 brightness-90'
+                }`}
+              >
+                {renderCard(strategy)}
+              </div>
+            ))}
+          </div>
+
+          {strategies.length > 1 ? (
+            <div className="mt-1 flex items-center justify-center gap-2 text-xs font-medium text-text-muted">
+              <MoveHorizontal className="h-4 w-4 text-green" aria-hidden="true" />
+              Scroll left or right to explore
+            </div>
+          ) : null}
         </>
       )}
     </div>
-  )
-}
-
-function DeckNavButton({
-  direction,
-  onClick,
-  disabled,
-}: {
-  direction: 'prev' | 'next'
-  onClick: () => void
-  disabled: boolean
-}) {
-  const Icon = direction === 'prev' ? ChevronLeft : ChevronRight
-  const label = direction === 'prev' ? 'Previous strategy' : 'Next strategy'
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={label}
-      className={cn(
-        'hidden md:flex',
-        'h-14 w-14 shrink-0 items-center justify-center rounded-2xl',
-        'border border-border bg-surface-solid text-text shadow-sm',
-        'transition-colors hover:border-green/30 hover:bg-green-muted/50',
-        'active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40',
-      )}
-    >
-      <Icon className="h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
-    </button>
   )
 }
