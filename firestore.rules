@@ -58,6 +58,12 @@ service cloud.firestore {
       }
     }
 
+    // Admin analytics query across every user's work check-ins.
+    // Collection-group queries require an explicit recursive-wildcard rule.
+    match /{path=**}/workCheckIns/{checkInId} {
+      allow read: if isAdmin();
+    }
+
     // Strategy search analytics — users can create their own search events
     match /searchAnalytics/{eventId} {
       allow create: if request.auth != null

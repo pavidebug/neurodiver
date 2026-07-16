@@ -2,7 +2,6 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { Shield } from 'lucide-react'
 import { AppSidebar, navItems } from '@/components/layout/app-sidebar'
 import { SkipLink } from '@/components/layout/skip-link'
-import { NeuroDiverLogo } from '@/components/brand/neurodiver-logo'
 import {
   contentWidth,
   contentWidthWide,
@@ -79,7 +78,6 @@ export function AppLayout() {
   const isWorkCheckIn = location.pathname === '/work-check-in'
   const isTodayReflection = location.pathname === '/today-reflection'
   const showSidebar = showNav || isWorkCheckIn || isTodayReflection
-  const showMobileHeader = showNav
   const mobileNavItems = navItems.filter(
     (item) => !item.featureKey || isPageEnabled(item.featureKey),
   )
@@ -96,14 +94,6 @@ export function AppLayout() {
       {showSidebar && <AppSidebar />}
 
       <div className="flex min-h-dvh min-w-0 flex-1 flex-col">
-        {showMobileHeader && (
-          <header className="border-b border-green/10 bg-gradient-to-r from-surface-solid/90 via-surface-solid/85 to-green-muted/70 shadow-sm backdrop-blur-md lg:hidden">
-            <div className={cn(contentWidth, pagePadding, 'py-4')}>
-              <NeuroDiverLogo size="sm" />
-            </div>
-          </header>
-        )}
-
         <main
           className={cn(
             'workspace-main relative min-w-0 flex-1 overflow-hidden',

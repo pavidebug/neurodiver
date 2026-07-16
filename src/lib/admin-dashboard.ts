@@ -33,7 +33,11 @@ import {
   type AnalyticsEventType,
 } from '@/types/product-analytics'
 import type { UserStrategyState } from '@/types/strategy'
-import type { UserWorkProfile, WorkCheckInDocument } from '@/types/work-energy'
+import {
+  DEFAULT_USER_WORK_PROFILE,
+  type UserWorkProfile,
+  type WorkCheckInDocument,
+} from '@/types/work-energy'
 
 interface AnalyticsEventRecord {
   id: string
@@ -53,29 +57,47 @@ interface UserRecord {
 }
 
 function getUserName(user: UserRecord): string {
-  return user.profile.displayName?.trim() || user.displayName?.trim() || getDisplayName(user.profile)
+  const profileName =
+    typeof user.profile.displayName === 'string' ? user.profile.displayName.trim() : ''
+  const accountName = typeof user.displayName === 'string' ? user.displayName.trim() : ''
+  return profileName || accountName || getDisplayName(DEFAULT_USER_WORK_PROFILE)
 }
 
 function getOptionLabel(
   options: ReadonlyArray<{ value: string; label: string }>,
-  value: string | null,
+  value: unknown,
 ): string | null {
-  if (!value) return null
+  if (typeof value !== 'string' || !value) return null
   return options.find((option) => option.value === value)?.label ?? value
 }
 
 function getOptionLabels(
   options: ReadonlyArray<{ value: string; label: string }>,
-  values: string[],
+  values: readonly string[] | null | undefined,
 ): string[] {
-  return values.map(
-    (value) => options.find((option) => option.value === value)?.label ?? value,
-  )
+  if (!Array.isArray(values)) return []
+  return values.flatMap((value) => {
+    if (typeof value !== 'string') return []
+    return [options.find((option) => option.value === value)?.label ?? value]
+  })
 }
 
-function formatTimestamp(value: Timestamp | null | undefined): string | null {
-  if (!value?.toDate) return null
-  return value.toDate().toLocaleString(undefined, {
+function toDate(value: unknown): Date | null {
+  if (!value || typeof value !== 'object') return null
+  const candidate = value as { toDate?: unknown }
+  if (typeof candidate.toDate !== 'function') return null
+  const date = candidate.toDate()
+  return date instanceof Date && !Number.isNaN(date.getTime()) ? date : null
+}
+
+function timestampMillis(value: unknown): number {
+  return toDate(value)?.getTime() ?? 0
+}
+
+function formatTimestamp(value: unknown): string | null {
+  const date = toDate(value)
+  if (!date) return null
+  return date.toLocaleString(undefined, {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
@@ -84,18 +106,19 @@ function formatTimestamp(value: Timestamp | null | undefined): string | null {
   })
 }
 
-function formatDate(value: Timestamp | null | undefined): string | null {
-  if (!value?.toDate) return null
-  return value.toDate().toLocaleDateString(undefined, {
+function formatDate(value: unknown): string | null {
+  const date = toDate(value)
+  if (!date) return null
+  return date.toLocaleDateString(undefined, {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
   })
 }
 
-function isToday(value: Timestamp | null | undefined): boolean {
-  if (!value?.toDate) return false
-  const date = value.toDate()
+function isToday(value: unknown): boolean {
+  const date = toDate(value)
+  if (!date) return false
   const today = new Date()
   return (
     date.getFullYear() === today.getFullYear() &&
@@ -110,55 +133,65 @@ function mapUserStrategyState(data: unknown): UserStrategyState {
   }
 
   const state = data as Partial<UserStrategyState>
+  const usage: UserStrategyState['usage'] = {}
+  if (state.usage && typeof state.usage === 'object') {
+    for (const [strategyId, rawUsage] of Object.entries(state.usage)) {
+      if (!rawUsage || typeof rawUsage !== 'object') continue
+      const entry = rawUsage as unknown as Record<string, unknown>
+      usage[strategyId] = {
+        timesViewed: typeof entry.timesViewed === 'number' ? entry.timesViewed : 0,
+        timesMarkedHelpful:
+          typeof entry.timesMarkedHelpful === 'number' ? entry.timesMarkedHelpful : 0,
+        lastViewedAt: typeof entry.lastViewedAt === 'string' ? entry.lastViewedAt : null,
+        lastMarkedHelpfulAt:
+          typeof entry.lastMarkedHelpfulAt === 'string' ? entry.lastMarkedHelpfulAt : null,
+        lastFeedback:
+          entry.lastFeedback === 'helped' ||
+          entry.lastFeedback === 'unsure' ||
+          entry.lastFeedback === 'not-helpful'
+            ? entry.lastFeedback
+            : null,
+        lastFeedbackAt:
+          typeof entry.lastFeedbackAt === 'string' ? entry.lastFeedbackAt : null,
+      }
+    }
+  }
+
   return {
     savedIds: Array.isArray(state.savedIds) ? state.savedIds : [],
     lastViewedId: typeof state.lastViewedId === 'string' ? state.lastViewedId : null,
-    usage:
-      state.usage && typeof state.usage === 'object'
-        ? (state.usage as UserStrategyState['usage'])
-        : {},
+    usage,
   }
 }
 
 function mapUserProfile(data: unknown): UserWorkProfile {
   if (!data || typeof data !== 'object') {
-    return {
-      organisationId: null,
-      role: 'employee',
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      reminderEnabled: true,
-      reminderTime: '17:00',
-      email: null,
-      whatsappNumber: null,
-      whatsappConsent: false,
-      reminderPreference: 'email',
-      selfDescription: null,
-      pilotAccess: true,
-      displayName: null,
-      ndStatus: null,
-      whatBroughtYouHere: null,
-      familiarExperiences: [],
-      workLocation: null,
-      energyDrains: [],
-      peakEnergyTime: null,
-      supportStyle: null,
-      informationPreference: null,
-      successGoals: [],
-      gender: null,
-      country: null,
-      workStatus: null,
-      ageRange: null,
-      profession: null,
-      workEnvironment: [],
-      challenges: [],
-      goals: [],
-      accessibilityPreferences: [],
-      notificationPreference: null,
-      onboardingCompleted: false,
-    }
+    return { ...DEFAULT_USER_WORK_PROFILE }
   }
 
-  return data as UserWorkProfile
+  const profile = data as Partial<UserWorkProfile>
+  return {
+    ...DEFAULT_USER_WORK_PROFILE,
+    ...profile,
+    displayName: typeof profile.displayName === 'string' ? profile.displayName : null,
+    email: typeof profile.email === 'string' ? profile.email : null,
+    whatBroughtYouHere:
+      typeof profile.whatBroughtYouHere === 'string'
+        ? profile.whatBroughtYouHere
+        : null,
+    supportStyle: typeof profile.supportStyle === 'string' ? profile.supportStyle : null,
+    familiarExperiences: Array.isArray(profile.familiarExperiences)
+      ? profile.familiarExperiences
+      : [],
+    energyDrains: Array.isArray(profile.energyDrains) ? profile.energyDrains : [],
+    successGoals: Array.isArray(profile.successGoals) ? profile.successGoals : [],
+    workEnvironment: Array.isArray(profile.workEnvironment) ? profile.workEnvironment : [],
+    challenges: Array.isArray(profile.challenges) ? profile.challenges : [],
+    goals: Array.isArray(profile.goals) ? profile.goals : [],
+    accessibilityPreferences: Array.isArray(profile.accessibilityPreferences)
+      ? profile.accessibilityPreferences
+      : [],
+  }
 }
 
 async function safeCount(source: Query | ReturnType<typeof collection>): Promise<number> {
@@ -207,7 +240,7 @@ async function fetchBodyDoubleInterests(): Promise<AdminBodyDoubleInterest[]> {
       .filter((entry) => entry.email.length > 0)
       .sort(
         (a, b) =>
-          (b.createdAt?.toMillis?.() ?? 0) - (a.createdAt?.toMillis?.() ?? 0),
+          timestampMillis(b.createdAt) - timestampMillis(a.createdAt),
       )
       .map(({ createdAt: _createdAt, ...entry }) => entry)
   } catch {
@@ -284,7 +317,7 @@ async function fetchFeedbackRows(): Promise<AdminFeedbackRow[]> {
       })
       .sort(
         (a, b) =>
-          (b.submittedAt?.toMillis?.() ?? 0) - (a.submittedAt?.toMillis?.() ?? 0),
+          timestampMillis(b.submittedAt) - timestampMillis(a.submittedAt),
       )
       .map(({ submittedAt: _submittedAt, ...row }) => row)
   } catch {
@@ -308,7 +341,7 @@ function buildUserRows(
   for (const event of events) {
     if (!event.createdAt) continue
     const current = latestEventByUser.get(event.userId)
-    if (!current || event.createdAt.toMillis() > current.toMillis()) {
+    if (!current || timestampMillis(event.createdAt) > timestampMillis(current)) {
       latestEventByUser.set(event.userId, event.createdAt)
     }
   }
@@ -318,7 +351,7 @@ function buildUserRows(
       const userCheckIns = checkInsByUser.get(user.id) ?? []
       const sortedCheckIns = [...userCheckIns].sort(
         (a, b) =>
-          (b.createdAt?.toMillis?.() ?? 0) - (a.createdAt?.toMillis?.() ?? 0),
+          timestampMillis(b.createdAt) - timestampMillis(a.createdAt),
       )
       const latestCheckIn = sortedCheckIns[0]
 
@@ -468,7 +501,7 @@ function buildRecentActivity(
   return [...events]
     .sort(
       (a, b) =>
-        (b.createdAt?.toMillis?.() ?? 0) - (a.createdAt?.toMillis?.() ?? 0),
+        timestampMillis(b.createdAt) - timestampMillis(a.createdAt),
     )
     .slice(0, 8)
     .map((event) => ({
@@ -485,7 +518,7 @@ function buildNewSignUps(users: UserRecord[]): AdminSignUp[] {
   return [...users]
     .sort(
       (a, b) =>
-        (b.createdAt?.toMillis?.() ?? 0) - (a.createdAt?.toMillis?.() ?? 0),
+        timestampMillis(b.createdAt) - timestampMillis(a.createdAt),
     )
     .slice(0, 5)
     .map((user) => ({
@@ -562,7 +595,5 @@ export async function fetchAdminDashboard(): Promise<AdminDashboardData> {
 }
 
 async function countCheckInsFallback(): Promise<number> {
-  const workCheckInCount = await safeCount(collectionGroup(db, 'workCheckIns'))
-  if (workCheckInCount > 0) return workCheckInCount
-  return safeCount(collection(db, 'checkIns'))
+  return safeCount(collectionGroup(db, 'workCheckIns'))
 }

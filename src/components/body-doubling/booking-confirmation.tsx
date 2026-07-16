@@ -9,6 +9,15 @@ import {
 } from '@/lib/focus-session-format'
 import type { FocusSession, SessionBooking } from '@/types/body-doubling'
 
+function isMeetingUrl(value: string): boolean {
+  try {
+    const url = new URL(value)
+    return url.protocol === 'https:' || url.protocol === 'http:'
+  } catch {
+    return false
+  }
+}
+
 interface BookingConfirmationProps {
   session: FocusSession
   booking: SessionBooking
@@ -31,10 +40,11 @@ export function BookingConfirmation({
   onBack,
 }: BookingConfirmationProps) {
   const ended = isSessionEnded(session)
+  const hasMeetingUrl = isMeetingUrl(session.meetingLink)
 
   const handleJoinClick = () => {
     onJoin()
-    if (session.meetingLink) {
+    if (hasMeetingUrl) {
       window.open(session.meetingLink, '_blank', 'noopener,noreferrer')
     }
   }
@@ -71,14 +81,12 @@ export function BookingConfirmation({
           <dt className="text-text-muted">Platform</dt>
           <dd className="mt-1 font-medium text-text">{session.platform}</dd>
         </div>
-        {session.meetingLink && (
-          <div>
-            <dt className="text-text-muted">Meeting link</dt>
-            <dd className="mt-1 break-all font-medium text-text">
-              {session.meetingLink}
-            </dd>
-          </div>
-        )}
+        <div>
+          <dt className="text-text-muted">Meeting information</dt>
+          <dd className="mt-1 break-all font-medium text-text">
+            {session.meetingLink || 'To be sent'}
+          </dd>
+        </div>
         {booking.intention && (
           <div>
             <dt className="text-text-muted">Your intention</dt>
@@ -93,10 +101,16 @@ export function BookingConfirmation({
         </p>
       )}
 
-      <Button type="button" className="h-14 w-full text-lg" onClick={handleJoinClick}>
-        <ExternalLink className="mr-2 h-5 w-5" aria-hidden="true" />
-        Join Session
-      </Button>
+      {hasMeetingUrl ? (
+        <Button type="button" className="h-14 w-full text-lg" onClick={handleJoinClick}>
+          <ExternalLink className="mr-2 h-5 w-5" aria-hidden="true" />
+          Join Session
+        </Button>
+      ) : (
+        <p className="rounded-xl border border-border bg-surface-solid px-4 py-3 text-center text-sm font-medium text-text-muted">
+          The meeting link will be sent once it is confirmed.
+        </p>
+      )}
 
       <Button
         type="button"

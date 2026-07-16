@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom'
 import { Heart, Home, Layers, Shield, User, Users } from 'lucide-react'
-import { NeuroDiverLogo } from '@/components/brand/neurodiver-logo'
 import { useAuth } from '@/context/auth-context'
 import { useWorkEnergy } from '@/context/work-energy-context'
 import { useFeatureConfig } from '@/context/feature-config-context'
@@ -32,8 +31,6 @@ export function AppSidebar() {
         sidebarWidth,
       )}
     >
-      <NeuroDiverLogo className="mb-8 shrink-0 px-1" />
-
       <nav className="flex flex-col gap-1">
         {navItems.filter((item) => !item.featureKey || isPageEnabled(item.featureKey)).map(({ to, label, icon: Icon }) => (
           <NavLink

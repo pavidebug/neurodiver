@@ -16,7 +16,7 @@ const EMPTY_FORM = {
   startsAt: '',
   durationMinutes: '60',
   platform: 'Google Meet' as SessionPlatform,
-  meetingLink: '',
+  meetingLink: 'To be sent',
   capacity: '20',
   isActive: true,
 }
@@ -161,8 +161,14 @@ export function AdminBodyDoublePage() {
               <option>Microsoft Teams</option>
             </select>
           </FormField>
-          <FormField label="Meeting link">
-            <Input type="url" placeholder="https://…" value={form.meetingLink} onChange={(event) => setForm({ ...form, meetingLink: event.target.value })} />
+          <FormField label="Meeting information">
+            <Input
+              type="text"
+              placeholder="To be sent"
+              value={form.meetingLink}
+              onChange={(event) => setForm({ ...form, meetingLink: event.target.value })}
+            />
+            <p className="text-xs text-text-muted">Use “To be sent” until the meeting link is confirmed.</p>
           </FormField>
           <div className="flex items-center justify-between rounded-2xl bg-cream/70 px-4 py-3">
             <div>

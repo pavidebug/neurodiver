@@ -41,9 +41,10 @@ export function AdminDashboardProvider({ children }: { children: ReactNode }) {
         if (!cancelled) {
           setData(dashboard)
         }
-      } catch {
+      } catch (caught) {
         if (!cancelled) {
-          setError('Unable to load dashboard data. Please try again.')
+          const detail = caught instanceof Error ? caught.message : 'Unknown data error'
+          setError(`Unable to load dashboard data: ${detail}`)
         }
       } finally {
         if (!cancelled) {

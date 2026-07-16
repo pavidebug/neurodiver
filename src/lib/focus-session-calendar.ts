@@ -21,6 +21,15 @@ function formatIcsLocal(date: Date): string {
   )
 }
 
+function isMeetingUrl(value: string): boolean {
+  try {
+    const url = new URL(value)
+    return url.protocol === 'https:' || url.protocol === 'http:'
+  } catch {
+    return false
+  }
+}
+
 function buildDescription(
   session: FocusSession,
   booking: SessionBooking,
@@ -29,7 +38,9 @@ function buildDescription(
     'NeuroDiver Body Doubling Session',
     `Platform: ${session.platform}`,
     booking.intention ? `Your intention: ${booking.intention}` : null,
-    session.meetingLink ? `Join: ${session.meetingLink}` : null,
+    session.meetingLink
+      ? `Meeting information: ${session.meetingLink}`
+      : 'Meeting information: To be sent',
   ]
     .filter(Boolean)
     .join('\n')
@@ -79,7 +90,7 @@ export function buildSessionIcsContent(
     `DTEND;TZID=${tzid}:${formatIcsLocal(end)}`,
     `SUMMARY:${summary}`,
     `DESCRIPTION:${description}`,
-    session.meetingLink ? `URL:${session.meetingLink}` : null,
+    isMeetingUrl(session.meetingLink) ? `URL:${session.meetingLink}` : null,
     `LOCATION:${escapeIcsText(session.platform)}`,
     'END:VEVENT',
     'END:VCALENDAR',

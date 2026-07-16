@@ -1,0 +1,11 @@
+.git
+.vercel
+.env*
+node_modules
+dist
+functions
+Archive.zip
+*.zip
+/data
+desktop-dashboard-preview.png
+*.log
