@@ -25,11 +25,6 @@ export const SITUATION_CHIPS: SituationChip[] = [
   { id: 'distractions', label: 'Constant distractions', searchTerms: 'distraction interruption focus attention' },
   { id: 'racing-thoughts', label: 'Racing thoughts', searchTerms: 'racing thoughts overwhelm mind anxious' },
   { id: 'time-blindness', label: 'Time blindness', searchTerms: 'time blindness deadline late schedule' },
-  { id: 'too-many-tasks', label: 'Too many tasks', searchTerms: 'too many tasks overwhelm backlog' },
-  { id: 'unexpected-changes', label: 'Unexpected changes', searchTerms: 'unexpected change routine transition' },
-  { id: 'social-exhaustion', label: 'Social exhaustion', searchTerms: 'social exhaustion interaction people' },
-  { id: 'sensory-overload', label: 'Sensory overload', searchTerms: 'sensory overload noise light' },
-  { id: 'burnout', label: 'Burnout', searchTerms: 'burnout exhausted recovery depleted' },
 ]
 
 export const BROWSE_CATEGORY_CHIPS: BrowseCategoryChip[] = [

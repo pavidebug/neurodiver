@@ -1,10 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Bookmark, Layers, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { StrategyTimerButton } from '@/components/strategy-timer/strategy-timer-button'
-import { hasBuiltInStrategyTimer } from '@/lib/strategy-duration'
-import type { Strategy } from '@/types/strategy'
+import type { Strategy, StrategyFeedback } from '@/types/strategy'
 
 interface StrategyDetailSheetProps {
   strategy: Strategy | null
@@ -14,9 +12,14 @@ interface StrategyDetailSheetProps {
   isSaved?: boolean
   savePending?: boolean
   onToggleSave?: (strategyId: string) => void
-  timerActive?: boolean
-  onStartTimer?: (strategy: Strategy, minutes: number, trigger: HTMLButtonElement) => void
+  onFeedback?: (strategyId: string, feedback: StrategyFeedback) => void
 }
+
+const FEEDBACK_OPTIONS: Array<{ label: string; value: StrategyFeedback }> = [
+  { label: 'It helped', value: 'helped' },
+  { label: 'A little', value: 'unsure' },
+  { label: 'Not today', value: 'not-helpful' },
+]
 
 export function StrategyDetailSheet({
   strategy,
@@ -26,9 +29,25 @@ export function StrategyDetailSheet({
   isSaved = false,
   savePending = false,
   onToggleSave,
-  timerActive = false,
-  onStartTimer,
+  onFeedback,
 }: StrategyDetailSheetProps) {
+  const [stepIndex, setStepIndex] = useState(0)
+  const [showFeedback, setShowFeedback] = useState(false)
+  const [feedback, setFeedback] = useState<StrategyFeedback | null>(null)
+  const steps = useMemo(
+    () => strategy?.tryThis.length
+      ? strategy.tryThis
+      : ['Try the smallest version of this strategy that feels manageable.'],
+    [strategy],
+  )
+
+  useEffect(() => {
+    if (!open) return
+    setStepIndex(0)
+    setShowFeedback(false)
+    setFeedback(null)
+  }, [open, strategy?.id])
+
   useEffect(() => {
     if (!open) return
 
@@ -49,29 +68,24 @@ export function StrategyDetailSheet({
 
   if (!open || !strategy) return null
 
-  return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <button
-        type="button"
-        className="absolute inset-0 bg-text/35 backdrop-blur-sm"
-        aria-label="Close strategy details"
-        onClick={onClose}
-      />
+  const isLastStep = stepIndex === steps.length - 1
+  const progress = ((stepIndex + 1) / steps.length) * 100
 
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="strategy-sheet-title"
-        className="popup-enter relative z-10 flex max-h-[min(88dvh,720px)] w-full max-w-lg flex-col overflow-hidden rounded-3xl bg-surface-solid shadow-2xl ring-1 ring-border"
-      >
-        <div className="flex shrink-0 items-start justify-between gap-4 border-b border-border px-5 py-5">
-          <h2
-            id="strategy-sheet-title"
-            className="font-display text-xl font-medium italic leading-snug text-text"
-          >
-            &ldquo;{strategy.situation}&rdquo;
-          </h2>
-          <span className="sr-only">{strategy.title}</span>
+  const submitFeedback = (nextFeedback: StrategyFeedback) => {
+    setFeedback(nextFeedback)
+    onFeedback?.(strategy.id, nextFeedback)
+  }
+
+  return createPortal(
+    <div className="fixed inset-0 z-[100] overflow-y-auto bg-cream">
+      <div className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col px-4 py-5 sm:px-8 sm:py-8">
+        <header className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-green">Guided strategy</p>
+            <h2 className="mt-1 max-w-2xl font-display text-xl font-semibold leading-snug text-text sm:text-2xl">
+              &ldquo;{strategy.situation}&rdquo;
+            </h2>
+          </div>
           <Button
             type="button"
             variant="ghost"
@@ -82,105 +96,98 @@ export function StrategyDetailSheet({
           >
             <X className="h-5 w-5" />
           </Button>
-        </div>
+        </header>
 
-        <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-5 py-5">
-          <div className="flex flex-wrap gap-2">
-            {strategy.bestWhen.slice(0, 2).map((label) => (
-              <span
-                key={label}
-                className="rounded-full bg-cream px-2.5 py-1 text-[0.6875rem] font-medium text-text-muted"
-              >
-                Best for {label}
-              </span>
-            ))}
-            <span className="rounded-full bg-cream px-2.5 py-1 text-[0.6875rem] font-medium text-text-muted">
-              {strategy.estimatedTime}
-            </span>
-            <span className="rounded-full bg-cream px-2.5 py-1 text-[0.6875rem] font-medium text-text-muted">
-              {strategy.energyRequired} energy
-            </span>
-            {hasBuiltInStrategyTimer(strategy) ? (
-              <span className="rounded-full bg-lavender-muted px-2.5 py-1 text-[0.6875rem] font-medium text-lavender-deep">
-                Built-in timer
-              </span>
-            ) : null}
-            {strategy.tags.slice(0, 3).map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full bg-cream px-2.5 py-1 text-[0.6875rem] font-medium text-text-muted"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+        <div className="flex flex-1 items-start py-4 sm:py-6">
+          <div className="w-full rounded-[1.75rem] border border-border bg-surface-solid p-5 shadow-sm sm:p-8">
+            {showFeedback ? (
+              <div className="mx-auto max-w-xl space-y-6 text-center">
+                <div>
+                  <h3 className="font-display text-2xl font-semibold text-text sm:text-3xl">
+                    How did this help?
+                  </h3>
+                  <p className="mt-2 text-sm text-text-muted">Choose the answer that feels closest.</p>
+                </div>
 
-          <section className="space-y-2 rounded-2xl bg-yellow/25 px-4 py-4 ring-1 ring-yellow/40">
-            <p className="text-sm font-medium uppercase tracking-widest text-text-muted">
-              A gentle reminder
-            </p>
-            <p className="text-base leading-relaxed text-text">
-              {strategy.gentleReminder}
-            </p>
-          </section>
+                {feedback ? (
+                  <div className="space-y-5">
+                    <p className="rounded-2xl bg-green-muted px-4 py-4 font-medium text-green">
+                      Thanks. Your response helps improve future suggestions.
+                    </p>
+                    <Button type="button" className="w-full sm:w-auto" onClick={onExploreOther ?? onClose}>
+                      Back to strategies
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    {FEEDBACK_OPTIONS.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => submitFeedback(option.value)}
+                        className="min-h-14 rounded-2xl border border-green/20 bg-white px-4 py-3 font-medium text-text transition-colors hover:bg-green-muted/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange"
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="mx-auto max-w-xl space-y-6">
+                <div>
+                  <div className="flex items-center justify-between gap-4 text-sm font-medium text-text-muted">
+                    <span>Step {stepIndex + 1} of {steps.length}</span>
+                    <span>{Math.round(progress)}%</span>
+                  </div>
+                  <div className="mt-3 h-2 overflow-hidden rounded-full bg-cream-dark" aria-hidden="true">
+                    <div
+                      className="h-full rounded-full bg-green transition-[width] duration-300"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                </div>
 
-          {onStartTimer ? (
-            <StrategyTimerButton
-              strategy={strategy}
-              timerActive={timerActive}
-              onStart={(minutes, trigger) => onStartTimer(strategy, minutes, trigger)}
-            />
-          ) : null}
+                <section className="rounded-2xl bg-green-muted/45 px-5 py-7 sm:px-7 sm:py-9">
+                  <p className="font-display text-xl font-semibold leading-relaxed text-text sm:text-2xl">
+                    {steps[stepIndex]}
+                  </p>
+                </section>
 
-          <section className="space-y-3">
-            <p className="text-sm font-medium text-text-muted">Try this</p>
-            <ol className="space-y-3">
-              {strategy.tryThis.map((step, stepIndex) => (
-                <li key={step} className="flex gap-3 text-base leading-relaxed text-text">
-                  <span
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-green-muted text-sm font-semibold text-green"
-                    aria-hidden="true"
+                <div className="flex flex-col-reverse gap-3 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex gap-2">
+                    {stepIndex > 0 ? (
+                      <Button type="button" variant="outline" onClick={() => setStepIndex((current) => current - 1)}>
+                        Back
+                      </Button>
+                    ) : null}
+                    {onToggleSave ? (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        disabled={savePending}
+                        aria-pressed={isSaved}
+                        onClick={() => onToggleSave(strategy.id)}
+                      >
+                        {savePending ? 'Saving…' : isSaved ? 'Saved' : 'Save strategy'}
+                      </Button>
+                    ) : null}
+                  </div>
+
+                  <Button
+                    type="button"
+                    className="min-w-32"
+                    onClick={() => {
+                      if (isLastStep) setShowFeedback(true)
+                      else setStepIndex((current) => current + 1)
+                    }}
                   >
-                    {stepIndex + 1}
-                  </span>
-                  <span>{step}</span>
-                </li>
-              ))}
-            </ol>
-          </section>
-
-          <section className="rounded-2xl bg-green-muted/60 px-4 py-4">
-            <p className="mb-2 text-sm font-medium text-green">Why this helps</p>
-            <p className="text-base leading-relaxed text-text">{strategy.whyThisHelps}</p>
-          </section>
-        </div>
-
-        <div className="grid shrink-0 gap-2 border-t border-border px-5 py-4 sm:grid-cols-2">
-          {onToggleSave ? (
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              disabled={savePending}
-              aria-pressed={isSaved}
-              onClick={() => onToggleSave(strategy.id)}
-            >
-              <Bookmark
-                className={isSaved ? 'h-4 w-4 fill-current' : 'h-4 w-4'}
-                aria-hidden="true"
-              />
-              {savePending ? 'Saving…' : isSaved ? 'Saved' : 'Save strategy'}
-            </Button>
-          ) : null}
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            onClick={onExploreOther ?? onClose}
-          >
-            <Layers className="h-4 w-4" aria-hidden="true" />
-            Explore other strategies
-          </Button>
+                    {isLastStep ? "I'm done" : 'Next'}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>,

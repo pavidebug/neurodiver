@@ -7,13 +7,8 @@ import {
   useState,
 } from 'react'
 import { Search, Sparkles } from 'lucide-react'
-import { StrategyRequestPanel } from '@/components/strategies/strategy-request-panel'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
-import {
-  getBrainStatusFromWorkCheckIn,
-  logStrategySearch,
-} from '@/lib/strategy-analytics'
 import {
   getPopularSearchTerms,
   rankStrategySearch,
@@ -21,7 +16,6 @@ import {
 } from '@/lib/strategy-search'
 import type { Strategy } from '@/types/strategy'
 import type { WorkCheckIn } from '@/types/work-energy'
-import { useAuth } from '@/context/auth-context'
 
 interface StrategySearchProps {
   strategies: Strategy[]
@@ -40,25 +34,17 @@ const SEARCH_DEBOUNCE_MS = 450
 
 export function StrategySearch({
   strategies,
-  todayCheckIn,
   onSelectStrategy,
-  onBackToNavigator,
   variant = 'flow',
   onCantFind,
 }: StrategySearchProps) {
   const isLanding = variant === 'landing'
-  const { user } = useAuth()
   const listboxId = useId()
   const containerRef = useRef<HTMLDivElement>(null)
   const [query, setQuery] = useState('')
   const [debouncedQuery, setDebouncedQuery] = useState('')
   const [isFocused, setIsFocused] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
-  const [showRequestPanel, setShowRequestPanel] = useState(false)
-  const [requestSearchTerm, setRequestSearchTerm] = useState<string | null>(null)
-  const lastLoggedQuery = useRef('')
-
-  const brainStatus = getBrainStatusFromWorkCheckIn(todayCheckIn)
   const popularTerms = useMemo(
     () => getPopularSearchTerms(strategies),
     [strategies],
@@ -75,7 +61,7 @@ export function StrategySearch({
   )
 
   const trimmedQuery = query.trim()
-  const showDropdown = isFocused && !showRequestPanel
+  const showDropdown = isFocused
   const hasQuery = trimmedQuery.length >= MIN_QUERY_LENGTH
   const showSuggestions = showDropdown && hasQuery && suggestions.length > 0
   const showNoResults = showDropdown && hasQuery && suggestions.length === 0
@@ -92,27 +78,7 @@ export function StrategySearch({
 
   useEffect(() => {
     setActiveIndex(-1)
-    if (!isLanding || !onCantFind) {
-      setShowRequestPanel(false)
-      setRequestSearchTerm(null)
-    }
   }, [trimmedQuery, isLanding, onCantFind])
-
-  useEffect(() => {
-    if (!user || debouncedQuery.length < MIN_QUERY_LENGTH) return
-    if (debouncedQuery === lastLoggedQuery.current) return
-
-    lastLoggedQuery.current = debouncedQuery
-    const resultsFound = rankStrategySearch(strategies, debouncedQuery).length
-
-    void logStrategySearch({
-      userId: user.uid,
-      searchTerm: debouncedQuery,
-      resultsFound,
-      selectedStrategy: null,
-      brainStatus,
-    }).catch(() => {})
-  }, [brainStatus, debouncedQuery, strategies, user])
 
   useEffect(() => {
     function handlePointerDown(event: MouseEvent) {
@@ -129,31 +95,19 @@ export function StrategySearch({
     (match: StrategySearchMatch) => {
       const resultsFound = suggestions.length
 
-      if (user) {
-        void logStrategySearch({
-          userId: user.uid,
-          searchTerm: debouncedQuery || match.strategy.challenge,
-          resultsFound,
-          selectedStrategy: match.strategy.id,
-          brainStatus,
-        }).catch(() => {})
-      }
-
       onSelectStrategy(match.strategy, {
         searchTerm: debouncedQuery || match.strategy.challenge,
         resultsFound,
       })
       setIsFocused(false)
-      setShowRequestPanel(false)
     },
-    [brainStatus, debouncedQuery, onSelectStrategy, suggestions.length, user],
+    [debouncedQuery, onSelectStrategy, suggestions.length],
   )
 
   const handleTermSelect = useCallback((term: string) => {
     setQuery(term)
     setDebouncedQuery(term)
     setIsFocused(true)
-    lastLoggedQuery.current = ''
   }, [])
 
   const handleCantFind = useCallback(() => {
@@ -163,17 +117,7 @@ export function StrategySearch({
       onCantFind(trimmedQuery)
       return
     }
-    setRequestSearchTerm(trimmedQuery)
-    setShowRequestPanel(true)
   }, [onCantFind, trimmedQuery])
-
-  const closeRequestPanel = useCallback(() => {
-    setShowRequestPanel(false)
-    setRequestSearchTerm(null)
-    if (!isLanding) {
-      onBackToNavigator()
-    }
-  }, [isLanding, onBackToNavigator])
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -208,7 +152,6 @@ export function StrategySearch({
 
     if (event.key === 'Escape') {
       setIsFocused(false)
-      setShowRequestPanel(false)
     }
   }
 
@@ -336,14 +279,6 @@ export function StrategySearch({
         )}
       </div>
 
-      {!isLanding && showRequestPanel && (
-        <StrategyRequestPanel
-          searchTerm={requestSearchTerm}
-          todayCheckIn={todayCheckIn}
-          onBack={closeRequestPanel}
-          className="slide-up"
-        />
-      )}
     </div>
   )
 }

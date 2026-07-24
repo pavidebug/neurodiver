@@ -1,23 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { ArrowLeft, Lightbulb, MessageCircleMore, Send, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import {
   DESCRIBE_PLACEHOLDER_EXAMPLES,
-  DESCRIBE_TOPIC_KEYWORDS,
   DESCRIBE_TOPIC_OPTIONS,
   type DescribeTopic,
 } from '@/data/describe-it'
-import { clearDescribeDraft, loadDescribeDraft, saveDescribeDraft } from '@/lib/describe-draft'
-import {
-  getBrainStatusFromWorkCheckIn,
-  submitFreeTextRequest,
-} from '@/lib/strategy-analytics'
-import { matchStrategiesFromFreeText } from '@/lib/strategy-search'
 import type { Strategy } from '@/types/strategy'
 import type { WorkCheckIn } from '@/types/work-energy'
-import { useAuth } from '@/context/auth-context'
 
 interface HelpMeDescribeProps {
   strategies: Strategy[]
@@ -29,84 +21,16 @@ interface HelpMeDescribeProps {
 }
 
 export function HelpMeDescribe({
-  strategies,
-  todayCheckIn,
   onNoMatches,
   onBack,
   initialDescription = '',
-  variant = 'full',
 }: HelpMeDescribeProps) {
-  const isSimple = variant === 'simple'
-  const { user } = useAuth()
-  const [description, setDescription] = useState('')
+  const [description, setDescription] = useState(initialDescription)
   const [optionalTopic, setOptionalTopic] = useState<DescribeTopic | null>(null)
-  const [pending, setPending] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [draftSaved, setDraftSaved] = useState(false)
 
-  const brainStatus = getBrainStatusFromWorkCheckIn(todayCheckIn)
-
-  useEffect(() => {
-    if (initialDescription) {
-      setDescription(initialDescription)
-      return
-    }
-
-    const draft = loadDescribeDraft()
-    if (!draft) return
-
-    setDescription(draft.description)
-    setOptionalTopic(draft.optionalTopic)
-  }, [initialDescription])
-
-  const handleSaveForLater = () => {
+  const handleContinue = () => {
     if (!description.trim()) return
-
-    saveDescribeDraft(description, optionalTopic)
-    setDraftSaved(true)
-    window.setTimeout(() => setDraftSaved(false), 3000)
-  }
-
-  const handleSendToNeuroDiver = async () => {
-    const trimmed = description.trim()
-    if (!trimmed) return
-
-    if (!user) {
-      setError('Sign in to send your experience to NeuroDiver.')
-      return
-    }
-
-    setPending(true)
-    setError(null)
-
-    const topicKeywords = optionalTopic
-      ? DESCRIBE_TOPIC_KEYWORDS[optionalTopic]
-      : ''
-    const matches = matchStrategiesFromFreeText(
-      strategies,
-      trimmed,
-      topicKeywords,
-    )
-
-    try {
-      const requestId = await submitFreeTextRequest({
-        userId: user.uid,
-        description: trimmed,
-        optionalTopic,
-        searchResultsFound: matches.length,
-        matchedStrategyIds: matches.map((strategy) => strategy.id),
-        notifyWhenAvailable: false,
-        brainStatus,
-      })
-
-      clearDescribeDraft()
-
-      onNoMatches(requestId)
-    } catch {
-      setError('Something went wrong. Your words are still here — try again.')
-    } finally {
-      setPending(false)
-    }
+    onNoMatches('local-session')
   }
 
   return (
@@ -200,45 +124,21 @@ export function HelpMeDescribe({
         </div>
       </div>
 
-      {error && (
-        <p className="rounded-xl bg-orange/10 px-4 py-3 text-sm text-orange" role="alert">
-          {error}
-        </p>
-      )}
-
-      {draftSaved && (
-        <p className="rounded-xl bg-green-muted/60 px-4 py-3 text-sm text-green">
-          Saved for later — you can come back anytime.
-        </p>
-      )}
-
       <div className="space-y-3">
         <Button
           type="button"
           className="w-full"
-          disabled={pending || !description.trim()}
-          onClick={() => void handleSendToNeuroDiver()}
+          disabled={!description.trim()}
+          onClick={handleContinue}
         >
           <Send className="h-4 w-4" aria-hidden="true" />
-          {pending ? 'Sending…' : 'Send to NeuroDiver'}
+          Continue
         </Button>
 
         <p className="flex items-start justify-center gap-1.5 text-center text-xs leading-relaxed text-text-muted">
           <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-green" aria-hidden="true" />
-          Your experience helps us understand which support is missing from the library.
+          Nothing you type here is sent or saved.
         </p>
-
-        {!isSimple && (
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            disabled={!description.trim()}
-            onClick={handleSaveForLater}
-          >
-            Save for Later
-          </Button>
-        )}
 
         <Button type="button" variant="ghost" className="w-full" onClick={onBack}>
           Back to Strategy Navigator

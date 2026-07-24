@@ -1,4 +1,3 @@
-import { Leaf } from 'lucide-react'
 import { StrategyTileGrid } from '@/design-system/layout'
 import {
   strategyTileHover,
@@ -20,9 +19,8 @@ interface StrategySituationGridProps {
 
 export function StrategySituationGrid({ onSelect }: StrategySituationGridProps) {
   return (
-    <section className="space-y-3 rounded-[1.5rem] border border-orange/10 bg-gradient-to-br from-surface-solid to-yellow/20 p-4 shadow-[var(--shadow-premium)] sm:space-y-4 sm:p-6">
-      <h2 className={cn(typeSectionTitle, 'flex items-center gap-2')}>
-        <Leaf className="h-5 w-5 shrink-0 text-orange sm:h-6 sm:w-6" aria-hidden="true" />
+    <section className="space-y-4 rounded-[1.5rem] border border-border bg-surface-solid p-4 sm:p-6">
+      <h2 className={typeSectionTitle}>
         I&apos;m struggling with…
       </h2>
 

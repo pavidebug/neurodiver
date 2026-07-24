@@ -3,12 +3,7 @@ import {
   StrategyNavigatorMobile,
   type StrategyNavigatorSharedProps,
 } from '@/components/strategies/strategy-navigator-mobile'
-import type { Strategy } from '@/types/strategy'
-
-interface StrategyNavigatorHomeProps extends StrategyNavigatorSharedProps {
-  recommendedStrategies?: Strategy[]
-  onRecommendedSelect?: (strategy: Strategy) => void
-}
+type StrategyNavigatorHomeProps = StrategyNavigatorSharedProps
 
 export function StrategyNavigatorHome(sharedProps: StrategyNavigatorHomeProps) {
   return (

@@ -2,27 +2,20 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from 'react'
 import type { BrainStatusType } from '@/lib/data'
-import {
-  filterStrategies,
-  getFirestoreStrategyErrorMessage,
-  getRecommendedStrategies,
-  isStrategySaved,
-  markStrategyHelpful,
-  recordStrategyFeedback,
-  recordStrategyView,
-  subscribeToStrategies,
-  subscribeToUserStrategyState,
-  toggleSavedStrategy,
-} from '@/lib/strategies'
-import type { Strategy, StrategyCategory, StrategyFeedback, UserStrategyState } from '@/types/strategy'
+import type {
+  Strategy,
+  StrategyCategory,
+  StrategyFeedback,
+  StrategyFeedbackReason,
+  StrategyUsageRecord,
+  UserStrategyState,
+} from '@/types/strategy'
 import { EMPTY_STRATEGY_STATE } from '@/types/strategy'
-import { useAuth } from '@/context/auth-context'
 
 interface StrategyContextValue {
   strategies: Strategy[]
@@ -36,177 +29,156 @@ interface StrategyContextValue {
   toggleSaved: (strategyId: string) => Promise<boolean>
   trackView: (strategyId: string) => Promise<void>
   trackHelpful: (strategyId: string) => Promise<void>
-  trackFeedback: (strategyId: string, feedback: StrategyFeedback) => Promise<void>
+  trackFeedback: (
+    strategyId: string,
+    feedback: StrategyFeedback,
+    reason?: StrategyFeedbackReason,
+  ) => Promise<void>
   clearError: () => void
 }
 
 const StrategyContext = createContext<StrategyContextValue | null>(null)
 
-export function StrategyProvider({ children }: { children: ReactNode }) {
-  const { user, loading: authLoading } = useAuth()
-  const [strategies, setStrategies] = useState<Strategy[]>([])
-  const [userState, setUserState] = useState<UserStrategyState>(EMPTY_STRATEGY_STATE)
-  const [catalogLoading, setCatalogLoading] = useState(true)
-  const [userLoading, setUserLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+function createUsageRecord(
+  existing: StrategyUsageRecord | undefined,
+  updates: Partial<StrategyUsageRecord>,
+): StrategyUsageRecord {
+  return {
+    timesViewed: existing?.timesViewed ?? 0,
+    timesMarkedHelpful: existing?.timesMarkedHelpful ?? 0,
+    lastViewedAt: existing?.lastViewedAt ?? null,
+    lastMarkedHelpfulAt: existing?.lastMarkedHelpfulAt ?? null,
+    lastFeedback: existing?.lastFeedback ?? null,
+    lastFeedbackReason: existing?.lastFeedbackReason ?? null,
+    lastFeedbackAt: existing?.lastFeedbackAt ?? null,
+    ...updates,
+  }
+}
 
-  useEffect(() => {
-    if (authLoading) return
-
-    if (!user) {
-      setStrategies([])
-      setCatalogLoading(false)
-      return
-    }
-
-    setCatalogLoading(true)
-
-    const unsubscribe = subscribeToStrategies(
-      (data) => {
-        setStrategies(data)
-        setCatalogLoading(false)
-        setError(null)
-      },
-      (subscriptionError) => {
-        setError(getFirestoreStrategyErrorMessage(subscriptionError))
-        setCatalogLoading(false)
-      },
-    )
-
-    return unsubscribe
-  }, [authLoading, user])
-
-  useEffect(() => {
-    if (authLoading || !user) {
-      setUserState(EMPTY_STRATEGY_STATE)
-      setUserLoading(!authLoading && !user ? false : authLoading)
-      return
-    }
-
-    setUserLoading(true)
-
-    const unsubscribe = subscribeToUserStrategyState(
-      user.uid,
-      (state) => {
-        setUserState(state)
-        setUserLoading(false)
-        setError(null)
-      },
-      (subscriptionError) => {
-        setError(getFirestoreStrategyErrorMessage(subscriptionError))
-        setUserLoading(false)
-      },
-    )
-
-    return unsubscribe
-  }, [authLoading, user])
+/**
+ * Open Day uses session-only state. Nothing in this provider is persisted,
+ * transmitted, or restored after a refresh.
+ */
+export function StrategyProvider({
+  children,
+  catalog = [],
+}: {
+  children: ReactNode
+  catalog?: Strategy[]
+}) {
+  const [userState, setUserState] = useState<UserStrategyState>(
+    EMPTY_STRATEGY_STATE,
+  )
 
   const getRecommended = useCallback(
     (brainStatus: BrainStatusType, limit = 3) => {
-      return getRecommendedStrategies(strategies, brainStatus, limit)
+      const active = catalog.filter((strategy) => strategy.isActive)
+      const matching = active.filter((strategy) =>
+        strategy.recommendedFor.includes(brainStatus),
+      )
+      return (matching.length > 0 ? matching : active).slice(0, limit)
     },
-    [strategies],
+    [catalog],
   )
 
   const getByCategory = useCallback(
-    (category: StrategyCategory) => {
-      return filterStrategies(strategies, { category })
-    },
-    [strategies],
+    (category: StrategyCategory) =>
+      catalog.filter(
+        (strategy) => strategy.isActive && strategy.category === category,
+      ),
+    [catalog],
   )
 
-  const getSaved = useCallback(() => {
-    return filterStrategies(strategies, {
-      savedOnly: true,
-      savedIds: userState.savedIds,
-    })
-  }, [strategies, userState.savedIds])
+  const getSaved = useCallback(
+    () =>
+      catalog.filter((strategy) => userState.savedIds.includes(strategy.id)),
+    [catalog, userState.savedIds],
+  )
 
   const isSaved = useCallback(
-    (strategyId: string) => isStrategySaved(userState, strategyId),
-    [userState],
+    (strategyId: string) => userState.savedIds.includes(strategyId),
+    [userState.savedIds],
   )
 
   const toggleSaved = useCallback(
     async (strategyId: string) => {
-      if (!user) {
-        throw new Error('You must be signed in to save strategies.')
-      }
-
-      setError(null)
-
-      try {
-        return await toggleSavedStrategy(user.uid, strategyId)
-      } catch (toggleError) {
-        const message = getFirestoreStrategyErrorMessage(toggleError)
-        setError(message)
-        throw toggleError
-      }
+      const willSave = !userState.savedIds.includes(strategyId)
+      setUserState((current) => ({
+        ...current,
+        savedIds: willSave
+          ? [...current.savedIds, strategyId]
+          : current.savedIds.filter((id) => id !== strategyId),
+      }))
+      return willSave
     },
-    [user],
+    [userState.savedIds],
   )
 
-  const trackView = useCallback(
-    async (strategyId: string) => {
-      if (!user) return
-
-      try {
-        await recordStrategyView(user.uid, strategyId)
-      } catch (viewError) {
-        setError(getFirestoreStrategyErrorMessage(viewError))
+  const trackView = useCallback(async (strategyId: string) => {
+    const now = new Date().toISOString()
+    setUserState((current) => {
+      const existing = current.usage[strategyId]
+      return {
+        ...current,
+        lastViewedId: strategyId,
+        usage: {
+          ...current.usage,
+          [strategyId]: createUsageRecord(existing, {
+            timesViewed: (existing?.timesViewed ?? 0) + 1,
+            lastViewedAt: now,
+          }),
+        },
       }
+    })
+  }, [])
+
+  const trackFeedback = useCallback(
+    async (
+      strategyId: string,
+      feedback: StrategyFeedback,
+      reason?: StrategyFeedbackReason,
+    ) => {
+      const now = new Date().toISOString()
+      setUserState((current) => {
+        const existing = current.usage[strategyId]
+        const helped = feedback === 'helped'
+        return {
+          ...current,
+          usage: {
+            ...current.usage,
+            [strategyId]: createUsageRecord(existing, {
+              timesMarkedHelpful: helped
+                ? (existing?.timesMarkedHelpful ?? 0) + 1
+                : (existing?.timesMarkedHelpful ?? 0),
+              lastMarkedHelpfulAt: helped
+                ? now
+                : (existing?.lastMarkedHelpfulAt ?? null),
+              lastFeedback: feedback,
+              lastFeedbackReason: reason ?? null,
+              lastFeedbackAt: now,
+            }),
+          },
+        }
+      })
     },
-    [user],
+    [],
   )
 
   const trackHelpful = useCallback(
     async (strategyId: string) => {
-      if (!user) {
-        throw new Error('You must be signed in to rate strategies.')
-      }
-
-      setError(null)
-
-      try {
-        await markStrategyHelpful(user.uid, strategyId)
-      } catch (helpfulError) {
-        const message = getFirestoreStrategyErrorMessage(helpfulError)
-        setError(message)
-        throw helpfulError
-      }
+      await trackFeedback(strategyId, 'helped')
     },
-    [user],
+    [trackFeedback],
   )
 
-  const trackFeedback = useCallback(
-    async (strategyId: string, feedback: StrategyFeedback) => {
-      if (!user) {
-        throw new Error('You must be signed in to share feedback.')
-      }
-
-      setError(null)
-
-      try {
-        await recordStrategyFeedback(user.uid, strategyId, feedback)
-      } catch (feedbackError) {
-        const message = getFirestoreStrategyErrorMessage(feedbackError)
-        setError(message)
-        throw feedbackError
-      }
-    },
-    [user],
-  )
-
-  const clearError = useCallback(() => {
-    setError(null)
-  }, [])
+  const clearError = useCallback(() => undefined, [])
 
   const value = useMemo<StrategyContextValue>(
     () => ({
-      strategies,
+      strategies: catalog,
       userState,
-      loading: authLoading || catalogLoading || userLoading,
-      error,
+      loading: false,
+      error: null,
       getRecommended,
       getByCategory,
       getSaved,
@@ -218,12 +190,8 @@ export function StrategyProvider({ children }: { children: ReactNode }) {
       clearError,
     }),
     [
-      strategies,
+      catalog,
       userState,
-      authLoading,
-      catalogLoading,
-      userLoading,
-      error,
       getRecommended,
       getByCategory,
       getSaved,
@@ -248,10 +216,3 @@ export function useStrategies() {
   }
   return context
 }
-
-export {
-  fetchStrategies,
-  filterStrategies,
-  getRecommendedStrategies,
-  seedDefaultStrategies,
-} from '@/lib/strategies'

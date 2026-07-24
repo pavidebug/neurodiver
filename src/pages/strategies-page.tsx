@@ -11,30 +11,30 @@ import type { NavigatorEntry } from '@/components/strategies/strategy-navigator-
 import { StrategyDetailSheet } from '@/components/strategies/strategy-detail-sheet'
 import { StrategySwipeDeck } from '@/components/strategies/strategy-swipe-deck'
 import { StrategyBrowseScreen } from '@/components/strategies/strategy-browse-screen'
-import { StrategyTimerModal } from '@/components/strategy-timer/strategy-timer-modal'
+import { OpenDayDeckSwitcher } from '@/components/strategies/open-day-deck-switcher'
+import { OpenDayCategoryBrowser } from '@/components/strategies/open-day-category-browser'
+import { StrategySearch } from '@/components/strategies/strategy-search'
+import { OpenDayVisualDeck } from '@/components/strategies/open-day-visual-deck'
 import { Button } from '@/components/ui/button'
 import { Stack } from '@/design-system/layout'
 import { typePageTitle } from '@/design-system/tokens'
 import {
-  filterStrategiesByBrowseCategory,
   filterStrategiesBySituation,
-  getBrowseCategoryLabel,
   getSituationChipLabel,
 } from '@/data/strategy-navigator-chips'
-import { useAuth } from '@/context/auth-context'
 import { useStrategies } from '@/context/strategy-context'
-import { useWorkEnergy } from '@/context/work-energy-context'
-import { useFeatureConfig } from '@/context/feature-config-context'
-import { getRecommendedStrategiesFromPulse } from '@/lib/pulse-recommendations'
 import {
   filterSavedStrategies,
   filterStrategiesByBestWhen,
   filterStrategiesByCategory,
-  filterStrategiesUnderMinutes,
 } from '@/lib/strategy-filters'
-import { getStrategyUsage } from '@/lib/strategies'
-import { useStrategyTimer } from '@/hooks/use-strategy-timer'
 import { getStrategiesForSearchTerm } from '@/lib/strategy-search'
+import {
+  getOpenDayDeckVersion,
+  getOpenDayStrategyPath,
+  type OpenDayDeckVersion,
+} from '@/lib/open-day'
+import { OPEN_DAY_PRIMARY_STRATEGY_IDS } from '@/data/open-day-strategies'
 import type { BestWhenLabel, Strategy, StrategyCategory } from '@/types/strategy'
 
 type Screen = 'home' | 'flow'
@@ -52,13 +52,10 @@ const ENTRY_TITLES: Record<NavigatorEntry, string> = {
 export function StrategiesPage() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
+  const deckVersion = getOpenDayDeckVersion(searchParams.get('version'))
   const handledDirectStrategyId = useRef<string | null>(null)
-  const timerReturnFocus = useRef<HTMLElement | null>(null)
-  const { user, isGuest } = useAuth()
-  const { todayCheckIn } = useWorkEnergy()
-  const { config: featureConfig } = useFeatureConfig()
   const {
-    strategies,
+    strategies: catalogStrategies,
     loading,
     error,
     isSaved,
@@ -69,6 +66,15 @@ export function StrategiesPage() {
     getSaved,
     clearError,
   } = useStrategies()
+  const strategies = useMemo(
+    () =>
+      deckVersion === '3'
+        ? catalogStrategies
+        : catalogStrategies.filter((strategy) =>
+            OPEN_DAY_PRIMARY_STRATEGY_IDS.has(strategy.id),
+          ),
+    [catalogStrategies, deckVersion],
+  )
 
   const [screen, setScreen] = useState<Screen>('home')
   const [entry, setEntry] = useState<NavigatorEntry>('search')
@@ -89,11 +95,6 @@ export function StrategiesPage() {
   const [savePending, setSavePending] = useState(false)
 
   const savedStrategies = getSaved()
-  const strategyTimer = useStrategyTimer(
-    strategies,
-    user?.uid ?? null,
-    Boolean(user && !isGuest),
-  )
 
   useEffect(() => {
     const strategyId = searchParams.get('strategy')
@@ -111,10 +112,6 @@ export function StrategiesPage() {
     setSheetOpen(true)
     setScreen('flow')
   }, [loading, searchParams, strategies])
-
-  const recommendedStrategies = useMemo(() => {
-    return getRecommendedStrategiesFromPulse(strategies, todayCheckIn, 3)
-  }, [strategies, todayCheckIn])
 
   const deckStrategies = useMemo(() => {
     if (entry === 'saved') {
@@ -182,13 +179,12 @@ export function StrategiesPage() {
   ])
 
   useEffect(() => {
-    if (!currentStrategy || !user || screen !== 'flow' || helpStep === 'pick') return
+    if (!currentStrategy || screen !== 'flow' || helpStep === 'pick') return
     if (entry === 'search' && searchDeck.length === 0) return
     if (entry === 'describe' && describeStep !== 'results') return
     void trackView(currentStrategy.id)
   }, [
     currentStrategy?.id,
-    user,
     trackView,
     screen,
     helpStep,
@@ -218,7 +214,7 @@ export function StrategiesPage() {
 
   const backToNavigatorHome = useCallback(() => {
     handledDirectStrategyId.current = null
-    setSearchParams({}, { replace: true })
+    setSearchParams({ version: deckVersion }, { replace: true })
     setScreen('home')
     setSearchDeck([])
     setDeckTitle(ENTRY_TITLES.search)
@@ -226,7 +222,22 @@ export function StrategiesPage() {
     setDescribePrefill('')
     setSheetOpen(false)
     setSheetStrategy(null)
-  }, [resetDescribeFlow, setSearchParams])
+  }, [deckVersion, resetDescribeFlow, setSearchParams])
+
+  const handleDeckVersionChange = useCallback(
+    (nextVersion: OpenDayDeckVersion) => {
+      handledDirectStrategyId.current = null
+      setSearchParams({ version: nextVersion }, { replace: true })
+      setScreen('home')
+      setSearchDeck([])
+      setDeckTitle(ENTRY_TITLES.search)
+      resetDescribeFlow()
+      setDescribePrefill('')
+      setSheetOpen(false)
+      setSheetStrategy(null)
+    },
+    [resetDescribeFlow, setSearchParams],
+  )
 
   const openEntry = useCallback(
     (nextEntry: NavigatorEntry, options?: { describePrefill?: string }) => {
@@ -300,69 +311,30 @@ export function StrategiesPage() {
     [strategies, openDeck],
   )
 
-  const handleCategorySelect = useCallback(
-    (categoryId: string) => {
-      if (categoryId === 'under-5') {
-        const deck = filterStrategiesUnderMinutes(strategies, 5)
-        openDeck(deck, 'Under 5 minutes')
-        return
-      }
-
-      const deck = filterStrategiesByBrowseCategory(strategies, categoryId)
-      openDeck(deck, getBrowseCategoryLabel(categoryId))
-    },
-    [strategies, openDeck],
-  )
-
-  const handleRecommendedSelect = useCallback(
-    (strategy: Strategy) => {
-      const deck = getRecommendedStrategiesFromPulse(strategies, todayCheckIn, 5)
-      const resolvedDeck = deck.length > 0 ? deck : [strategy]
-      const selectedIndex = resolvedDeck.findIndex((item) => item.id === strategy.id)
-      setSearchDeck(resolvedDeck)
-      setDeckIndex(selectedIndex >= 0 ? selectedIndex : 0)
-      setDeckTitle('Today might be a good day to try…')
-      setEntry('search')
-      setScreen('flow')
-    },
-    [strategies, todayCheckIn],
-  )
-
   const handleHomeSearchSelect = useCallback(
     (strategy: Strategy, context: { searchTerm: string }) => {
       handleSearchSelect(strategy, context)
-      setDeckTitle(context.searchTerm.trim() || 'Strategies')
+      setDeckTitle(context.searchTerm.trim() || 'Search results')
       setEntry('search')
       setScreen('flow')
     },
     [handleSearchSelect],
   )
 
-  const handleSavedSelect = useCallback(
-    (strategy: Strategy) => {
-      const deck = savedStrategies
-      const selectedIndex = deck.findIndex((item) => item.id === strategy.id)
-      setSearchDeck(deck)
-      setDeckIndex(selectedIndex >= 0 ? selectedIndex : 0)
-      setDeckTitle(ENTRY_TITLES.saved)
-      setEntry('saved')
-      setScreen('flow')
+  const handleOpenDayCategorySelect = useCallback(
+    (category: StrategyCategory, label: string) => {
+      openDeck(filterStrategiesByCategory(strategies, category), label)
     },
-    [savedStrategies],
+    [openDeck, strategies],
   )
-
-  const handleViewAllSaved = useCallback(() => {
-    if (savedStrategies.length === 0) return
-    handleSavedSelect(savedStrategies[0])
-  }, [handleSavedSelect, savedStrategies])
 
   const handleBrowseOpenStrategy = useCallback(
     (strategy: Strategy) => {
       setSheetStrategy(strategy)
       setSheetOpen(true)
-      if (user) void trackView(strategy.id)
+      void trackView(strategy.id)
     },
-    [trackView, user],
+    [trackView],
   )
 
   const handleBrowseSearchSelect = useCallback(
@@ -381,27 +353,25 @@ export function StrategiesPage() {
 
   const closeSheet = useCallback(() => {
     if (searchParams.has('strategy')) {
-      navigate('/home', { replace: true })
+      navigate(getOpenDayStrategyPath(deckVersion), { replace: true })
       return
     }
 
     setSheetOpen(false)
-  }, [navigate, searchParams])
+  }, [deckVersion, navigate, searchParams])
 
   const handleExploreOtherStrategies = useCallback(() => {
     handledDirectStrategyId.current = null
-    setSearchParams({}, { replace: true })
+    setSearchParams({ version: deckVersion }, { replace: true })
     setSheetOpen(false)
     setSheetStrategy(null)
     setSearchDeck([])
     setDeckTitle(ENTRY_TITLES.search)
     setScreen('home')
-  }, [setSearchParams])
+  }, [deckVersion, setSearchParams])
 
   const handleToggleSave = useCallback(
     async (strategyId: string) => {
-      if (!user) return
-
       clearError()
       setSavePending(true)
 
@@ -411,15 +381,7 @@ export function StrategiesPage() {
         setSavePending(false)
       }
     },
-    [user, toggleSaved, clearError],
-  )
-
-  const handleStartTimer = useCallback(
-    (strategy: Strategy, minutes: number, trigger: HTMLButtonElement) => {
-      timerReturnFocus.current = trigger
-      strategyTimer.start(strategy, minutes)
-    },
-    [strategyTimer],
+    [toggleSaved, clearError],
   )
 
   if (loading) {
@@ -462,35 +424,23 @@ export function StrategiesPage() {
       isSaved={sheetStrategy ? isSaved(sheetStrategy.id) : false}
       savePending={savePending}
       onToggleSave={(strategyId) => void handleToggleSave(strategyId)}
-      timerActive={Boolean(strategyTimer.timer)}
-      onStartTimer={handleStartTimer}
+      onFeedback={(strategyId, feedback) =>
+        void trackFeedback(strategyId, feedback)
+      }
     />
   )
 
-  const timerModal =
-    strategyTimer.timer && strategyTimer.activeStrategy ? (
-      <StrategyTimerModal
-        strategy={strategyTimer.activeStrategy}
-        timer={strategyTimer.timer}
-        remainingMs={strategyTimer.remainingMs}
-        complete={Boolean(strategyTimer.completion)}
-        returnFocusTo={timerReturnFocus.current}
-        onPause={strategyTimer.pause}
-        onResume={strategyTimer.resume}
-        onAddMinute={strategyTimer.addMinute}
-        onFinishEarly={strategyTimer.finishEarly}
-        onCancel={strategyTimer.cancel}
-        onReflection={strategyTimer.submitReflection}
-      />
-    ) : null
-
   if (searchParams.has('strategy') && sheetOpen) {
-    return <div className="min-h-[60dvh]">{detailSheet}{timerModal}</div>
+    return <div className="min-h-[60dvh]">{detailSheet}</div>
   }
 
   if (screen === 'home') {
     return (
       <div className="pb-4">
+        <OpenDayDeckSwitcher
+          version={deckVersion}
+          onChange={handleDeckVersionChange}
+        />
         {error && (
           <p
             className="mb-4 rounded-xl bg-orange/10 px-4 py-3 text-sm text-orange"
@@ -499,22 +449,39 @@ export function StrategiesPage() {
             {error}
           </p>
         )}
-        <StrategyNavigatorHome
-          strategies={strategies}
-          savedStrategies={savedStrategies}
-          recommendedStrategies={recommendedStrategies}
-          todayCheckIn={todayCheckIn}
-          onSearchSelect={handleHomeSearchSelect}
-          onCantFind={handleCantFind}
-          onSituationSelect={handleSituationSelect}
-          onCategorySelect={handleCategorySelect}
-          onRecommendedSelect={handleRecommendedSelect}
-          onSavedSelect={handleSavedSelect}
-          onViewAllSaved={handleViewAllSaved}
-          visibleSections={featureConfig.strategies.sections}
-        />
+        {deckVersion === '1' ? (
+          <section className="mb-5 rounded-[1.75rem] border border-border bg-surface-solid p-5 shadow-sm sm:p-6">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-green">
+              Search strategies
+            </p>
+            <StrategySearch
+              variant="landing"
+              strategies={strategies}
+              todayCheckIn={null}
+              onSelectStrategy={handleHomeSearchSelect}
+              onCantFind={handleCantFind}
+              onBackToNavigator={() => undefined}
+            />
+          </section>
+        ) : null}
+        {deckVersion === '2' ? (
+          <div className="mb-5">
+            <OpenDayCategoryBrowser onSelect={handleOpenDayCategorySelect} />
+          </div>
+        ) : null}
+        {deckVersion === '3' ? (
+          <OpenDayVisualDeck
+            strategies={strategies}
+            onFeedback={(strategyId, feedback, reason) =>
+              void trackFeedback(strategyId, feedback, reason)
+            }
+          />
+        ) : (
+          <StrategyNavigatorHome
+            onSituationSelect={handleSituationSelect}
+          />
+        )}
         {detailSheet}
-        {timerModal}
       </div>
     )
   }
@@ -569,16 +536,10 @@ export function StrategiesPage() {
         </p>
       )}
 
-      {!user && entry !== 'describe' && (
-        <p className="rounded-xl bg-yellow/20 px-4 py-3 text-sm text-text-muted">
-          Sign in to save strategies and submit requests.
-        </p>
-      )}
-
       {entry === 'browse' && (
         <StrategyBrowseScreen
           strategies={strategies}
-          todayCheckIn={todayCheckIn}
+          todayCheckIn={null}
           onOpenStrategy={handleBrowseOpenStrategy}
           onSearchSelect={handleBrowseSearchSelect}
           onCantFind={handleCantFind}
@@ -588,7 +549,7 @@ export function StrategiesPage() {
       {entry === 'describe' && describeStep === 'form' && (
         <HelpMeDescribe
           strategies={strategies}
-          todayCheckIn={todayCheckIn}
+          todayCheckIn={null}
           onNoMatches={handleDescribeNoMatches}
           onBack={backToNavigatorHome}
           initialDescription={describePrefill}
@@ -646,8 +607,12 @@ export function StrategiesPage() {
           isSaved={isSaved}
           onToggleSave={(strategyId) => void handleToggleSave(strategyId)}
           onTryThis={openTryThis}
-          onFeedback={user ? (strategyId, feedback) => void trackFeedback(strategyId, feedback) : undefined}
-          getLastFeedback={(strategyId) => getStrategyUsage(userState, strategyId)?.lastFeedback ?? null}
+          onFeedback={(strategyId, feedback) =>
+            void trackFeedback(strategyId, feedback)
+          }
+          getLastFeedback={(strategyId) =>
+            userState.usage[strategyId]?.lastFeedback ?? null
+          }
           savePending={savePending}
           disabled={sheetOpen}
         />
@@ -669,10 +634,10 @@ export function StrategiesPage() {
         isSaved={sheetStrategy ? isSaved(sheetStrategy.id) : false}
         savePending={savePending}
         onToggleSave={(strategyId) => void handleToggleSave(strategyId)}
-        timerActive={Boolean(strategyTimer.timer)}
-        onStartTimer={handleStartTimer}
+        onFeedback={(strategyId, feedback) =>
+          void trackFeedback(strategyId, feedback)
+        }
       />
-      {timerModal}
     </Stack>
   )
 }
